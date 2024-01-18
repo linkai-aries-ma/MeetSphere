@@ -1,0 +1,33 @@
+// Design Language
+$c-bg: #1c1c1c;
+$c-emp: #27c0ad;
+
+// Define font face (because we don't want to use Google Fonts)
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/libs/Inter-Light.woff2") format("woff2"), url("/libs/Inter-Light.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("/libs/Inter-Regular.woff2") format("woff2"), url("/libs/Inter-Regular.woff") format("woff");
+}
+
+// All body styles
+body {
+  background-color: $c-bg;
+  color: white;
+
+  // Font
+  font-family: Inter, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
+}
+
+h1 {
+  font-weight: 300;
+}
