@@ -13,16 +13,21 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: sass
+          version: 1.0
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip' # caching pip dependencies
 
       - name: Install Dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Build Site
         run: python serve.py --build-only
