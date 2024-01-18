@@ -79,7 +79,6 @@ def build():
         target.write_bytes(file.read_bytes())
 
 
-
 app = Flask(__name__)
 
 
@@ -109,6 +108,8 @@ class RebuildHandler(FileSystemEventHandler):
         if building_lock.acquire(blocking=False):
             try:
                 build()
+            except Exception as e:
+                print(f"Error building: {e}")
             finally:
                 building_lock.release()
         else:
