@@ -1,3 +1,28 @@
+### Development Instructions
+
+To setup, please install python 3.12 first.
+
+Then, run the following commands:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+To run the dev server, run the following command:
+
+```bash
+python3 serve.py
+```
+
+To build the frontend into static html, run the following command:
+
+```bash
+python3 serve.py --build-only
+```
+
+
 ### Requirements
 
 - [ ] Users should be able to create accounts with basic information (name, email, password).
