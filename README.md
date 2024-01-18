@@ -1,6 +1,6 @@
 ### Development Instructions
 
-To setup, please install python 3.12 first.
+To setup, please install python 3.12 and [sass](https://sass-lang.com/install/) first.
 
 Then, run the following commands:
 
