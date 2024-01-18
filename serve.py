@@ -1,6 +1,7 @@
 """
 This is a script to serve a static website with some build processes.
 """
+import argparse
 import subprocess
 import threading
 from pathlib import Path
@@ -110,6 +111,14 @@ class RebuildHandler(FileSystemEventHandler):
 
 
 if __name__ == '__main__':
+    agupa = argparse.ArgumentParser()
+    agupa.add_argument('--build-only', action='store_true')
+    args = agupa.parse_args()
+
+    if args.build_only:
+        build()
+        exit(0)
+
     # Start two threads,
     # one to monitor the src directory for any changes and re-build on change
     # another to serve the static website.
