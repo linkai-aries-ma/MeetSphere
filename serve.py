@@ -59,6 +59,20 @@ def build():
 
         target.write_text(html, 'utf-8')
 
+    # Copy remaining files
+    to_copy = SRC.glob('**/*')
+    for file in to_copy:
+        if file.is_dir():
+            continue
+
+        if file in to_build or file.name.endswith('.html'):
+            continue
+
+        target = (DIST / file.relative_to(SRC))
+        target.parent.mkdir(exist_ok=True, parents=True)
+        target.write_bytes(file.read_bytes())
+
+
 
 app = Flask(__name__)
 
