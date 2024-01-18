@@ -39,7 +39,7 @@ def build():
         # Build file
         target = (DIST / file.relative_to(SRC))
         head_extra = ''
-        title = '1on1'
+        title = 'MeetSphere'
 
         # Process @ commands at the head of the file
         lines = file.read_text('utf-8').splitlines()
