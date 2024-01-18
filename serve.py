@@ -43,13 +43,18 @@ def build():
 
         # Process @ commands at the head of the file
         lines = file.read_text('utf-8').splitlines()
-        while lines[0].startswith('@'):
+        while lines and lines[0].startswith('@'):
             command = lines.pop(0)[1:]
             command, args = command.split()[0], command.split()[1:]
             if command == 'css':
                 head_extra += f'<link rel="stylesheet" href="{args[0]}">'
             if command == 'title':
                 title += f' - {args[0]}'
+
+        # If {filename}.sass / .scss / .css exist, automatically import it
+        for suffix in ['sass', 'scss', 'css']:
+            if file.with_suffix('.' + suffix).is_file():
+                head_extra += f'<link rel="stylesheet" href="{file.relative_to(SRC).with_suffix(".css")}">'
 
         # Build html
         html = (template
