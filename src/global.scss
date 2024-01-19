@@ -120,9 +120,9 @@ main:not(.no-margin) {
   margin: 0 auto;
 }
 
-@media (max-width: 1020px) {
-  main {
-    padding: 0 20px;
+@media (max-width: 1080px) {
+  main:not(.no-margin) {
+    margin: 0 40px;
   }
 }
 
