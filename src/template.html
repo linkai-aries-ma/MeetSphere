@@ -39,8 +39,8 @@
       </a>
 
       <div class="right">
-        <button>Log in</button>
-        <button class="emp">Get started</button>
+        <button onclick="clickLogin()">Log in</button>
+        <button onclick="clickSignup()" class="emp">Get started</button>
       </div>
     </div>
   </header>
@@ -49,4 +49,34 @@
     {{content}}
   </div>
 </body>
+
+<script>
+    // On page load
+    window.onload = function() {
+        // Check if we're logged in
+        if (localStorage.getItem("token") === null) {
+            // Check if we're at /
+            if (window.location.pathname !== "/") {
+                // Redirect to /
+                window.location.href = "/";
+            }
+        }
+    }
+
+    function clickLogin() {
+        // Get the #login-overlay element
+        const loginOverlay = document.getElementById("login-overlay");
+
+        if (loginOverlay === null) {
+            alert("Error: #login-overlay not found!");
+            return;
+        }
+
+        loginOverlay.style.display = "flex";
+    }
+
+    function clickSignup() {
+      alert("Not implemented yet!");
+    }
+</script>
 </html>
