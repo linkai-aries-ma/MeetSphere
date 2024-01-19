@@ -15,22 +15,105 @@
     <img src="assets/front-page.jpg">
   </div>
 
-  <div id="login-overlay">
-    <div>
-      <h1>Login</h1>
+  <div id="login-overlay" onclick="closeLoginOverlay()">
+    <div id="login-overlay-inner">
+      <h1 class="not-signup">Login</h1>
+      <h1 class="signup">Sign up</h1>
       <label>
         <input type="text" name="username" placeholder="Username">
+      </label>
+      <label class="signup">
+        <input type="text" name="email" placeholder="Email">
       </label>
       <label>
         <input type="password" name="password" placeholder="Password">
       </label>
-      <button type="submit" onclick="btnSubmit">Login</button>
+      <label class="signup">
+        <input type="password" name="password-confirm" placeholder="Confirm password">
+      </label>
+      <button type="submit" id="login-submit">
+        <span class="not-signup">Login</span>
+        <span class="signup">Sign up</span>
+      </button>
     </div>
   </div>
 </main>
 
 <script>
-  function btnSubmit() {
-    alert("Not implemented yet!");
-  }
+    $(document).ready(function() {
+        // Ignore overlay inner click events
+        $("#login-overlay-inner").click(function(e) {
+            e.stopPropagation();
+        });
+
+        $('#login-submit').click(function (e) {
+            btnSubmit();
+            e.stopPropagation();
+        });
+    });
+
+    showLoginOverlay = () => $("#login-overlay").css("display", "flex");
+    closeLoginOverlay = () => $("#login-overlay").css("display", "none");
+
+    window.msShowLogin = () => {
+        showLoginOverlay()
+
+        $(".signup").css("display", "none");
+    }
+
+    window.msShowSignup = () => {
+        showLoginOverlay()
+
+        $(".not-signup").css("display", "none");
+        window.msIsSignup = true;
+    }
+
+    function hash(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = ((hash << 5) - hash) + str.charCodeAt(i);
+            hash |= 0;
+        }
+        return hash;
+    }
+
+    function btnSubmit() {
+        // Check if every field has at least some value
+        $("#login-overlay input").each(function() {
+            // Ignore hidden fields
+            if ($(this).parent().css('display') !== 'none' && $(this).val() === "") {
+                alert("Please fill in all fields!");
+                throw new Error("Please fill in all fields!");
+            }
+        });
+
+        // Check if passwords match
+        const password = $("#login-overlay input[name='password']");
+        if (window.msIsSignup) {
+            const passwordConfirm = $("#login-overlay input[name='password-confirm']");
+            if (password.val() !== passwordConfirm.val()) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            // Put hashed password in localStorage
+            localStorage.passhash = hash(password.val());
+        } else {
+            // Check if password matches
+            if (hash(password.val()) !== localStorage.passhash) {
+                alert("Incorrect password!");
+                return;
+            }
+        }
+
+        // (P1) Let's pretend that we have signed up / logged in and edit localStorage
+        localStorage.username = $("#login-overlay input[name='username']").val();
+
+        if (window.msIsSignup) {
+            localStorage.email = $("#login-overlay input[name='email']").val();
+        }
+
+        alert("Logged in as " + localStorage.username + "!");
+    }
+
 </script>

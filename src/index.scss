@@ -88,6 +88,10 @@
 
   z-index: 1000;
 
+  h1 {
+    user-select: none;
+  }
+
   > div {
     background-color: white;
     padding: 2rem;
