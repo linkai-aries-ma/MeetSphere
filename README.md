@@ -27,8 +27,8 @@ Note: You should NEVER edit files in `P1`. These files are generated. You should
 
 ### Requirements
 
-- [ ] Users should be able to create accounts with basic information (name, email, password).
-  - [ ] Ensure that user data is protected and privacy is maintained.
+- [x] Users should be able to create accounts with basic information (name, email, password).
+  - [x] Ensure that user data is protected and privacy is maintained.
 - [ ] Users can create and manage a list of contacts (comprised of names and email addresses)
 - [ ] Users can begin the process of scheduling meetings by creating a new calendar
   - [ ] On the new calendar, users should be able to specify their non-busy times which are available for meetings
