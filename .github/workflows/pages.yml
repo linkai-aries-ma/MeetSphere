@@ -30,8 +30,12 @@ jobs:
       - name: Build Site
         run: python serve.py --build-only
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      # The new way of deploying to GitHub Pages, as of 2024
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./P1
+          path: P1
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
