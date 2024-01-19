@@ -52,4 +52,19 @@
 
     pointer-events: none;
   }
+
+  @media (max-width: 700px) {
+    .title {
+      position: relative;
+    }
+
+    img {
+      margin-right: -100px;
+      opacity: 0.8;
+    }
+
+    &:before {
+      background: none;
+    }
+  }
 }
