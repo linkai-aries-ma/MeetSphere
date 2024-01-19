@@ -2,6 +2,7 @@
 $c-bg: white;
 $c-text: #1E1E1E;
 $c-emp: #02b089;
+$font: Inter, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
 
 // Define font face (because we don't want to use Google Fonts)
 @font-face {
@@ -13,11 +14,19 @@ $c-emp: #02b089;
 }
 
 @font-face {
-    font-family: "Inter";
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url("/libs/Inter-Regular.woff2") format("woff2"), url("/libs/Inter-Regular.woff") format("woff");
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/libs/Inter-Regular.woff2") format("woff2"), url("/libs/Inter-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Dosis";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/libs/Dosis-Regular.woff2") format("woff2"), url("/libs/Dosis-Regular.woff") format("woff");
 }
 
 // All body styles
@@ -26,7 +35,7 @@ body {
   color: $c-text;
 
   // Font
-  font-family: Inter, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
+  font-family: $font;
 }
 
 // Generic element styling
@@ -93,5 +102,7 @@ header {
   div.title {
     font-size: 2rem;
     text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+
+    font-family: Dosis, $font;
   }
 }
