@@ -15,10 +15,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: 'sass'
-          version: 1.0
+      - name: Install Sass
+        run: apt-get update && apt-get install -y sass
 
       - name: Set up Python
         uses: actions/setup-python@v5
