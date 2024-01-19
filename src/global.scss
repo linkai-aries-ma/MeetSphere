@@ -18,6 +18,14 @@
 }
 
 @font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/libs/Inter-Medium.woff2") format("woff2"), url("/libs/Inter-Medium.woff") format("woff");
+}
+
+@font-face {
   font-family: "Dosis";
   font-style: normal;
   font-weight: 400;
@@ -29,6 +37,8 @@
 body {
   background-color: $c-bg;
   color: $c-text;
+
+  overflow-x: hidden;
 
   // Font
   font-family: $font;
