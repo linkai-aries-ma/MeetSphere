@@ -17,7 +17,7 @@ jobs:
 
       - uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: sass
+          packages: 'sass'
           version: 1.0
 
       - name: Set up Python
