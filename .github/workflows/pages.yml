@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Sass
-        run: apt-get update && apt-get install -y sass
+        run: sudo apt-get update && sudo apt-get install -y sass
 
       - name: Set up Python
         uses: actions/setup-python@v5
