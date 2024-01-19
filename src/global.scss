@@ -38,10 +38,13 @@ body {
   background-color: $c-bg;
   color: $c-text;
 
-  overflow-x: hidden;
-
   // Font
   font-family: $font;
+}
+
+.app {
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 // Generic element styling

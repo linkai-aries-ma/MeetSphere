@@ -2,7 +2,6 @@
 
 .index {
   position: relative;
-  width: 100%;
 
   .title {
     display: flex;
@@ -11,7 +10,7 @@
 
     position: absolute;
     top: 20%;
-    width: 500px;
+    width: min(500px, 100%);
 
     .text {
       font-size: 2rem;
@@ -59,8 +58,9 @@
     }
 
     img {
-      margin-right: -100px;
+      margin-right: -220px;
       opacity: 0.8;
+      width: 200%;
     }
 
     &:before {
