@@ -95,7 +95,13 @@ def view(path):
     """
     Serve the static website.
     """
-    return send_from_directory(DIST, path)
+    # Check if {path} exists
+    if (DIST / path).is_file():
+        return send_from_directory(DIST, path)
+
+    # Check if {path}.html exists
+    if (DIST / path).with_suffix('.html').is_file():
+        return send_from_directory(DIST, path + '.html')
 
 
 building_lock = threading.Lock()
