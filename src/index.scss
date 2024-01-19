@@ -1,6 +1,6 @@
 @import "vars";
 
-.index {
+#index {
   position: relative;
 
   .title {
@@ -70,6 +70,33 @@
 
     &:before {
       background: none;
+    }
+  }
+}
+
+#login-overlay {
+  position: fixed;
+  inset: 0;
+
+  background-color: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+
+  > div {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    h1 {
+      margin-top: 0;
     }
   }
 }
