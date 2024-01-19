@@ -52,7 +52,17 @@
         });
     });
 
-    showLoginOverlay = () => $("#login-overlay").css("display", "flex");
+    showLoginOverlay = () =>
+    {
+        // Check if already logged in
+        if (localStorage.getItem("username") !== null) {
+            // Redirect to /home
+            window.location.href = "/home";
+            return
+        }
+
+        $("#login-overlay").css("display", "flex");
+    }
     closeLoginOverlay = () => $("#login-overlay").css("display", "none");
 
     window.msShowLogin = () => {
@@ -114,6 +124,9 @@
         }
 
         alert("Logged in as " + localStorage.username + "!");
+
+        // Redirect to /home
+        window.location.href = "/home";
     }
 
 </script>
