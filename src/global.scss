@@ -1,6 +1,7 @@
 // Design Language
-$c-bg: #1c1c1c;
-$c-emp: #27c0ad;
+$c-bg: white;
+$c-text: #1E1E1E;
+$c-emp: #02b089;
 
 // Define font face (because we don't want to use Google Fonts)
 @font-face {
@@ -22,12 +23,74 @@ $c-emp: #27c0ad;
 // All body styles
 body {
   background-color: $c-bg;
-  color: white;
+  color: $c-text;
 
   // Font
   font-family: Inter, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
 }
 
+// Generic element styling
 h1 {
   font-weight: 300;
+}
+
+a {
+  color: $c-emp;
+  text-decoration: none;
+}
+
+button {
+  padding: 10px 16px;
+  min-width: 100px;
+
+  border: none;
+  border-radius: 10px;
+
+  // For the hover effect
+  transition: all 0.2s ease-in-out;
+}
+
+button.emp {
+  background-color: $c-emp;
+  color: white;
+}
+
+button:hover {
+  cursor: pointer;
+
+  transform: translateY(-4px);
+
+  // Drop shadow
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+}
+
+// Header styles
+header {
+  padding: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eaeaea;
+
+  .nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .left, .right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  img {
+    width: 50px;
+    height: 50px;
+  }
+
+  div.title {
+    font-size: 2rem;
+  }
 }
