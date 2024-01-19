@@ -63,6 +63,7 @@ button {
 
   border: none;
   border-radius: 10px;
+  background: #eee;
 
   // For the hover effect
   transition: all 0.2s ease-in-out;
@@ -80,6 +81,24 @@ button:hover {
 
   // Drop shadow
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+}
+
+input {
+  padding: 10px 16px;
+  min-width: 100px;
+
+  border: none;
+  border-radius: 10px;
+  background: #eee;
+
+  // For the hover effect
+  transition: all 0.2s ease-in-out;
+}
+
+// input active
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px $c-emp;
 }
 
 // Header styles
