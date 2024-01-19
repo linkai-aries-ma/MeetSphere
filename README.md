@@ -46,3 +46,7 @@ Note: You should NEVER edit files in `P1`. These files are generated. You should
 - [ ] All users should be able to change their busy, non-busy time, and preferences until the calendar is finalised.
 - [ ] Users should be able to move suggested meeting times with any user on any suggested schedule.
   - [ ] The Webpage should tell the user what times work and which times won't when they try to move a meeting time to a different time.
+
+### Extra Features
+
+- [ ] Drag to select hours on the calendar
