@@ -22,6 +22,8 @@ To build the frontend into static html, run the following command:
 python3 serve.py --build-only
 ```
 
+Note: You should NEVER edit files in `P1`. These files are generated. You should always edit files in `src`, and running the script will update the generated files automatically.
+
 
 ### Requirements
 
