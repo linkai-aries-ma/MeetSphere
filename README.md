@@ -6,20 +6,19 @@ Then, run the following commands:
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate
 pip install -r requirements.txt
 ```
 
 To run the dev server, run the following command:
 
 ```bash
-python3 serve.py
+./run.sh
 ```
 
 To build the frontend into static html, run the following command:
 
 ```bash
-python3 serve.py --build-only
+./run.sh --build-only
 ```
 
 Note: You should NEVER edit files in `P1`. These files are generated. You should always edit files in `src`, and running the script will update the generated files automatically.
