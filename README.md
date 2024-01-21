@@ -43,12 +43,15 @@ Note: You should NEVER edit files in `P1`. These files are generated. You should
 - [ ] Users can begin the process of scheduling meetings by creating a new calendar
   - [ ] On the new calendar, users should be able to specify their non-busy times that are available for meetings
   - [ ] Users should be able to indicate preference levels for different non-busy times on their schedules (e.g., high preference vs. low preference, or "book meeting at this time only if there is no other possible times that work" vs "definitely try to schedule someone here")
-  - [ ] Users can select contacts to invite to get added to this meeting calendar and a deadline for scheduling a regular meeting time
-    - [ ] This should autogenerate an email to each contact, inviting them to schedule a regular meeting with the inviter 
-    - [ ] Email should contain a link to a Web page which lets a contact specify their schedule (times they are busy) and preferences amongst their non-busy time to meet with the person inviting them to schedule a regular meeting time
-    - [ ] Each contact receives a unique link
-    - [ ] Each unique link would allow the contact to open a Web page that knows who they are, who the user is inviting them to schedule a regular meeting time, and that user's calendar to try to add a meeting slot to
 - [ ] All users should be able to change their busy, non-busy time, and preferences until the calendar is finalized.
+
+**Invite Page** (Henry & Will)
+
+- [ ] Users can select contacts to invite to get added to this meeting calendar and a deadline for scheduling a regular meeting time
+  - [ ] This should autogenerate an email to each contact, inviting them to schedule a regular meeting with the inviter 
+  - [ ] Email should contain a link to a Web page which lets a contact specify their schedule (times they are busy) and preferences amongst their non-busy time to meet with the person inviting them to schedule a regular meeting time
+  - [ ] Each contact receives a unique link
+  - [ ] Each unique link would allow the contact to open a Web page that knows who they are, who the user is inviting them to schedule a regular meeting time, and that user's calendar to try to add a meeting slot to
 
 **Meetings Page** (LinKai)
 
