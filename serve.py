@@ -108,8 +108,21 @@ building_lock = threading.Lock()
 
 
 class RebuildHandler(FileSystemEventHandler):
-    def on_any_event(self, event):
+    def on_modified(self, event):
+        self.process_event(event)
+
+    def on_created(self, event):
+        self.process_event(event)
+
+    def on_deleted(self, event):
+        self.process_event(event)
+
+    def on_moved(self, event):
+        self.process_event(event)
+
+    def process_event(self, event):
         global building_lock
+        print(event)
         print(f"Change detected: {event.src_path}")
         if building_lock.acquire(blocking=False):
             try:
