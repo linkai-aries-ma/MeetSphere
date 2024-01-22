@@ -69,12 +69,14 @@
         showLoginOverlay()
 
         $(".signup").css("display", "none");
+        $(".not-signup").css("display", "block");
     }
 
     window.msShowSignup = () => {
         showLoginOverlay()
 
         $(".not-signup").css("display", "none");
+        $(".signup").css("display", "block");
         window.msIsSignup = true;
     }
 
