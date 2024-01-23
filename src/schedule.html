@@ -93,6 +93,7 @@
     }
 
     // Pick two random time slots from the pool, show them as cards
+    // TODO: Sort by preference
     const suggested = shuffle(suggestedPool).slice(0, 2);
     let tmpHtml = '';
     for (const {day, interval} of suggested) {
