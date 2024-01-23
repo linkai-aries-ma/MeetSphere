@@ -1,0 +1,45 @@
+<main id="schedule">
+  <!-- The display: none will be automatically removed once the details are filled in -->
+  <div style="display: none">
+    <h1>Hi <span id="ms-participant"></span></h1>
+    <p>You have been invited to a meeting by <span id="ms-organizer"></span>.</p>
+    <blockquote><span id="ms-description"></span></blockquote>
+    <p><span id="ms-regularity"></span></p>
+
+  </div>
+</main>
+
+<script>
+  // On page load, get the invitation parameters from the url
+  $(document).ready(function() {
+    // Get the invitation parameters from the url
+    const urlParams = new URLSearchParams(window.location.search);
+    const json = urlParams.get('invitation');
+
+    if (json === null) {
+        // Redirect to home page
+        window.location.href = "/";
+    }
+
+    // Json is in base64 format, decode it
+    const decodedJson = atob(json);
+
+    // Parse the invitation object
+    /** @type {Invitation} */
+    const invitation = JSON.parse(decodedJson);
+
+    // Fill in information
+    $("#ms-participant").text(invitation.participant);
+    $("#ms-organizer").text(invitation.organizer);
+    $("#ms-description").text(invitation.description);
+    const regularity = {
+        'once': 'This is a one-time meeting, please select a time slot that works best for you.',
+        'daily': 'This is a recurrent daily meeting, please select a time slot that works best for you.',
+        'weekly': 'This is a recurrent weekly meeting, please select a time slot that works best for you.',
+    }
+    $("#ms-regularity").text(regularity[invitation.regularity]);
+
+    // Show the page
+    $("div").css("display", "block");
+  });
+</script>
