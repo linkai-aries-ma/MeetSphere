@@ -8,9 +8,20 @@
     <p><span id="ms-timezone"></span></p>
   </div>
 
-  <table id="ms-schedule-calendar">
-    <!-- Due to the complexity of the table's html, it will be generated using js and placed here -->
-  </table>
+  <div>
+    <h2>Suggested time slots</h2>
+    <p>Based on your availability and preferences, we have selected the following time slots for you.</p>
+    <div id="ms-schedule-suggested">
+      <!-- This will be generated using js -->
+    </div>
+  </div>
+
+  <div id="ms-schedule-container">
+    <h2>Available time slots</h2>
+    <table id="ms-schedule-calendar">
+      <!-- Due to the complexity of the table's html, it will be generated using js and placed here -->
+    </table>
+  </div>
 </main>
 
 <script>
@@ -59,12 +70,54 @@
     // Calculate days for the calendar
     const nDays = inv.availability.length
 
+    // Get suggested times: Find two random time slots that are available
+    const suggestedPool = [];
+    for (let day = 0; day < nDays; day++) {
+      for (let interval = 0; interval < 24 * 4; interval++) {
+        // Ignore non-available intervals
+        const avail = inv.availability[day][interval]
+        if (avail === 0) continue;
+
+        let end = interval + 1;
+        while (end < 24 * 4 && inv.availability[day][end] !== 0) end++;
+
+        // Check if the interval is long enough
+        if (end - interval < inv.duration / 15) continue;
+
+        // Add to the pool
+        suggestedPool.push({day, interval});
+
+        // Skip to the next duration
+        interval += inv.duration / 15;
+      }
+    }
+
+    // Pick two random time slots from the pool, show them as cards
+    const suggested = shuffle(suggestedPool).slice(0, 2);
+    let tmpHtml = '';
+    for (const {day, interval} of suggested) {
+      // Get the date and time
+      const date = (inv.regularity === 'once') ? moment(inv.startDate).add(day, 'days').format('ddd, MMM D')
+          : `Every ${moment().day(day).format('dddd')}`;
+      const time = `at ${moment().hour(Math.floor(interval / 4)).minute((interval % 4) * 15).format('h:mm A')}`;
+
+      tmpHtml += `
+<div class="suggested-card" data-day="${day}" data-interval="${interval}">
+  <div>
+    <span class="date">${date}</span>
+    <span class="time">${time}</span>
+  </div>
+  <button class="emp">Select</button>
+</div>`;
+    }
+    $("#ms-schedule-suggested").html(tmpHtml);
+
     // Generate the available time slot view
     // This should be a grid of n days * 24 (1-hour interval) cells
     // Each column is a day, each row is an 1-hour interval
     // This table is just a grid
     // Availability is overlayed as absolute positioned divs inside the td
-    let tmpHtml = '<tr id="ms-schedule-header"><th></th>';
+    tmpHtml = '<tr id="ms-schedule-header"><th></th>';
     for (let day = 0; day < nDays; day++) {
       if (inv.regularity === 'once')
         tmpHtml += `<th>${moment(inv.startDate).add(day, 'days').format('ddd, MMM D')}</th>`;
