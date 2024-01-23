@@ -31,6 +31,44 @@
 
     .time {
       padding: 5px;
+      font-size: 0.7rem;
+      height: 40px;
+    }
+  }
+
+  #ms-schedule-suggested {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin-top: 1em;
+  }
+
+  .suggested-card {
+    // Grow
+    flex: 1;
+
+    // Card styling
+    padding: 1em;
+    border-radius: 5px;
+    background-color: #eee;
+
+    // Border
+    $border: 3px solid #bbb;
+    border-top: $border;
+    border-bottom: $border;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    max-width: 300px;
+
+    > div {
+      flex: 1;
+    }
+
+    .date {
+      font-weight: bold;
+      margin-bottom: 0.5em;
     }
   }
 
