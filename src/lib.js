@@ -25,6 +25,8 @@ function emptyAvailability(days) {
     return Array(days).fill(0).map(() => Array(24 * 4).fill(0));
 }
 
+const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
 console.log('lib.js loaded')
 
 

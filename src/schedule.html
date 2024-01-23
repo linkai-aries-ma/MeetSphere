@@ -5,6 +5,10 @@
     <p>You have been invited to a meeting by <span class="text-emp" id="ms-organizer"></span>.</p>
     <blockquote><span id="ms-description"></span></blockquote>
     <p><span id="ms-regularity"></span></p>
+    <p><span id="ms-timezone"></span></p>
+  </div>
+
+  <div id="ms-schedule-calendar">
 
   </div>
 </main>
@@ -39,7 +43,17 @@
     }
     $("#ms-regularity").text(regularity[invitation.regularity]);
 
+    // Check if time zones match
+    if (invitation.timezone === localTimezone) {
+        $("#ms-timezone").text("Your time zone matches the organizer's time zone.");
+    } else {
+        $("#ms-timezone").text(`The organizer's time zone is ${invitation.timezone}, the calendar below has been automatically converted to your time zone.`);
+    }
+
     // Show the page
     $("#ms-schedule-info").css("display", "block");
+
+    // Generate the available time slot view
+
   });
 </script>
