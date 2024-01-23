@@ -25,3 +25,5 @@ export enum Preference {
 }
 
 declare function createLink(invitation: Invitation);
+declare function emptyAvailability(days: number): Preference[][];
+declare function shuffle(array: any[]): any[];

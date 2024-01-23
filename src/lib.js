@@ -25,6 +25,29 @@ function emptyAvailability(days) {
     return Array(days).fill(0).map(() => Array(24 * 4).fill(0));
 }
 
+/**
+ * Randomly shuffle an array.
+ * This code segment comes from https://stackoverflow.com/a/2450976
+ *
+ * @param array {Array} Array to shuffle
+ * @returns {Array} Shuffled array
+ */
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+
+    // While there remain elements to shuffle.
+    while (currentIndex > 0) {
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 console.log('lib.js loaded')
