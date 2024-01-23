@@ -65,7 +65,7 @@
         if (inv.regularity === 'once')
             tmpHtml += `<th>${moment(inv.startDate).add(day, 'days').format('ddd, MMM D')}</th>`;
         else if (inv.regularity === 'weekly')
-            tmpHtml += `<th>${moment(inv.startDate).add(day, 'days').format('ddd')}</th>`;
+            tmpHtml += `<th>${moment().day(day).format('ddd')}</th>`;
     }
     tmpHtml += '</tr>';
     for (let interval = 0; interval < 24 * 4; interval++) {
