@@ -55,18 +55,12 @@
 
     // Calculate days for the calendar
     const nDays = inv.availability.length
-    const colors = {
-        0: '#ccc',
-        1: '#ff8000',
-        2: '#ffff00',
-        3: '#80ff00',
-    }
 
     // Generate the available time slot view
     // This should be a grid of n days * 24 * 4 (15-minute intervals) cells
     // Each column is a day, each row is a 15-minute interval
     // The cells are colored based on the availability of the participant
-    let tmpHtml = '<tr>';
+    let tmpHtml = '<tr id="ms-schedule-header"><th></th>';
     for (let day = 0; day < nDays; day++) {
         if (inv.regularity === 'once')
             tmpHtml += `<th>${moment(inv.startDate).add(day, 'days').format('ddd, MMM D')}</th>`;
@@ -75,7 +69,7 @@
     }
     tmpHtml += '</tr>';
     for (let interval = 0; interval < 24 * 4; interval++) {
-        tmpHtml += `<tr id="ms-schedule-table">`;
+        tmpHtml += `<tr>`;
         if (interval % 4 === 0) {
             tmpHtml += `<td class="time" rowspan="4">${Math.floor(interval / 4)}:00</td>`;
         }
