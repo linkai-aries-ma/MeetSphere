@@ -8,9 +8,9 @@
     <p><span id="ms-timezone"></span></p>
   </div>
 
-  <div id="ms-schedule-calendar">
+  <table id="ms-schedule-calendar">
 
-  </div>
+  </table>
 </main>
 
 <script>
@@ -30,30 +30,61 @@
 
     // Parse the invitation object
     /** @type {Invitation} */
-    const invitation = JSON.parse(decodedJson);
+    const inv = JSON.parse(decodedJson);
 
     // Fill in information
-    $("#ms-participant").text(invitation.participant);
-    $("#ms-organizer").text(invitation.organizer);
-    $("#ms-description").text(invitation.description);
+    $("#ms-participant").text(inv.participant);
+    $("#ms-organizer").text(inv.organizer);
+    $("#ms-description").text(inv.description);
     const regularity = {
         'once': 'This is a one-time meeting, please select a time slot that works best for you.',
         'daily': 'This is a recurrent daily meeting, please select a time slot that works best for you.',
         'weekly': 'This is a recurrent weekly meeting, please select a time slot that works best for you.',
     }
-    $("#ms-regularity").text(regularity[invitation.regularity]);
+    $("#ms-regularity").text(regularity[inv.regularity]);
 
     // Check if time zones match
-    if (invitation.timezone === localTimezone) {
+    if (inv.timezone === localTimezone) {
         $("#ms-timezone").text("Your time zone matches the organizer's time zone.");
     } else {
-        $("#ms-timezone").text(`The organizer's time zone is ${invitation.timezone}, the calendar below has been automatically converted to your time zone.`);
+        $("#ms-timezone").text(`The organizer's time zone is ${inv.timezone}, the calendar below has been automatically converted to your time zone.`);
     }
 
     // Show the page
     $("#ms-schedule-info").css("display", "block");
 
-    // Generate the available time slot view
+    // Calculate days for the calendar
+    const nDays = inv.availability.length
+    const colors = {
+        0: '#ccc',
+        1: '#ff8000',
+        2: '#ffff00',
+        3: '#80ff00',
+    }
 
+    // Generate the available time slot view
+    // This should be a grid of n days * 24 * 4 (15-minute intervals) cells
+    // Each column is a day, each row is a 15-minute interval
+    // The cells are colored based on the availability of the participant
+    let tmpHtml = '<tr>';
+    for (let day = 0; day < nDays; day++) {
+        if (inv.regularity === 'once')
+            tmpHtml += `<th>${moment(inv.startDate).add(day, 'days').format('ddd, MMM D')}</th>`;
+        else if (inv.regularity === 'weekly')
+            tmpHtml += `<th>${moment(inv.startDate).add(day, 'days').format('ddd')}</th>`;
+    }
+    tmpHtml += '</tr>';
+    for (let interval = 0; interval < 24 * 4; interval++) {
+        tmpHtml += `<tr id="ms-schedule-table">`;
+        if (interval % 4 === 0) {
+            tmpHtml += `<td class="time" rowspan="4">${Math.floor(interval / 4)}:00</td>`;
+        }
+        for (let day = 0; day < nDays; day++) {
+            const availability = inv.availability[day][interval];
+            tmpHtml += `<td class="block avail-${availability}"></td>`;
+        }
+        tmpHtml += '</tr>';
+    }
+    $("#ms-schedule-calendar").html(tmpHtml);
   });
 </script>

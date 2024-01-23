@@ -36,9 +36,9 @@ let avail = emptyAvailability(7);
 // Set Friday 9:00 to 10:00 to 1 (available)
 Array(4).fill(0).map((_, i) => avail[5][9 * 4 + i] = 1);
 // Set Monday 10:00 to 11:00 to 1 (available)
-Array(4).fill(0).map((_, i) => avail[1][10 * 4 + i] = 1);
+Array(4).fill(0).map((_, i) => avail[1][10 * 4 + i] = 2);
 // Set Wednesday 13:00 to 19:00 to 1 (available)
-Array(4 * 6).fill(0).map((_, i) => avail[3][13 * 4 + i] = 1);
+Array(4 * 6).fill(0).map((_, i) => avail[3][13 * 4 + i] = 3);
 
 console.log(createLink({
     id: 'ab1ab1d0-1677-46a6-a95d-e0d990a08c48',

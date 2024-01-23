@@ -1,0 +1,16 @@
+#schedule {
+  // Availability priority
+  // From 0: not available to 3: most available
+  .avail-0 {
+      background-color: #eee;
+  }
+  .avail-1 {
+    background-color: #ff8000;
+  }
+  .avail-2 {
+    background-color: #ffbf00;
+  }
+  .avail-3 {
+      background-color: #80ff00;
+  }
+}

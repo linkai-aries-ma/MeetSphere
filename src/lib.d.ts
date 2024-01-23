@@ -14,10 +14,7 @@ interface Invitation {
 
     // Creator's availability
     availability: Preference[][]; // Every 15 minutes
-    timeRange?: {
-        from: Date;
-        to: Date;
-    }; // Only relevant for regularity = 'once'
+    startDate: string; // Only relevant for regularity = 'once'
 }
 
 export enum Preference {
