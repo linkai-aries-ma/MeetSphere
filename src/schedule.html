@@ -9,7 +9,7 @@
   </div>
 
   <table id="ms-schedule-calendar">
-
+    <!-- Due to the complexity of the table's html, it will be generated using js and placed here -->
   </table>
 </main>
 
@@ -81,6 +81,12 @@
     }
     $("#ms-schedule-calendar").html(tmpHtml);
 
+    const preferences = {
+      3: 'High',
+      2: 'Medium',
+      1: 'Low',
+    }
+
     // Find continuous intervals of availability and inject each into the calendar
     for (let day = 0; day < nDays; day++) {
       // 15-minute intervals
@@ -101,7 +107,7 @@
         // Add a div under the td of the starting interval
         const td = $(`td[data-day="${day}"][data-hour="${Math.floor(interval / 4)}"]`);
         console.log(td)
-        td.append(`<div class="avail av${avail}" style="height: ${h}%;"></div>`);
+        td.append(`<div class="avail av${avail}" style="height: ${h}%;">${preferences[avail]}</div>`);
 
         // Skip the rest of the interval
         interval = end - 1;
