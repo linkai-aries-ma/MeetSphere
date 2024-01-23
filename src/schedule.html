@@ -18,11 +18,14 @@
   $(document).ready(function () {
     // Get the invitation parameters from the url
     const urlParams = new URLSearchParams(window.location.search);
-    const json = urlParams.get('invitation');
+    let json = urlParams.get('invitation');
 
     if (json === null) {
       // Redirect to home page
-      window.location.href = "/";
+      // window.location.href = "/";
+
+      // For testing purposes, use debug invitation
+      json = btoa(JSON.stringify(DEBUG_INVITATION))
     }
 
     // Json is in base64 format, decode it

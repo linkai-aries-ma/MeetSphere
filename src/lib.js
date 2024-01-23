@@ -40,7 +40,7 @@ Array(4).fill(0).map((_, i) => avail[1][10 * 4 + i] = 2);
 // Set Wednesday 13:00 to 19:00 to 1 (available)
 Array(4 * 6).fill(0).map((_, i) => avail[3][13 * 4 + i] = 3);
 
-console.log(createLink({
+const DEBUG_INVITATION = {
     id: 'ab1ab1d0-1677-46a6-a95d-e0d990a08c48',
     title: 'Cat meeting',
     description: 'We should let our cats meet to see if they get along together.',
@@ -53,4 +53,6 @@ console.log(createLink({
     timezone: 'America/New_York',
     daysRequired: 1,
     availability: avail,
-}))
+}
+
+console.log(createLink(DEBUG_INVITATION))
