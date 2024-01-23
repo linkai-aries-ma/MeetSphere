@@ -1,8 +1,8 @@
 <main id="schedule">
   <!-- The display: none will be automatically removed once the details are filled in -->
-  <div style="display: none">
+  <div id="ms-schedule-info" style="display: none">
     <h1>Hi <span id="ms-participant"></span></h1>
-    <p>You have been invited to a meeting by <span id="ms-organizer"></span>.</p>
+    <p>You have been invited to a meeting by <span class="text-emp" id="ms-organizer"></span>.</p>
     <blockquote><span id="ms-description"></span></blockquote>
     <p><span id="ms-regularity"></span></p>
 
@@ -40,6 +40,6 @@
     $("#ms-regularity").text(regularity[invitation.regularity]);
 
     // Show the page
-    $("div").css("display", "block");
+    $("#ms-schedule-info").css("display", "block");
   });
 </script>

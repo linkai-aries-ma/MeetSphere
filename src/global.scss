@@ -47,6 +47,10 @@ body {
   max-width: 100vw;
 }
 
+.text-emp {
+  color: $c-emp;
+}
+
 // Generic element styling
 h1 {
   font-weight: 300;
@@ -99,6 +103,15 @@ input {
 input:focus {
   outline: none;
   box-shadow: 0 0 0 1px $c-emp;
+}
+
+blockquote {
+  background: rgba($c-emp, .2);
+  padding: 0.5em 1em;
+  margin: 0;
+  border-left: solid $c-emp 3px;
+  border-right: solid $c-emp 3px;
+  border-radius: 5px;
 }
 
 // Header styles
