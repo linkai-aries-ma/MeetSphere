@@ -2,9 +2,21 @@
 
 #schedule {
   #ms-schedule-calendar {
-    // Disable table invisible border
     border-collapse: collapse;
-    border-spacing: 2px 0;
+    border-spacing: 2px;
+
+    // Borders
+    td {
+      border: 1px solid #ccc;
+    }
+
+    // Disable the outer border
+    td:first-child {
+      border-left: none;
+    }
+    td:last-child {
+      border-right: none;
+    }
 
     // Make the table take up the full width
     // Each cell will take up equal width
@@ -13,34 +25,40 @@
 
     text-align: center;
 
-    #ms-schedule-header {
-      // 1px border at the bottom
-      border-bottom: 1px solid $c-emp;
+    .day {
+      position: relative;
     }
 
     .time {
-      // 1px border at the right
-      border-right: 1px solid $c-emp;
-
       padding: 5px;
     }
   }
 
+  .avail {
+    width: 95%;
+    top: 0;
+    left: 2.5%;
+    position: absolute;
+
+    // We can finally do rounded borders now
+    border-radius: 5px;
+  }
+
   // Availability priority
   // From 0: not available to 3: most available
-  .avail-0 {
+  .avail.av0 {
     background-color: #eee;
   }
 
-  .avail-1 {
-    background-color: #ff8000;
+  .avail.av1 {
+    background-color: #ef897f;
   }
 
-  .avail-2 {
-    background-color: #ffbf00;
+  .avail.av2 {
+    background-color: #fcc231;
   }
 
-  .avail-3 {
-    background-color: #80ff00;
+  .avail.av3 {
+    background-color: #3ac281;
   }
 }
