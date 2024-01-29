@@ -1,0 +1,113 @@
+@import "vars";
+
+#schedule {
+  #ms-schedule-calendar {
+    border-collapse: collapse;
+    border-spacing: 2px;
+
+    // Borders
+    td {
+      border: 1px solid #ccc;
+    }
+
+    // Disable the outer border
+    td:first-child {
+      border-left: none;
+    }
+    td:last-child {
+      border-right: none;
+    }
+
+    // Make the table take up the full width
+    // Each cell will take up equal width
+    width: 100%;
+    table-layout: fixed;
+
+    text-align: center;
+
+    .day {
+      position: relative;
+    }
+
+    .time {
+      padding: 5px;
+      font-size: 0.7rem;
+      height: 40px;
+    }
+  }
+
+  #ms-schedule-suggested {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin-top: 1em;
+  }
+
+  .suggested-card {
+    // Grow
+    flex: 1;
+
+    // Card styling
+    padding: 1em;
+    border-radius: 5px;
+    background-color: #eee;
+
+    // Border
+    $border: 3px solid #bbb;
+    border-top: $border;
+    border-bottom: $border;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    max-width: 300px;
+
+    > div {
+      flex: 1;
+    }
+
+    .date {
+      font-weight: bold;
+      margin-bottom: 0.5em;
+    }
+  }
+
+  .avail {
+    width: 95%;
+    top: 0;
+    left: 2.5%;
+    position: absolute;
+
+    // We can finally do rounded borders now
+    border-radius: 5px;
+
+    // Preference indication text
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+    overflow: hidden;
+
+    // Center the text
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  // Availability priority
+  // From 0: not available to 3: most available
+  .avail.av0 {
+    background-color: #eee;
+  }
+
+  .avail.av1 {
+    background-color: #ef897f;
+  }
+
+  .avail.av2 {
+    background-color: #fcc231;
+  }
+
+  .avail.av3 {
+    background-color: #3ac281;
+  }
+}
