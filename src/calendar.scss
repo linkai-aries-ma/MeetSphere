@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    margin-left: 14%;
+    margin-right: 14%;
+}
+
+.calendar-text {
+
+
+    gap: 1rem;
+    padding-left: 30%;
+    top: 20%;
+    font-size: 2rem;
+    font-weight: bold;
+    width: 40%;
+    padding: 20px;
+
+}
+
+.calendar {
+    width: 60%;
+    align-items: center;
+    border: 2px solid #ccc; /* Add border style and color */
+    border-radius: 8px; /* Optional: Add border-radius for rounded corners */
+
+    box-sizing: border-box;
+}
+
+.calendar-title {
+    color: orange;
+    text-align: center;
+}
+
+.calendar-table {
+    background-color: white;
+    border-color: black;
+    margin: 0 auto;
+    border-spacing: 13px;
+    text-align: center;
+}
