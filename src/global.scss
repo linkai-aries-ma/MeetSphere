@@ -96,6 +96,12 @@ button:hover {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
 }
 
+button.icon {
+  min-width: unset;
+  font-size: 20px;
+  padding: 8px 16px;
+}
+
 input {
   padding: 10px 16px;
   min-width: 100px;

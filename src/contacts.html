@@ -80,13 +80,13 @@
     }
 
     // Add delete buttons
-    $(".contact").each((i, el) => $(el).append('<button class="warn delete">Delete</button>'))
+    $(".contact").each((i, el) => $(el).append('<button class="warn delete icon"><iconify-icon icon="fluent:delete-20-filled"></iconify-icon></button>'))
 
     // Add event listener to each delete button
     $(".contact .delete").click(e => {
       // Ask for confirmation
       if (!confirm("Are you sure you want to delete this contact?")) return
-      
+
       // Remove the contact
       $(e.target).parent().remove()
     })
