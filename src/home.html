@@ -1,7 +1,7 @@
 @title Home
 
 <main>
-  <div id="schedule-overlay" onclick="closeScheduleOverlay()">
+  <div id="schedule-overlay" class="overlay" onclick="closeScheduleOverlay()">
     <div id="schedule-overlay-inner">
         <h1>Create/Update Schedule</h1>
         <label>
@@ -16,19 +16,22 @@
         <label>
             <input type="time" name="meetingTime" placeholder="Time">
         </label>
-        <button type="submit" id="schedule-submit" onclick="closeScheduleOverlay()">Submit</button>
-        <button type="cancel" id="schedule-cancel" onclick="closeScheduleOverlay()">Cancel</button>
+        <button id="schedule-submit" onclick="closeScheduleOverlay()">Submit</button>
+        <button id="schedule-cancel" onclick="closeScheduleOverlay()">Cancel</button>
     </div>
   </div>
 
-  <div id="contact-overlay" onclick="closeContactOverlay()">
+  <div id="contact-overlay" class="overlay" onclick="closeContactOverlay()">
     <div id="contact-overlay-inner">
         <h1>Add New Contact</h1>
         <label>
-            <input type="text" name="contactLink" placeholder="Email/Number/Name">
+            <input type="text" name="name" placeholder="Name">
         </label>
-        <button type="submit" id="contact-submit" onclick="closeContactOverlay()">Submit</button>
-        <button type="cancel" id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
+        <label>
+            <input type="email" name="email" placeholder="Email">
+        </label>
+        <button id="contact-submit" class="emp" onclick="closeContactOverlay()">Submit</button>
+        <button id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
     </div>
   </div>
 
@@ -36,7 +39,6 @@
     <h2>Welcome LinKai! You have 2 upcoming meetings today.</h2>
   </section>
 
-  </section>
   <div class="content">
     <section class="meeting-list">
       <div class="section-header">

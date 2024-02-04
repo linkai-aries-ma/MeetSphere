@@ -94,6 +94,7 @@ button:hover {
 input {
   padding: 10px 16px;
   min-width: 100px;
+  width: 100%;
 
   border: none;
   border-radius: 10px;
@@ -169,5 +170,39 @@ main:not(.no-margin) {
 @media (max-width: 520px) {
   .nav-content {
     flex-direction: column;
+  }
+}
+
+// Form overlay
+.overlay {
+  position: fixed;
+  inset: 0;
+
+  background-color: rgba(0, 0, 0, 0.5);
+
+  //display: flex;
+  justify-content: center;
+  align-items: center;
+
+  display: none;
+
+  z-index: 1000;
+
+  h1 {
+    user-select: none;
+  }
+
+  > div {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    h1 {
+      margin-top: 0;
+    }
   }
 }
