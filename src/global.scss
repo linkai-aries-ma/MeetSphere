@@ -82,6 +82,11 @@ button.emp {
   color: white;
 }
 
+button.warn {
+  background-color: $c-warn;
+  color: white;
+}
+
 button:hover {
   cursor: pointer;
 
