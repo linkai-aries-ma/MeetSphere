@@ -3,35 +3,35 @@
 <main>
   <div id="schedule-overlay" class="overlay" onclick="closeScheduleOverlay()">
     <div id="schedule-overlay-inner">
-        <h1>Create/Update Schedule</h1>
-        <label>
-            <input type="text" name="contactName" placeholder="Contact Name">
-        </label>
-        <label>
-            <input type="text" name="meetingTopic" placeholder="Meeting Topic">
-        </label>
-        <label>
-            <input type="date" name="meetingDate" placeholder="Date">
-        </label>
-        <label>
-            <input type="time" name="meetingTime" placeholder="Time">
-        </label>
-        <button id="schedule-submit" onclick="closeScheduleOverlay()">Submit</button>
-        <button id="schedule-cancel" onclick="closeScheduleOverlay()">Cancel</button>
+      <h1>Create/Update Schedule</h1>
+      <label>
+        <input type="text" name="contactName" placeholder="Contact Name">
+      </label>
+      <label>
+        <input type="text" name="meetingTopic" placeholder="Meeting Topic">
+      </label>
+      <label>
+        <input type="date" name="meetingDate" placeholder="Date">
+      </label>
+      <label>
+        <input type="time" name="meetingTime" placeholder="Time">
+      </label>
+      <button id="schedule-submit" onclick="closeScheduleOverlay()">Submit</button>
+      <button id="schedule-cancel" onclick="closeScheduleOverlay()">Cancel</button>
     </div>
   </div>
 
   <div id="contact-overlay" class="overlay" onclick="closeContactOverlay()">
     <div id="contact-overlay-inner">
-        <h1>Add New Contact</h1>
-        <label>
-            <input type="text" name="name" placeholder="Name">
-        </label>
-        <label>
-            <input type="email" name="email" placeholder="Email">
-        </label>
-        <button id="contact-submit" class="emp" onclick="closeContactOverlay()">Submit</button>
-        <button id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
+      <h1>Add New Contact</h1>
+      <label>
+        <input type="text" name="name" placeholder="Name">
+      </label>
+      <label>
+        <input type="email" name="email" placeholder="Email">
+      </label>
+      <button id="contact-submit" class="emp" onclick="closeContactOverlay()">Submit</button>
+      <button id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
     </div>
   </div>
 
@@ -74,7 +74,7 @@
         </div>
         <img src="./assets/72054183.jpg" alt="will-pfp" class="meeting-pfp">
       </article>
-    <!-- Repeat for each meeting -->
+      <!-- Repeat for each meeting -->
     </section>
 
     <section class="contact-list">
@@ -82,59 +82,61 @@
         <h2 class="section-title">Contacts</h2>
         <button onclick="window.msShowContact()">+</button>
       </div>
-        <div class="contact">
-            <img src="./assets/22280294.jpg" alt="azalea-pfp" class="contact-pfp">
-            <p>Azalea</p>
-        </div>
+      <div class="contact">
+        <img src="./assets/22280294.jpg" alt="azalea-pfp">
+        <p>Azalea</p>
+        <span>azalea@example.com</span>
+      </div>
 
-        <div class="contact">
-            <img src="./assets/50559854.jpg" alt="henry-pfp" class="contact-pfp">
-            <p>Henry</p>
-        </div>
+      <div class="contact">
+        <img src="./assets/50559854.jpg" alt="henry-pfp">
+        <p>Henry</p>
+        <span>henry@example.com</span>
+      </div>
 
-        <div class="contact">
-            <img src="./assets/72054183.jpg" alt="will-pfp" class="contact-pfp">
-            <p>Will</p>
-        </div>
+      <div class="contact">
+        <img src="./assets/72054183.jpg" alt="will-pfp">
+        <p>Will</p>
+        <span>will@example.com</span>
+      </div>
 
-        <div class="contact">
-            <img src="./assets/20240128_112700.jpg" alt="linkai-pfp" class="contact-pfp">
-            <p>LinKai</p>
-        </div>
-        <!-- Repeat for each contact -->
+      <div class="contact">
+        <img src="./assets/20240128_112700.jpg" alt="linkai-pfp">
+        <p>LinKai</p>
+        <span>linkai@example.com</span>
+      </div>
+      <!-- Repeat for each contact -->
     </section>
   </div>
 </main>
 
 <script>
-  $(document).ready(function() {
-      $("#schedule-overlay-inner").click(function(e) {
-          e.stopPropagation();
-      });
+  $(document).ready(function () {
+    $("#schedule-overlay-inner").click(function (e) {
+      e.stopPropagation();
+    });
 
-      $("#contact-overlay-inner").click(function(e) {
-          e.stopPropagation();
-      });
+    $("#contact-overlay-inner").click(function (e) {
+      e.stopPropagation();
+    });
   });
 
-  showScheduleOverlay = () =>
-  {
-      $("#schedule-overlay").css("display", "flex");
+  showScheduleOverlay = () => {
+    $("#schedule-overlay").css("display", "flex");
   }
   closeScheduleOverlay = () => $("#schedule-overlay").css("display", "none");
 
   window.msShowSchedule = () => {
-      showScheduleOverlay()
+    showScheduleOverlay()
   }
 
-  showContactOverlay = () =>
-  {
-      $("#contact-overlay").css("display", "flex");
+  showContactOverlay = () => {
+    $("#contact-overlay").css("display", "flex");
   }
   closeContactOverlay = () => $("#contact-overlay").css("display", "none");
 
   window.msShowContact = () => {
-      showContactOverlay()
+    showContactOverlay()
   }
 
 </script>
