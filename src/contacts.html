@@ -38,8 +38,8 @@
     <button onclick="showContactOverlay()">+</button>
   </div>
 
-  <div id="contact-overlay" class="overlay" onclick="closeContactOverlay()">
-    <div id="contact-overlay-inner">
+  <div id="contact-overlay" class="overlay">
+    <div>
       <h1>Add New Contact</h1>
       <label>
         <input type="text" name="contact-name" placeholder="Name">
@@ -54,11 +54,9 @@
 </main>
 
 <script>
-  $(document).ready(() =>
-      $("#contact-overlay-inner").click(e => {
-        e.stopPropagation();
-      }))
+  let showContactOverlay, closeContactOverlay
 
-  showContactOverlay = () => $("#contact-overlay").css("display", "flex")
-  closeContactOverlay = () => $("#contact-overlay").css("display", "none")
+  $(document).ready(() => {
+    [showContactOverlay, closeContactOverlay] = registerOverlay("contact-overlay")
+  })
 </script>

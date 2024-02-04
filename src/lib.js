@@ -48,6 +48,28 @@ function shuffle(array) {
     return array;
 }
 
+/**
+ * Register an overlay
+ *
+ * @param selector {string} CSS selector of the overlay
+ * @returns {function, function} Show and hide functions
+ */
+function registerOverlay(selector) {
+    const overlay = $(selector)
+
+    // Toggle functions
+    const show = () => overlay.css('display', 'flex');
+    const hide = () => overlay.css('display', 'none');
+
+    // Click outside to hide
+    overlay.click(hide);
+
+    // Disable inner click event propagation
+    $(`${selector} > div`).click(e => e.stopPropagation());
+
+    return [show, hide];
+}
+
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 console.log('lib.js loaded')
