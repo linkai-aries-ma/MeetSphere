@@ -2,7 +2,9 @@
   <div id="contact-list">
     <div class="section-header">
       <h2 class="section-title">Contacts</h2>
+      <p class="hide-select">Click on the contact you want to invite.</p>
     </div>
+
     <div class="contact">
       <img src="./assets/22280294.jpg" alt="azalea-pfp">
       <div>
@@ -58,5 +60,32 @@
 
   $(document).ready(() => {
     [showContactOverlay, closeContactOverlay] = registerOverlay("contact-overlay")
+
+    // Check url parameters
+    const params = new URLSearchParams(window.location.search)
+
+    // If we have select=1, show the "Send" buttons
+    if (params.get("select") != null) {
+      console.log("Showing send buttons")
+      $(".contact").each((i, el) => $(el).append('<button class="emp send">Send</button>'))
+
+      // Add .select class to the page
+      $("#contact-list").addClass("select")
+
+      // Add event listener to each send button
+      $(".contact .send").click(e => {
+        // Change the text
+        $(e.target).text("✓")
+      })
+    }
+
+    // Toggle the buttons when the user clicks on the contact
+    $(".contact").click(e => {
+      // If the user clicked on any button, return
+      if ($(e.target).is("button")) return
+
+      // Toggle the class "opened"
+      $(e.currentTarget).toggleClass("opened")
+    })
   })
 </script>

@@ -5,6 +5,43 @@
   flex-direction: column;
   gap: 1rem;
 
+  // Default hide, show when the select parameter is set
+  .hide-select {
+    display: none;
+  }
+
+  &.select {
+    .hide-select {
+      display: block;
+    }
+  }
+
+  .section-header {
+    display: flex;
+    flex-direction: column;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  // Hide "Send" buttons on mobile and let the user click the contact directly
+  @media (max-width: $mobile-vw) {
+    .contact:not(.opened) button {
+      display: none;
+    }
+
+    // Flex wrap
+    .contact {
+      flex-wrap: wrap;
+      gap: 1rem;
+
+      button {
+        flex: 1;
+      }
+    }
+  }
+
   .contact {
     display: flex;
     align-items: center;
@@ -44,7 +81,7 @@
         flex: 1;
         gap: 0;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
 
         > span:first-child, > span:last-child {
           flex: 0 1 auto;
