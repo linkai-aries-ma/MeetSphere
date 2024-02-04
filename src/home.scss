@@ -1,3 +1,5 @@
+@import 'vars';
+
 // color scheme I've been experimenting with
 // $primary-color: #005f73;
 // $secondary-color: #02b089;
@@ -6,103 +8,87 @@
 
 
 $primary-color: #005f73;
-$secondary-color: #02b089;
-$text-color: #000000;
+$secondary-color: $c-emp;
+$text-color: #ffffff;
 $background-color: #ffffff;
 
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+//* {
+//    margin: 0;
+//    padding: 0;
+//    box-sizing: border-box;
+//}
 
-// Base styles
-body {
-    font-family: Arial, sans-serif;
-    color: $text-color;
-    background-color: $background-color;
-}
+//// Base styles
+//body {
+//    font-family: Arial, sans-serif;
+//    color: $text-color;
+//    background-color: $background-color;
+//}
 
-header, footer {
-    background-color: $background-color;
-    color: white;
-    padding: 1rem;
-    text-align: center;
-}
+//header, footer {
+//    background-color: $background-color;
+//    color: white;
+//    padding: 1rem;
+//    text-align: center;
+//}
 
 .welcome-section {
     text-align: center;
     margin-top: 2rem;
+    margin-bottom: 2rem;
 
     h2 {
-        font-size: 2em; // Increased title font size
+        margin: 0;
+        font-size: 2em;
         color: $primary-color;
-    }
-
-    .subtitle {
-        // ... existing subtitle styles ...
     }
 }
 
 .content {
-    display: flex;
-
     .section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1rem;
     
         .section-title {
-            text-align: left;
-            margin-left: 10px; // Adjust as needed for alignment
-            font-size: 1.5em; // Adjust as per your design
-            color: $primary-color; // Example color variable
-            padding-bottom: 10px; // Space between title and content
-        }
-
-        button {
-            // padding: 10px 16px;
-            min-width: 1rem;
-
-            border-radius: 10px;
-            background: #eee;
-
+            font-size: 1.2em;
             font-weight: bold;
-          
-            // For the hover effect
-            transition: all 0.2s ease-in-out;
+            color: $primary-color;
         }
     }
   
     .meeting-list {
-      width: 67%; // Remaining space
       display: flex;
       flex-direction: column;
-      padding: 2rem;
+      gap: 1rem;
     
       .meeting {
-        background-color: $secondary-color;
+        background-color: $c-emp;
+        color: white;
+
         border-radius: 10px;
-        margin-bottom: 1rem;
         padding: 1rem;
-        width: 100%; // Adjust width as needed
-        position: relative; // Needed for absolute positioning of the child
+        width: 100%;
+
         display: flex;
+        gap: 1rem;
         align-items: center;
 
-        .meeting-pfp {
-          position: absolute; // Positioning pfp absolutely
-          right: 2rem; // Distance from the right edge of the meeting box
-          top: 50%; // Aligning vertically to the center
-          transform: translateY(-50%); // Centering the pfp vertically
-          width: 100px; // Adjust size as needed
-          height: 100px;
-          border-radius: 50%; // Circular pfp
+        > div {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
         }
 
-        h2, p {
+        .meeting-pfp {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+        }
+
+        h2 {
           margin: 0.5rem 0;
         }
       }

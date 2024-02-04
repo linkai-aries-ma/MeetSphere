@@ -157,12 +157,12 @@ header {
 // Main content styles
 main:not(.no-margin) {
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
 }
 
 @media (max-width: 1080px) {
   main:not(.no-margin) {
-    margin: 0 $mobile-margin;
+    margin: 0 $mobile-margin 2rem;
   }
 }
 
