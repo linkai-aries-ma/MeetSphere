@@ -162,7 +162,7 @@ main:not(.no-margin) {
 
 @media (max-width: 1080px) {
   main:not(.no-margin) {
-    margin: 0 40px;
+    margin: 0 $mobile-margin;
   }
 }
 
@@ -232,6 +232,13 @@ main:not(.no-margin) {
   // Each cell will take up equal width
   width: 100%;
   table-layout: fixed;
+
+  // Reduce margin on mobile
+  @media (max-width: 520px) {
+    margin-left: -$mobile-margin;
+    margin-right: -$mobile-margin;
+    width: calc(100% + 2 * $mobile-margin);
+  }
 
   text-align: center;
 
