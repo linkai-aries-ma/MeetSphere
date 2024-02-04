@@ -79,6 +79,15 @@
       })
     }
 
+    // Add delete buttons
+    $(".contact").each((i, el) => $(el).append('<button class="warn delete">Delete</button>'))
+
+    // Add event listener to each delete button
+    $(".contact .delete").click(e => {
+      // Remove the contact
+      $(e.target).parent().remove()
+    })
+
     // Toggle the buttons when the user clicks on the contact
     $(".contact").click(e => {
       // If the user clicked on any button, return
