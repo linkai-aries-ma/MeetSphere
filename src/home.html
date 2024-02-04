@@ -1,132 +1,108 @@
 @title Home
 
-</head>
-<body>
-  <header class="nav">
-    <div class="nav-content">
-      <a href="/" class="left">
-        <img src="favicons/android-chrome-512x512.png" alt="Logo">
-        <div class="title">MeetSphere</div>
-      </a>
-
-      <div class="right">
-        <a onclick="window.goHome()"><button>Home</button></a>
-        <a onclick="window.goSchedule()"><button>Schedule</button></a>
-        <a onclick="window.goLogIn()"><button>Log Out</button></a>
-      </div>
+<main>
+  <div id="schedule-overlay" onclick="closeScheduleOverlay()">
+    <div id="schedule-overlay-inner">
+        <h1>Create/Update Schedule</h1>
+        <label>
+            <input type="text" name="contactName" placeholder="Contact Name">
+        </label>
+        <label>
+            <input type="text" name="meetingTopic" placeholder="Meeting Topic">
+        </label>
+        <label>
+            <input type="date" name="meetingDate" placeholder="Date">
+        </label>
+        <label>
+            <input type="time" name="meetingTime" placeholder="Time">
+        </label>
+        <button type="submit" id="schedule-submit" onclick="closeScheduleOverlay()">Submit</button>
+        <button type="cancel" id="schedule-cancel" onclick="closeScheduleOverlay()">Cancel</button>
     </div>
-  </header>
+  </div>
 
-  <main>
-    <div id="schedule-overlay" onclick="closeScheduleOverlay()">
-      <div id="schedule-overlay-inner">
-          <h1>Create/Update Schedule</h1>
-          <label>
-              <input type="text" name="contactName" placeholder="Contact Name">
-          </label>
-          <label>
-              <input type="text" name="meetingTopic" placeholder="Meeting Topic">
-          </label>
-          <label>
-              <input type="date" name="meetingDate" placeholder="Date">
-          </label>
-          <label>
-              <input type="time" name="meetingTime" placeholder="Time">
-          </label>
-          <button type="submit" id="schedule-submit" onclick="closeScheduleOverlay()">Submit</button>
-          <button type="cancel" id="schedule-cancel" onclick="closeScheduleOverlay()">Cancel</button>
-      </div>
+  <div id="contact-overlay" onclick="closeContactOverlay()">
+    <div id="contact-overlay-inner">
+        <h1>Add New Contact</h1>
+        <label>
+            <input type="text" name="contactLink" placeholder="Email/Number/Name">
+        </label>
+        <button type="submit" id="contact-submit" onclick="closeContactOverlay()">Submit</button>
+        <button type="cancel" id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
     </div>
+  </div>
 
-    <div id="contact-overlay" onclick="closeContactOverlay()">
-      <div id="contact-overlay-inner">
-          <h1>Add New Contact</h1>
-          <label>
-              <input type="text" name="contactLink" placeholder="Email/Number/Name">
-          </label>
-          <button type="submit" id="contact-submit" onclick="closeContactOverlay()">Submit</button>
-          <button type="cancel" id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
+  <section class="welcome-section">
+    <h2>Welcome LinKai! You have 2 upcoming meetings today.</h2>
+  </section>
+
+  </section>
+  <div class="content">
+    <section class="meeting-list">
+      <div class="section-header">
+        <h2 class="section-title">Upcoming Meetings</h2>
+        <button onclick="window.msShowSchedule()">+</button>
       </div>
-    </div>
-
-    <section class="welcome-section">
-      <h2>Welcome LinKai! You have 2 upcoming meetings today.</h2>
-    </section>
-      
-    </section>
-    <div class="content">
-      <section class="meeting-list">
-        <div class="section-header">
-          <h2 class="section-title">Upcoming Meetings</h2>
-          <button onclick="window.msShowSchedule()">+</button>
+      <article class="meeting">
+        <div class="meeting-details">
+          <h2>Azalea</h2>
+          <p>Website Layout Design</p>
+          <p>Jan. 28th 2024</p>
+          <p>10:00 AM - 11:00 AM</p>
         </div>
-        <article class="meeting">
-          <div class="meeting-details">
-            <h2>Azalea</h2>
-            <p>Website Layout Design</p>
-            <p>Jan. 28th 2024</p>
-            <p>10:00 AM - 11:00 AM</p>
-          </div>
-          <img src="./assets/22280294.jpg" alt="azalea-pfp" class="meeting-pfp">
-        </article>
+        <img src="./assets/22280294.jpg" alt="azalea-pfp" class="meeting-pfp">
+      </article>
 
-        <article class="meeting">
-          <div class="meeting-details">
-            <h2>Henry</h2>
-            <p>Schedule Page Discussion</p>
-            <p>Jan. 28th 2024</p>
-            <p>1:00 PM - 2:00 PM</p>
-          </div>
-          <img src="./assets/50559854.jpg" alt="henry-pfp" class="meeting-pfp">
-        </article>
-
-        <article class="meeting">
-          <div class="meeting-details">
-            <h2>Will</h2>
-            <p>Integration of Pages</p>
-            <p>Jan. 29th 2024</p>
-            <p>10:00 AM - 11:00 AM</p>
-          </div>
-          <img src="./assets/72054183.jpg" alt="will-pfp" class="meeting-pfp">
-        </article>
-      <!-- Repeat for each meeting -->
-      </section>
-
-      <section class="contact-list">
-        <div class="section-header">
-          <h2 class="section-title">Contacts</h2>
-          <button onclick="window.msShowContact()">+</button>
+      <article class="meeting">
+        <div class="meeting-details">
+          <h2>Henry</h2>
+          <p>Schedule Page Discussion</p>
+          <p>Jan. 28th 2024</p>
+          <p>1:00 PM - 2:00 PM</p>
         </div>
-          <div class="contact">
-              <img src="./assets/22280294.jpg" alt="azalea-pfp" class="contact-pfp">
-              <p>Azalea</p>
-          </div>
+        <img src="./assets/50559854.jpg" alt="henry-pfp" class="meeting-pfp">
+      </article>
 
-          <div class="contact">
-              <img src="./assets/50559854.jpg" alt="henry-pfp" class="contact-pfp">
-              <p>Henry</p>
-          </div>
+      <article class="meeting">
+        <div class="meeting-details">
+          <h2>Will</h2>
+          <p>Integration of Pages</p>
+          <p>Jan. 29th 2024</p>
+          <p>10:00 AM - 11:00 AM</p>
+        </div>
+        <img src="./assets/72054183.jpg" alt="will-pfp" class="meeting-pfp">
+      </article>
+    <!-- Repeat for each meeting -->
+    </section>
 
-          <div class="contact">
-              <img src="./assets/72054183.jpg" alt="will-pfp" class="contact-pfp">
-              <p>Will</p>
-          </div>
+    <section class="contact-list">
+      <div class="section-header">
+        <h2 class="section-title">Contacts</h2>
+        <button onclick="window.msShowContact()">+</button>
+      </div>
+        <div class="contact">
+            <img src="./assets/22280294.jpg" alt="azalea-pfp" class="contact-pfp">
+            <p>Azalea</p>
+        </div>
 
-          <div class="contact">
-              <img src="./assets/20240128_112700.jpg" alt="linkai-pfp" class="contact-pfp">
-              <p>LinKai</p>
-          </div>
-          <!-- Repeat for each contact -->
-      </section>
-    </div>
-  </main>
-</body>
+        <div class="contact">
+            <img src="./assets/50559854.jpg" alt="henry-pfp" class="contact-pfp">
+            <p>Henry</p>
+        </div>
 
+        <div class="contact">
+            <img src="./assets/72054183.jpg" alt="will-pfp" class="contact-pfp">
+            <p>Will</p>
+        </div>
 
-
-<script>
-
-</script>
+        <div class="contact">
+            <img src="./assets/20240128_112700.jpg" alt="linkai-pfp" class="contact-pfp">
+            <p>LinKai</p>
+        </div>
+        <!-- Repeat for each contact -->
+    </section>
+  </div>
+</main>
 
 <script>
   $(document).ready(function() {
@@ -157,18 +133,6 @@
 
   window.msShowContact = () => {
       showContactOverlay()
-  }
-  
-  window.goHome = () => {
-    window.location.href = "/home"
-  }
-
-  window.goSchedule = () => {
-    window.location.href = "/schedule"
-  }
-  
-  window.goLogIn = () => {
-    window.location.href = "/"
   }
 
 </script>

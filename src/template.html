@@ -47,9 +47,16 @@
         <div class="title">MeetSphere</div>
       </a>
 
-      <div class="right">
+      <div class="right" id="ms-nav-welcome">
         <button onclick="window.msShowLogin()">Log in</button>
         <button onclick="window.msShowSignup()" class="emp">Get started</button>
+      </div>
+
+      <div class="right" id="ms-nav-portal" style="display: none">
+        <a href="/home"><button id="nav-home">Home</button></a>
+        <a href="/calendar"><button id="nav-cal">Calendar</button></a>
+
+        <button onclick="logout()">Log Out</button>
       </div>
     </div>
   </header>
@@ -60,6 +67,27 @@
 </body>
 
 <script>
+    $(document).ready(() => {
+      // Check if we're at /
+      const path = window.location.pathname
+      if (path !== "/") {
+        // Set navbar to display links instead of login/signup
+        $("#ms-nav-welcome").css("display", "none")
+        $("#ms-nav-portal").css("display", "flex")
+
+        if (path === '/home') {
+          $("#nav-home").addClass("emp")
+        } else if (path === '/calendar') {
+          $("#nav-cal").addClass("emp")
+        }
+      }
+    })
+
+    logout = () => {
+      localStorage.removeItem("username")
+      window.location.href = "/"
+    }
+
     // $(document).ready(function() {
     //     // Check if we're not logged in
     //     if (localStorage.getItem("username") === null) {
