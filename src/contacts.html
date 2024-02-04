@@ -1,0 +1,64 @@
+<main>
+  <div id="contact-list">
+    <div class="section-header">
+      <h2 class="section-title">Contacts</h2>
+    </div>
+    <div class="contact">
+      <img src="./assets/22280294.jpg" alt="azalea-pfp">
+      <div>
+        <span>Azalea</span>
+        <span>azalea@example.com</span>
+      </div>
+    </div>
+
+    <div class="contact">
+      <img src="./assets/50559854.jpg" alt="henry-pfp">
+      <div>
+        <span>Henry</span>
+        <span>henry@example.com</span>
+      </div>
+    </div>
+
+    <div class="contact">
+      <img src="./assets/72054183.jpg" alt="will-pfp">
+      <div>
+        <span>Will</span>
+        <span>will@example.com</span>
+      </div>
+    </div>
+
+    <div class="contact">
+      <img src="./assets/20240128_112700.jpg" alt="linkai-pfp">
+      <div>
+        <span>LinKai</span>
+        <span>linkai@example.com</span>
+      </div>
+    </div>
+
+    <button onclick="showContactOverlay()">+</button>
+  </div>
+
+  <div id="contact-overlay" class="overlay" onclick="closeContactOverlay()">
+    <div id="contact-overlay-inner">
+      <h1>Add New Contact</h1>
+      <label>
+        <input type="text" name="contact-name" placeholder="Name">
+      </label>
+      <label>
+        <input type="email" name="contact-email" placeholder="Email">
+      </label>
+      <button id="contact-submit" class="emp" onclick="closeContactOverlay()">Submit</button>
+      <button id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  $(document).ready(() =>
+      $("#contact-overlay-inner").click(e => {
+        e.stopPropagation();
+      }))
+
+  showContactOverlay = () => $("#contact-overlay").css("display", "flex")
+  closeContactOverlay = () => $("#contact-overlay").css("display", "none")
+</script>

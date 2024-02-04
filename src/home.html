@@ -21,20 +21,6 @@
     </div>
   </div>
 
-  <div id="contact-overlay" class="overlay" onclick="closeContactOverlay()">
-    <div id="contact-overlay-inner">
-      <h1>Add New Contact</h1>
-      <label>
-        <input type="text" name="name" placeholder="Name">
-      </label>
-      <label>
-        <input type="email" name="email" placeholder="Email">
-      </label>
-      <button id="contact-submit" class="emp" onclick="closeContactOverlay()">Submit</button>
-      <button id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
-    </div>
-  </div>
-
   <section class="welcome-section">
     <h2>Welcome LinKai! You have 2 upcoming meetings today.</h2>
   </section>
@@ -76,54 +62,16 @@
       </article>
       <!-- Repeat for each meeting -->
     </section>
-
-    <section class="contact-list">
-      <div class="section-header">
-        <h2 class="section-title">Contacts</h2>
-        <button onclick="showContactOverlay()">+</button>
-      </div>
-      <div class="contact">
-        <img src="./assets/22280294.jpg" alt="azalea-pfp">
-        <p>Azalea</p>
-        <span>azalea@example.com</span>
-      </div>
-
-      <div class="contact">
-        <img src="./assets/50559854.jpg" alt="henry-pfp">
-        <p>Henry</p>
-        <span>henry@example.com</span>
-      </div>
-
-      <div class="contact">
-        <img src="./assets/72054183.jpg" alt="will-pfp">
-        <p>Will</p>
-        <span>will@example.com</span>
-      </div>
-
-      <div class="contact">
-        <img src="./assets/20240128_112700.jpg" alt="linkai-pfp">
-        <p>LinKai</p>
-        <span>linkai@example.com</span>
-      </div>
-      <!-- Repeat for each contact -->
-    </section>
   </div>
 </main>
 
 <script>
   $(document).ready(function () {
-    $("#schedule-overlay-inner").click(function (e) {
-      e.stopPropagation();
-    });
-
-    $("#contact-overlay-inner").click(function (e) {
+    $("#schedule-overlay-inner").click(e => {
       e.stopPropagation();
     });
   });
 
   showScheduleOverlay = () => $("#schedule-overlay").css("display", "flex")
   closeScheduleOverlay = () => $("#schedule-overlay").css("display", "none")
-
-  showContactOverlay = () => $("#contact-overlay").css("display", "flex")
-  closeContactOverlay = () => $("#contact-overlay").css("display", "none")
 </script>
