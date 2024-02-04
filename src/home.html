@@ -43,7 +43,7 @@
     <section class="meeting-list">
       <div class="section-header">
         <h2 class="section-title">Upcoming Meetings</h2>
-        <button onclick="window.msShowSchedule()">+</button>
+        <button onclick="showScheduleOverlay()">+</button>
       </div>
       <article class="meeting">
         <div class="meeting-details">
@@ -80,7 +80,7 @@
     <section class="contact-list">
       <div class="section-header">
         <h2 class="section-title">Contacts</h2>
-        <button onclick="window.msShowContact()">+</button>
+        <button onclick="showContactOverlay()">+</button>
       </div>
       <div class="contact">
         <img src="./assets/22280294.jpg" alt="azalea-pfp">
@@ -121,22 +121,9 @@
     });
   });
 
-  showScheduleOverlay = () => {
-    $("#schedule-overlay").css("display", "flex");
-  }
-  closeScheduleOverlay = () => $("#schedule-overlay").css("display", "none");
+  showScheduleOverlay = () => $("#schedule-overlay").css("display", "flex")
+  closeScheduleOverlay = () => $("#schedule-overlay").css("display", "none")
 
-  window.msShowSchedule = () => {
-    showScheduleOverlay()
-  }
-
-  showContactOverlay = () => {
-    $("#contact-overlay").css("display", "flex");
-  }
-  closeContactOverlay = () => $("#contact-overlay").css("display", "none");
-
-  window.msShowContact = () => {
-    showContactOverlay()
-  }
-
+  showContactOverlay = () => $("#contact-overlay").css("display", "flex")
+  closeContactOverlay = () => $("#contact-overlay").css("display", "none")
 </script>
