@@ -1,38 +1,5 @@
 @import 'vars';
 
-// color scheme I've been experimenting with
-// $primary-color: #005f73;
-// $secondary-color: #02b089;
-// $text-color: #e9d8a6;
-// $background-color: #94d2bd;
-
-
-$primary-color: #005f73;
-$secondary-color: $c-emp;
-$text-color: #ffffff;
-$background-color: #ffffff;
-
-
-//* {
-//    margin: 0;
-//    padding: 0;
-//    box-sizing: border-box;
-//}
-
-//// Base styles
-//body {
-//    font-family: Arial, sans-serif;
-//    color: $text-color;
-//    background-color: $background-color;
-//}
-
-//header, footer {
-//    background-color: $background-color;
-//    color: white;
-//    padding: 1rem;
-//    text-align: center;
-//}
-
 .welcome-section {
     text-align: center;
     margin-top: 2rem;
@@ -41,23 +8,11 @@ $background-color: #ffffff;
     h2 {
         margin: 0;
         font-size: 2em;
-        color: $primary-color;
+        color: $c-text-emp;
     }
 }
 
 .content {
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    
-        .section-title {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: $primary-color;
-        }
-    }
-  
     .meeting-list {
       display: flex;
       flex-direction: column;

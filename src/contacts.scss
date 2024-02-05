@@ -16,15 +16,6 @@
     }
   }
 
-  .section-header {
-    display: flex;
-    flex-direction: column;
-
-    h2 {
-      margin: 0;
-    }
-  }
-
   // Hide "Send" buttons on mobile and let the user click the contact directly
   @media (max-width: $mobile-vw) {
     .contact:not(.opened) button {
@@ -50,7 +41,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #eee;
+    background-color: $c-off;
     border-radius: 10px;
     padding: 8px 16px;
 
