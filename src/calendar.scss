@@ -53,11 +53,16 @@
     th, td {
         padding: 10px 0;
     }
-}
 
-.calendar-table td.selected {
-    background-color: #5ced73;
-    border-radius: 8px;
+    td.past {
+        color: #ccc;
+        cursor: not-allowed;
+    }
+
+    td.selected {
+        background-color: #5ced73;
+        border-radius: 8px;
+    }
 }
 
 .event-name {

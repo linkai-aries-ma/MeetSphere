@@ -35,6 +35,7 @@
         </tr>
 
         <tbody id="ms-calendar-grid">
+          <!-- Values will be filled in using js -->
         </tbody>
       </table>
     </div>
@@ -61,13 +62,14 @@
       const tr = $('<tr></tr>')
       week.forEach(day => {
         const td = $(`<td>${day.date()}</td>`)
+        if (day < now) td.addClass('past')
         tr.append(td)
       })
       $('#ms-calendar-grid').append(tr)
     })
 
     // Make the calendar grid clickable
-    $('.calendar-table td').click(e =>
+    $('.calendar-table td:not(.past)').click(e =>
     {
       if ($(e.target).text() === '') return
       $(e.target).toggleClass('selected')
