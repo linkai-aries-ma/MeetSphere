@@ -12,11 +12,7 @@
     <div>Select the hours which could work</div>
 
     <label>
-      <span>From:</span>
       <select class="dropdown from"></select>
-    </label>
-
-    <label>
       <span>To:</span>
       <select class="dropdown to"></select>
     </label>
@@ -104,7 +100,7 @@
       $('.dropdown').append(`<option value="${i}">${i}:00</option>`)
 
     // Select 9:00 by default for the "from" dropdown, and 20:00 for the "to" dropdown
-    $('.from').val(9)
-    $('.to').val(20)
+    $('.dropdown.from').val(9)
+    $('.dropdown.to').val(20)
   })
 </script>
