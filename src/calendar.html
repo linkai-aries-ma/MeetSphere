@@ -6,6 +6,67 @@
           <div class="calendar-text">
             Fantastic! Let's find your perfect time for the meeting.
           </div>
+          <div class="event-name">
+            <p>Event Name:<p>
+            <input required>
+          </div>
+          <div>
+            <p>Select the hours which could work</p>
+            <label>From: </label>
+            <select class="dropdown" required>
+                <option value="12:00 AM" >12:00 AM</option>
+                <option value="1:00 AM" >1:00 AM</option>
+                <option value="2:00 AM" >2:00 AM</option>
+                <option value="3:00 AM" >3:00 AM</option>
+                <option value="4:00 AM" >4:00 AM</option>
+                <option value="5:00 AM" >5:00 AM</option>
+                <option value="6:00 AM" >6:00 AM</option>
+                <option value="7:00 AM" >7:00 AM</option>
+                <option value="8:00 AM" >8:00 AM</option>
+                <option value="9:00 AM" selected>9:00 AM</option>
+                <option value="10:00 AM" >10:00 AM</option>
+                <option value="11:00 AM" >11:00 AM</option>
+                <option value="12:00 PM" >12:00 PM</option>
+                <option value="1:00 PM" >1:00 PM</option>
+                <option value="2:00 PM" >2:00 PM</option>
+                <option value="3:00 PM" >3:00 PM</option>
+                <option value="4:00 PM" >4:00 PM</option>
+                <option value="5:00 PM" >5:00 PM</option>
+                <option value="6:00 PM">6:00 PM</option>
+                <option value="7:00 pM">7:00 PM</option>
+                <option value="8:00 PM">8:00 PM</option>
+                <option value="9:00 PM">9:00 PM</option>
+                <option value="10:00 PM">10:00 PM</option>
+                <option value="11:00 PM">11:00 PM</option>
+            </select>
+            <label>To: </label>
+            <select class="dropdown" required>
+                <option value="12:00 AM" >12:00 AM</option>
+                <option value="1:00 AM" >1:00 AM</option>
+                <option value="2:00 AM" >2:00 AM</option>
+                <option value="3:00 AM" >3:00 AM</option>
+                <option value="4:00 AM" >4:00 AM</option>
+                <option value="5:00 AM" >5:00 AM</option>
+                <option value="6:00 AM" >6:00 AM</option>
+                <option value="7:00 AM" >7:00 AM</option>
+                <option value="8:00 AM" >8:00 AM</option>
+                <option value="9:00 AM" >9:00 AM</option>
+                <option value="10:00 AM" >10:00 AM</option>
+                <option value="11:00 AM" >11:00 AM</option>
+                <option value="12:00 PM" >12:00 PM</option>
+                <option value="1:00 PM" >1:00 PM</option>
+                <option value="2:00 PM" >2:00 PM</option>
+                <option value="3:00 PM" >3:00 PM</option>
+                <option value="4:00 PM" >4:00 PM</option>
+                <option value="5:00 PM" selected>5:00 PM</option>
+                <option value="6:00 PM">6:00 PM</option>
+                <option value="7:00 pM">7:00 PM</option>
+                <option value="8:00 PM">8:00 PM</option>
+                <option value="9:00 PM">9:00 PM</option>
+                <option value="10:00 PM">10:00 PM</option>
+                <option value="11:00 PM">11:00 PM</option>
+            </select>
+          </div>
 
           <div class="calendar">
               <h2 class="calendar-title">February 2024</h2>
@@ -76,4 +137,18 @@
           <button class="create-button, emp">Create</button>
       </div>
   </body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all td elements inside the calendar table
+        var cells = document.querySelectorAll('.calendar-table td');
+
+        // Add click event listener to each cell
+        cells.forEach(function(cell) {
+            cell.addEventListener('click', function() {
+                // Toggle 'selected' class on the clicked cell
+                cell.classList.toggle('selected');
+            });
+        });
+    });
+    </script>
 </main>
