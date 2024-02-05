@@ -138,17 +138,8 @@
       </div>
   </body>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get all td elements inside the calendar table
-        var cells = document.querySelectorAll('.calendar-table td');
-
-        // Add click event listener to each cell
-        cells.forEach(function(cell) {
-            cell.addEventListener('click', function() {
-                // Toggle 'selected' class on the clicked cell
-                cell.classList.toggle('selected');
-            });
-        });
-    });
+    $(document).ready(() => {
+      $('.calendar-table td').click(e => $(e.target).toggleClass('selected'))
+    })
     </script>
 </main>
