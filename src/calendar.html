@@ -3,98 +3,47 @@
 <main id="calendar-page">
   <h2>Let's find your perfect time for the meeting.</h2>
 
-  <label class="event-name">
-    <span>Event Name:</span>
-    <input>
-  </label>
+  <div class="create-event">
 
-  <div class="select-hour">
-    <div>Select the hours which could work</div>
-
-    <label>
-      <select class="dropdown from"></select>
-      <span>To:</span>
-      <select class="dropdown to"></select>
+    <label class="event-name">
+      <span>Event Name:</span>
+      <input>
     </label>
+
+    <div class="select-hour">
+      <div>Select the hours which could work</div>
+
+      <label for="time-from">
+        <select id="time-from" class="dropdown from"></select>
+        <span>to</span>
+        <select id="time-to" class="dropdown to"></select>
+      </label>
+    </div>
+
+    <div class="calendar">
+      <h2 class="calendar-title">February 2024</h2>
+
+      <table class="calendar-table">
+        <tr>
+          <th>Sun</th>
+          <th>Mon</th>
+          <th>Tue</th>
+          <th>Wed</th>
+          <th>Thu</th>
+          <th>Fri</th>
+          <th>Sat</th>
+        </tr>
+
+        <tbody id="ms-calendar-grid">
+        </tbody>
+      </table>
+    </div>
+    <button class="create-button, emp" onclick="window.location.href='/timepicker'">Create</button>
   </div>
-
-  <div class="calendar">
-    <h2 class="calendar-title">February 2024</h2>
-
-    <table class="calendar-table" cellspacing="13" cellpadding="13">
-      <thead>
-      <tr>
-        <th>Sun</th>
-        <th>Mon</th>
-        <th>Tue</th>
-        <th>Wed</th>
-        <th>Thu</th>
-        <th>Fri</th>
-        <th>Sat</th>
-      </tr>
-      </thead>
-
-      <tbody>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>1</td>
-        <td>2</td>
-        <td>3</td>
-      </tr>
-      <tr></tr>
-      <tr>
-        <td>4</td>
-        <td>5</td>
-        <td>6</td>
-        <td>7</td>
-        <td>8</td>
-        <td>9</td>
-        <td>10</td>
-      </tr>
-      <tr>
-        <td>11</td>
-        <td>12</td>
-        <td>13</td>
-        <td>14</td>
-        <td>15</td>
-        <td>16</td>
-        <td>17</td>
-      </tr>
-      <tr>
-        <td>18</td>
-        <td>19</td>
-        <td>20</td>
-        <td>21</td>
-        <td>22</td>
-        <td>23</td>
-        <td>24</td>
-      </tr>
-      <tr>
-        <td>25</td>
-        <td>26</td>
-        <td>27</td>
-        <td>28</td>
-        <td>29</td>
-        <td>1</td>
-        <td>2</td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-  <button class="create-button, emp" onclick="window.location.href='/timepicker'">Create</button>
 </main>
 
 <script>
   $(document).ready(() => {
-    $('.calendar-table td').click(e =>
-    {
-      if ($(e.target).text() === '') return
-      $(e.target).toggleClass('selected')
-    })
-
     // Fill dropdown values
     for (let i = 0; i < 24; i++)
       $('.dropdown').append(`<option value="${i}">${i}:00</option>`)
@@ -102,5 +51,26 @@
     // Select 9:00 by default for the "from" dropdown, and 20:00 for the "to" dropdown
     $('.dropdown.from').val(9)
     $('.dropdown.to').val(20)
+
+    // Generate the calendar grid
+    const now = moment()
+    const arr = getCalendarGrid(now.year(), now.month())
+
+    // Fill in the calendar grid
+    arr.forEach(week => {
+      const tr = $('<tr></tr>')
+      week.forEach(day => {
+        const td = $(`<td>${day.date()}</td>`)
+        tr.append(td)
+      })
+      $('#ms-calendar-grid').append(tr)
+    })
+
+    // Make the calendar grid clickable
+    $('.calendar-table td').click(e =>
+    {
+      if ($(e.target).text() === '') return
+      $(e.target).toggleClass('selected')
+    })
   })
 </script>
