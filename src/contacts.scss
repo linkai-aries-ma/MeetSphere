@@ -52,7 +52,7 @@
     gap: 0.5rem;
     background-color: #eee;
     border-radius: 10px;
-    padding: 8px;
+    padding: 8px 16px;
 
     > img {
       $img-len: 50px;
@@ -68,9 +68,6 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-
-      // Desktop view is too large
-      max-width: 400px;
 
       // Name
       > span:first-child {
