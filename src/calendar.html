@@ -1,11 +1,36 @@
 @title Home
 
 <main>
-  <h2>Current Calendars</h2>
+  <div class="section-header">
+    <div>
+      <h2>Current Calendars</h2>
+      <a href="/calendar-create"><button class="emp">+</button></a>
+    </div>
+  </div>
 
   <div class="created-calendar-list">
     <div class="created-calendar">
       <div class="coverage">Jan 27th 2024 - Feb 2nd 2024</div>
+      <div class="details">
+        <span>
+          <iconify-icon icon="fluent:add-square-multiple-20-filled"></iconify-icon>
+          Created: Jan 25th 2024, 15:38
+        </span>
+        <span>
+          <iconify-icon icon="fluent:pen-20-filled"></iconify-icon>
+          Last Modified: Jan 25th 2024, 18:50
+        </span>
+        <span>
+          <iconify-icon icon="iconoir:mail-out"></iconify-icon>
+          4 members invited
+        </span>
+
+        <span>
+          <iconify-icon icon="fluent:checkmark-starburst-20-regular"></iconify-icon>
+          3 members accepted
+        </span>
+      </div>
+
       <div class="events">
         <div>
           <span class="name">Website Layout Design</span>
@@ -35,11 +60,19 @@
         </div>
       </div>
 
-      <button>New Calendar</button>
+      <div class="button-group">
+        <button class="emp">Invite</button>
+        <button class="alt">Edit</button>
+        <button class="warn">Delete</button>
+      </div>
     </div>
+
+    <button class="emp">New Calendar</button>
   </div>
 
-  <h2>Past Calendars</h2>
+  <div class="section-header">
+    <h2>Past Calendars</h2>
+  </div>
 
   <div class="created-calendar-list">
     <div class="created-calendar">
