@@ -1,4 +1,4 @@
-.container {
+#calendar-page {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -62,17 +62,7 @@
 
 .event-name {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-
-    @media (max-width: 768px) {
-        gap: 2px;
-    }
-    
-}
-
-.event-name p {
-    margin: 0; /* Remove default margin */
+    flex-direction: column;
 }
 
 .dropdown {
