@@ -43,7 +43,7 @@
     let __showLoginOverlay, closeLoginOverlay;
 
     $(document).ready(function() {
-        [__showLoginOverlay, closeLoginOverlay] = registerOverlay("login-overlay")
+        [__showLoginOverlay, closeLoginOverlay] = registerOverlay("#login-overlay")
 
         $('#login-submit').click(function (e) {
             btnSubmit();

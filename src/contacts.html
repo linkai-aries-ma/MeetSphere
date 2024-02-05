@@ -59,7 +59,7 @@
   let showContactOverlay, closeContactOverlay
 
   $(document).ready(() => {
-    [showContactOverlay, closeContactOverlay] = registerOverlay("contact-overlay")
+    [showContactOverlay, closeContactOverlay] = registerOverlay("#contact-overlay")
 
     // Check url parameters
     const params = new URLSearchParams(window.location.search)
