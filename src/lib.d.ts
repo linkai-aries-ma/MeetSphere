@@ -17,6 +17,15 @@ interface Invitation {
     startDate: string; // Only relevant for regularity = 'once'
 }
 
+interface FillScheduleViewProps {
+    nDays: number,
+    startDate: string,
+    regularity: string,
+    availability?: number[][],
+
+    mountPoint: string,
+}
+
 export enum Preference {
     high = 3,
     medium = 2,
@@ -27,3 +36,4 @@ export enum Preference {
 declare function createLink(invitation: Invitation);
 declare function emptyAvailability(days: number): Preference[][];
 declare function shuffle(array: any[]): any[];
+declare function fillScheduleView(props: FillScheduleViewProps): void;

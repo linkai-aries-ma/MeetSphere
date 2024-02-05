@@ -113,63 +113,7 @@
     }
     $("#ms-schedule-suggested").html(tmpHtml);
 
-    // Generate the available time slot view
-    // This should be a grid of n days * 24 (1-hour interval) cells
-    // Each column is a day, each row is an 1-hour interval
-    // This table is just a grid
-    // Availability is overlayed as absolute positioned divs inside the td
-    tmpHtml = '<tr id="ms-schedule-header"><th></th>';
-    for (let day = 0; day < nDays; day++) {
-      if (inv.regularity === 'once')
-        tmpHtml += `<th>${moment(inv.startDate).add(day, 'days').format('ddd, MMM D')}</th>`;
-      else if (inv.regularity === 'weekly')
-        tmpHtml += `<th>${moment().day(day).format('ddd')}</th>`;
-    }
-    tmpHtml += '</tr>';
-
-    // Fill 1-hour grid
-    for (let hour = 0; hour < 24; hour++) {
-      tmpHtml += `<tr><td class="time">${hour}:00</td>`;
-
-      for (let day = 0; day < nDays; day++) {
-        tmpHtml += `<td class="day" data-day="${day}" data-hour="${hour}"></td>`;
-      }
-      tmpHtml += '</tr>';
-    }
-    $("#ms-schedule-calendar").html(tmpHtml);
-
-    const preferences = {
-      3: 'High',
-      2: 'Medium',
-      1: 'Low',
-    }
-
-    // Find continuous intervals of availability and inject each into the calendar
-    for (let day = 0; day < nDays; day++) {
-      // 15-minute intervals
-      for (let interval = 0; interval < 24 * 4; interval++) {
-        // Ignore non-available intervals
-        const avail = inv.availability[day][interval]
-        if (avail === 0) continue;
-
-        // Find the end of the interval
-        let end = interval + 1;
-        while (end < 24 * 4 && inv.availability[day][end] === avail) end++;
-
-        // Calculate the height as a percentage of the 1-hour td block
-        let h = (end - interval) * 100 / 4;
-
-        console.log(`day: ${day}, interval: ${interval}, end: ${end}, avail: ${avail}, h: ${h}%`)
-
-        // Add a div under the td of the starting interval
-        const td = $(`td[data-day="${day}"][data-hour="${Math.floor(interval / 4)}"]`);
-        console.log(td)
-        td.append(`<div class="avail av${avail}" style="height: ${h}%;">${preferences[avail]}</div>`);
-
-        // Skip the rest of the interval
-        interval = end - 1;
-      }
-    }
-
+    // Generate the calendar
+    fillScheduleView({...inv, nDays, mountPoint: "#ms-schedule-calendar"})
   });
 </script>
