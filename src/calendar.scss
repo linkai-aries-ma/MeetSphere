@@ -21,6 +21,9 @@ main {
     gap: 1rem;
 
     background: $c-off;
+    @media (max-width: $mobile-vw) {
+      font-size: 0.9rem;
+    }
 
     border-radius: 10px;
     padding: 1rem 1rem 0;
@@ -31,7 +34,7 @@ main {
     box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2);
 
     .coverage {
-      font-size: 1.5rem;
+      font-size: 1.5em;
     }
 
     .details {
