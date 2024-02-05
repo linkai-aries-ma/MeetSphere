@@ -137,6 +137,44 @@ function fillScheduleView(props) {
     }
 }
 
+/**
+ * Get the calendar grid for the given year and month
+ *
+ * @param year {number} Year
+ * @param month {number} Month index (0-11) !!! Important !!!
+ * @returns {Array<Array<moment>>} 2D array of the calendar grid
+ */
+function getCalendarGrid(year, month) {
+    // Get the day of the week of the first day of the month
+    let date = moment([year, month, 1]);
+    const dow = date.day()
+
+    // Grid row
+    let grid = [];
+    let row = [];
+
+    // Entries before the first day of the month
+    date = date.subtract(dow, 'd');
+
+    // Loop until the next month
+    while (true) {
+        // If row is full, add it to the grid
+        if (row.length === 7) {
+            grid.push(row)
+            row = []
+
+            // If the next day is in the next month, stop
+            if (grid.length > 1 && date.month() !== month) break;
+        }
+
+        // Next date
+        row.push(date.clone());
+        date = date.add(1, 'd')
+    }
+
+    return grid
+}
+
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 console.log('lib.js loaded')

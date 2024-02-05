@@ -1,30 +1,30 @@
 interface Invitation {
-    id: string;
-    title: string;
-    description: string;
-    location: string;
-    organizer: string;
-    participant: string;
+    id: string
+    title: string
+    description: string
+    location: string
+    organizer: string
+    participant: string
 
     // Requirement for the meeting time
-    regularity: 'once' | 'daily' | 'weekly';
-    duration: number; // in minutes
-    timezone: string;
-    daysRequired?: number;
+    regularity: 'once' | 'daily' | 'weekly'
+    duration: number // in minutes
+    timezone: string
+    daysRequired?: number
 
     // Creator's availability
-    availability: Preference[][]; // Every 15 minutes
-    startDate: string; // Only relevant for regularity = 'once'
+    availability: Preference[][] // Every 15 minutes
+    startDate: string // Only relevant for regularity = 'once'
 }
 
 interface FillScheduleViewProps {
-    nDays: number,
-    startDate: string,
-    regularity: string,
-    availability?: number[][],
+    nDays: number
+    startDate: string
+    regularity: string
+    availability?: number[][]
 
     // CSS selector for the container to mount the schedule view
-    mountPoint: string,
+    mountPoint: string
 }
 
 export enum Preference {
