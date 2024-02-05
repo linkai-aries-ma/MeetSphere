@@ -1,28 +1,18 @@
 #calendar-page {
     display: flex;
     flex-direction: column;
-    width: 100%;
     align-items: center;
     gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.calendar-text {
-    font-size: 2rem;
-    font-weight: bold;
 }
 
 .calendar {
-    width: auto;
     align-items: center;
-    border: 2px solid #ccc; /* Add border style and color */
-    border-radius: 8px; /* Optional: Add border-radius for rounded corners */
+    border: 2px solid #ccc;
+    border-radius: 8px;
     overflow: auto;
-    box-sizing: border-box;
 
     @media (max-width: 768px) {
         width: 100%;
-        min-height: auto;
     }
 }
 
@@ -30,17 +20,9 @@
     color: orange;
     font-weight: bold;
     text-align: center;
-
-    @media (max-width: 768px) {
-        font-size: 1.5rem;
-    }
 }
 
 .calendar-table {
-    font-size: 1rem;
-    background-color: white;
-    border-color: black;
-    border-spacing: 13px;
     text-align: center;
 
     @media (max-width: 768px) {
@@ -48,16 +30,14 @@
         width: 100%;
     }
 }
+
 .calendar-table td {
     cursor: pointer;
 }
 
 .calendar-table td.selected {
     background-color: #5ced73;
-    width: 30px;
-    height: 30px;
     border-radius: 8px;
-    
 }
 
 .event-name {
