@@ -5,7 +5,7 @@
 
   <label class="event-name">
     <span>Event Name:</span>
-    <input required>
+    <input>
   </label>
 
   <div class="select-hour">
@@ -13,12 +13,12 @@
 
     <label>
       <span>From:</span>
-      <select class="dropdown from" required></select>
+      <select class="dropdown from"></select>
     </label>
 
     <label>
       <span>To:</span>
-      <select class="dropdown to" required></select>
+      <select class="dropdown to"></select>
     </label>
   </div>
 
@@ -88,7 +88,7 @@
       </tbody>
     </table>
   </div>
-  <button class="create-button, emp">Create</button>
+  <button class="create-button, emp" onclick="window.location.href='/timepicker'">Create</button>
 </main>
 
 <script>
