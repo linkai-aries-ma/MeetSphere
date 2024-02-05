@@ -53,10 +53,9 @@
       </div>
 
       <div class="right" id="ms-nav-portal" style="display: none">
-        <a href="/home"><button id="nav-home">Home</button></a>
-        <a href="/calendar"><button id="nav-cal">Calendar</button></a>
-
-        <button onclick="logout()">Log Out</button>
+        <a href="/home"><button>Home</button></a>
+        <a href="/calendar"><button>Calendar</button></a>
+        <a href="/contacts"><button>Contact</button></a>
       </div>
     </div>
   </header>
@@ -70,16 +69,17 @@
     $(document).ready(() => {
       // Check if we're at /
       const path = window.location.pathname
-      if (path !== "/") {
+      if (path !== "/" && path !== '/schedule') {
         // Set navbar to display links instead of login/signup
         $("#ms-nav-welcome").css("display", "none")
         $("#ms-nav-portal").css("display", "flex")
 
-        if (path === '/home') {
-          $("#nav-home").addClass("emp")
-        } else if (path === '/calendar') {
-          $("#nav-cal").addClass("emp")
-        }
+        // For each <a> in #ms-nav-portal, check if the href matches the current path
+        $("#ms-nav-portal a").each(function() {
+          if ($(this).attr("href") === path) {
+            $(this).find("button").addClass("emp")
+          }
+        })
       }
     })
 
@@ -87,16 +87,5 @@
       localStorage.removeItem("username")
       window.location.href = "/"
     }
-
-    // $(document).ready(function() {
-    //     // Check if we're not logged in
-    //     if (localStorage.getItem("username") === null) {
-    //         // Check if we're not at /
-    //         if (window.location.pathname !== "/") {
-    //             // Redirect to /
-    //             window.location.href = "/";
-    //         }
-    //     }
-    // });
 </script>
 </html>

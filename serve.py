@@ -2,8 +2,10 @@
 This is a script to serve a static website with some build processes.
 """
 import argparse
+import os
 import subprocess
 import threading
+import time
 from pathlib import Path
 
 from flask import Flask, send_from_directory
@@ -105,6 +107,8 @@ def view(path):
 
 
 building_lock = threading.Lock()
+pending_build = False
+pending_shutdown = False
 
 
 class RebuildHandler(FileSystemEventHandler):
@@ -121,18 +125,26 @@ class RebuildHandler(FileSystemEventHandler):
         self.process_event(event)
 
     def process_event(self, event):
-        global building_lock
+        global building_lock, pending_build
         print(event)
-        print(f"Change detected: {event.src_path}")
-        if building_lock.acquire(blocking=False):
-            try:
+
+        # Wait some time to prevent multiple events from being triggered at once causing lag
+        pending_build = True
+
+
+def build_thread():
+    # Infinite loop to check and rebuild
+    while not pending_shutdown:
+        global building_lock, pending_build
+        time.sleep(0.5)
+
+        with building_lock:
+            if pending_build:
+                start = time.time()
+                print("Building...")
+                pending_build = False
                 build()
-            except Exception as e:
-                print(f"Error building: {e}")
-            finally:
-                building_lock.release()
-        else:
-            print("Already building, skipping.")
+                print(f"Done building in {time.time() - start:.2f}s")
 
 
 if __name__ == '__main__':
@@ -144,16 +156,29 @@ if __name__ == '__main__':
         build()
         exit(0)
 
-    # Start two threads,
-    # one to monitor the src directory for any changes and re-build on change
+    # Start three threads,
+    # one to monitor the src directory for any changes and queue re-build on change
+    # another one to actually rebuild the website
     # another to serve the static website.
     event_handler = RebuildHandler()
     observer = Observer()
     observer.schedule(event_handler, path=str(SRC), recursive=True)
     observer.start()
 
+    # Start the build thread
+    build_thread = threading.Thread(target=build_thread)
+    build_thread.start()
+
     # Build the website
     build()
 
     # Serve the website
-    app.run(host='0.0.0.0', port=8000)
+    try:
+        app.run(host='0.0.0.0', port=8000)
+    except KeyboardInterrupt:
+        pending_shutdown = True
+        observer.stop()
+        observer.join()
+        build_thread.join()
+        print("Goodbye!")
+        os._exit(0)

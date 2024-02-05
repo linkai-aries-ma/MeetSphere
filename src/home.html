@@ -1,129 +1,47 @@
 @title Home
 
 <main>
-  <div id="schedule-overlay" class="overlay" onclick="closeScheduleOverlay()">
-    <div id="schedule-overlay-inner">
-      <h1>Create/Update Schedule</h1>
-      <label>
-        <input type="text" name="contactName" placeholder="Contact Name">
-      </label>
-      <label>
-        <input type="text" name="meetingTopic" placeholder="Meeting Topic">
-      </label>
-      <label>
-        <input type="date" name="meetingDate" placeholder="Date">
-      </label>
-      <label>
-        <input type="time" name="meetingTime" placeholder="Time">
-      </label>
-      <button id="schedule-submit" onclick="closeScheduleOverlay()">Submit</button>
-      <button id="schedule-cancel" onclick="closeScheduleOverlay()">Cancel</button>
-    </div>
-  </div>
-
-  <div id="contact-overlay" class="overlay" onclick="closeContactOverlay()">
-    <div id="contact-overlay-inner">
-      <h1>Add New Contact</h1>
-      <label>
-        <input type="text" name="name" placeholder="Name">
-      </label>
-      <label>
-        <input type="email" name="email" placeholder="Email">
-      </label>
-      <button id="contact-submit" class="emp" onclick="closeContactOverlay()">Submit</button>
-      <button id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
-    </div>
-  </div>
-
   <section class="welcome-section">
-    <h2>Welcome LinKai! You have 2 upcoming meetings today.</h2>
+    <h2>Welcome LinKai!</h2>
+    <span>You have 2 upcoming meetings today.</span>
   </section>
 
   <div class="content">
     <section class="meeting-list">
       <div class="section-header">
-        <h2 class="section-title">Upcoming Meetings</h2>
-        <button onclick="showScheduleOverlay()">+</button>
+        <div class="section-title">Upcoming Meetings</div>
+        <a href="/calendar"><button>+</button></a>
       </div>
       <article class="meeting">
-        <div class="meeting-details">
+        <div>
           <h2>Azalea</h2>
-          <p>Website Layout Design</p>
-          <p>Jan. 28th 2024</p>
-          <p>10:00 AM - 11:00 AM</p>
+          <span>Website Layout Design</span>
+          <span>Jan. 28th 2024</span>
+          <span>10:00 AM - 11:00 AM</span>
         </div>
         <img src="./assets/22280294.jpg" alt="azalea-pfp" class="meeting-pfp">
       </article>
 
       <article class="meeting">
-        <div class="meeting-details">
+        <div>
           <h2>Henry</h2>
-          <p>Schedule Page Discussion</p>
-          <p>Jan. 28th 2024</p>
-          <p>1:00 PM - 2:00 PM</p>
+          <span>Schedule Page Discussion</span>
+          <span>Jan. 28th 2024</span>
+          <span>1:00 PM - 2:00 PM</span>
         </div>
         <img src="./assets/50559854.jpg" alt="henry-pfp" class="meeting-pfp">
       </article>
 
       <article class="meeting">
-        <div class="meeting-details">
+        <div>
           <h2>Will</h2>
-          <p>Integration of Pages</p>
-          <p>Jan. 29th 2024</p>
-          <p>10:00 AM - 11:00 AM</p>
+          <span>Integration of Pages</span>
+          <span>Jan. 29th 2024</span>
+          <span>10:00 AM - 11:00 AM</span>
         </div>
         <img src="./assets/72054183.jpg" alt="will-pfp" class="meeting-pfp">
       </article>
       <!-- Repeat for each meeting -->
     </section>
-
-    <section class="contact-list">
-      <div class="section-header">
-        <h2 class="section-title">Contacts</h2>
-        <button onclick="showContactOverlay()">+</button>
-      </div>
-      <div class="contact">
-        <img src="./assets/22280294.jpg" alt="azalea-pfp">
-        <p>Azalea</p>
-        <span>azalea@example.com</span>
-      </div>
-
-      <div class="contact">
-        <img src="./assets/50559854.jpg" alt="henry-pfp">
-        <p>Henry</p>
-        <span>henry@example.com</span>
-      </div>
-
-      <div class="contact">
-        <img src="./assets/72054183.jpg" alt="will-pfp">
-        <p>Will</p>
-        <span>will@example.com</span>
-      </div>
-
-      <div class="contact">
-        <img src="./assets/20240128_112700.jpg" alt="linkai-pfp">
-        <p>LinKai</p>
-        <span>linkai@example.com</span>
-      </div>
-      <!-- Repeat for each contact -->
-    </section>
   </div>
 </main>
-
-<script>
-  $(document).ready(function () {
-    $("#schedule-overlay-inner").click(function (e) {
-      e.stopPropagation();
-    });
-
-    $("#contact-overlay-inner").click(function (e) {
-      e.stopPropagation();
-    });
-  });
-
-  showScheduleOverlay = () => $("#schedule-overlay").css("display", "flex")
-  closeScheduleOverlay = () => $("#schedule-overlay").css("display", "none")
-
-  showContactOverlay = () => $("#contact-overlay").css("display", "flex")
-  closeContactOverlay = () => $("#contact-overlay").css("display", "none")
-</script>

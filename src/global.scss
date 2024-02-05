@@ -82,6 +82,11 @@ button.emp {
   color: white;
 }
 
+button.warn {
+  background-color: $c-warn;
+  color: white;
+}
+
 button:hover {
   cursor: pointer;
 
@@ -89,6 +94,12 @@ button:hover {
 
   // Drop shadow
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+}
+
+button.icon {
+  min-width: unset;
+  font-size: 20px;
+  padding: 8px 16px;
 }
 
 input {
@@ -157,12 +168,12 @@ header {
 // Main content styles
 main:not(.no-margin) {
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
 }
 
 @media (max-width: 1080px) {
   main:not(.no-margin) {
-    margin: 0 $mobile-margin;
+    margin: 0 $mobile-margin 2rem;
   }
 }
 

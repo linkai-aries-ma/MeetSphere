@@ -1,0 +1,103 @@
+<main>
+  <div id="contact-list">
+    <div class="section-header">
+      <h2 class="section-title">Contacts</h2>
+      <p class="hide-select">Click on the contact you want to invite.</p>
+    </div>
+
+    <div class="contact">
+      <img src="./assets/22280294.jpg" alt="azalea-pfp">
+      <div>
+        <span>Azalea</span>
+        <span>azalea@example.com</span>
+      </div>
+    </div>
+
+    <div class="contact">
+      <img src="./assets/50559854.jpg" alt="henry-pfp">
+      <div>
+        <span>Henry</span>
+        <span>henry@example.com</span>
+      </div>
+    </div>
+
+    <div class="contact">
+      <img src="./assets/72054183.jpg" alt="will-pfp">
+      <div>
+        <span>Will</span>
+        <span>will@example.com</span>
+      </div>
+    </div>
+
+    <div class="contact">
+      <img src="./assets/20240128_112700.jpg" alt="linkai-pfp">
+      <div>
+        <span>LinKai</span>
+        <span>linkai@example.com</span>
+      </div>
+    </div>
+
+    <button onclick="showContactOverlay()">+</button>
+  </div>
+
+  <div id="contact-overlay" class="overlay">
+    <div>
+      <h1>Add New Contact</h1>
+      <label>
+        <input type="text" name="contact-name" placeholder="Name">
+      </label>
+      <label>
+        <input type="email" name="contact-email" placeholder="Email">
+      </label>
+      <button id="contact-submit" class="emp" onclick="closeContactOverlay()">Submit</button>
+      <button id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  let showContactOverlay, closeContactOverlay
+
+  $(document).ready(() => {
+    [showContactOverlay, closeContactOverlay] = registerOverlay("contact-overlay")
+
+    // Check url parameters
+    const params = new URLSearchParams(window.location.search)
+
+    // If we have select=1, show the "Send" buttons
+    if (params.get("select") != null) {
+      console.log("Showing send buttons")
+      $(".contact").each((i, el) => $(el).append('<button class="emp send">Send</button>'))
+
+      // Add .select class to the page
+      $("#contact-list").addClass("select")
+
+      // Add event listener to each send button
+      $(".contact .send").click(e => {
+        // Change the text
+        $(e.target).text("✓")
+      })
+    }
+
+    // Add delete buttons
+    $(".contact").each((i, el) => $(el).append('<button class="warn delete icon"><iconify-icon icon="fluent:delete-20-filled"></iconify-icon></button>'))
+
+    // Add event listener to each delete button
+    $(".contact .delete").click(e => {
+      // Ask for confirmation
+      if (!confirm("Are you sure you want to delete this contact?")) return
+
+      // Remove the contact
+      $(e.target).parent().remove()
+    })
+
+    // Toggle the buttons when the user clicks on the contact
+    $(".contact").click(e => {
+      // If the user clicked on any button, return
+      if ($(e.target).is("button")) return
+
+      // Toggle the class "opened"
+      $(e.currentTarget).toggleClass("opened")
+    })
+  })
+</script>
