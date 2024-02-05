@@ -5,67 +5,23 @@
     <div class="calendar-text">
       Fantastic! Let's find your perfect time for the meeting.
     </div>
-    <div class="event-name">
-      <p>Event Name:
-      <p>
-        <input required>
-    </div>
+    <label class="event-name">
+      <span>Event Name:</span>
+      <input required>
+    </label>
+
     <div>
       <p>Select the hours which could work</p>
-      <label>From: </label>
-      <select class="dropdown" required>
-        <option value="12:00 AM">12:00 AM</option>
-        <option value="1:00 AM">1:00 AM</option>
-        <option value="2:00 AM">2:00 AM</option>
-        <option value="3:00 AM">3:00 AM</option>
-        <option value="4:00 AM">4:00 AM</option>
-        <option value="5:00 AM">5:00 AM</option>
-        <option value="6:00 AM">6:00 AM</option>
-        <option value="7:00 AM">7:00 AM</option>
-        <option value="8:00 AM">8:00 AM</option>
-        <option value="9:00 AM" selected>9:00 AM</option>
-        <option value="10:00 AM">10:00 AM</option>
-        <option value="11:00 AM">11:00 AM</option>
-        <option value="12:00 PM">12:00 PM</option>
-        <option value="1:00 PM">1:00 PM</option>
-        <option value="2:00 PM">2:00 PM</option>
-        <option value="3:00 PM">3:00 PM</option>
-        <option value="4:00 PM">4:00 PM</option>
-        <option value="5:00 PM">5:00 PM</option>
-        <option value="6:00 PM">6:00 PM</option>
-        <option value="7:00 pM">7:00 PM</option>
-        <option value="8:00 PM">8:00 PM</option>
-        <option value="9:00 PM">9:00 PM</option>
-        <option value="10:00 PM">10:00 PM</option>
-        <option value="11:00 PM">11:00 PM</option>
-      </select>
-      <label>To: </label>
-      <select class="dropdown" required>
-        <option value="12:00 AM">12:00 AM</option>
-        <option value="1:00 AM">1:00 AM</option>
-        <option value="2:00 AM">2:00 AM</option>
-        <option value="3:00 AM">3:00 AM</option>
-        <option value="4:00 AM">4:00 AM</option>
-        <option value="5:00 AM">5:00 AM</option>
-        <option value="6:00 AM">6:00 AM</option>
-        <option value="7:00 AM">7:00 AM</option>
-        <option value="8:00 AM">8:00 AM</option>
-        <option value="9:00 AM">9:00 AM</option>
-        <option value="10:00 AM">10:00 AM</option>
-        <option value="11:00 AM">11:00 AM</option>
-        <option value="12:00 PM">12:00 PM</option>
-        <option value="1:00 PM">1:00 PM</option>
-        <option value="2:00 PM">2:00 PM</option>
-        <option value="3:00 PM">3:00 PM</option>
-        <option value="4:00 PM">4:00 PM</option>
-        <option value="5:00 PM" selected>5:00 PM</option>
-        <option value="6:00 PM">6:00 PM</option>
-        <option value="7:00 pM">7:00 PM</option>
-        <option value="8:00 PM">8:00 PM</option>
-        <option value="9:00 PM">9:00 PM</option>
-        <option value="10:00 PM">10:00 PM</option>
-        <option value="11:00 PM">11:00 PM</option>
-      </select>
+
+      <label>
+        <span>From:</span>
+        <select class="dropdown from" required></select>
+      </label>
+
+      <label>
+        <span>To:</span>
+        <select class="dropdown to" required></select>
+      </label>
     </div>
 
     <div class="calendar">
@@ -141,5 +97,13 @@
 <script>
   $(document).ready(() => {
     $('.calendar-table td').click(e => $(e.target).toggleClass('selected'))
+
+    // Fill dropdown values
+    for (let i = 0; i < 24; i++)
+      $('.dropdown').append(`<option value="${i}">${i}:00</option>`)
+
+    // Select 9:00 by default for the "from" dropdown, and 20:00 for the "to" dropdown
+    $('.from').val(9)
+    $('.to').val(20)
   })
 </script>
