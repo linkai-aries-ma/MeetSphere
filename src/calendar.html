@@ -36,7 +36,7 @@
           <th>Wed</th>
           <th>Thu</th>
           <th>Fri</th>
-          <th>sat</th>
+          <th>Sat</th>
         </tr>
         </thead>
 
@@ -96,7 +96,11 @@
 
 <script>
   $(document).ready(() => {
-    $('.calendar-table td').click(e => $(e.target).toggleClass('selected'))
+    $('.calendar-table td').click(e =>
+    {
+      if ($(e.target).text() === '') return
+      $(e.target).toggleClass('selected')
+    })
 
     // Fill dropdown values
     for (let i = 0; i < 24; i++)
