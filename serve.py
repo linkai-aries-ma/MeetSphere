@@ -143,8 +143,11 @@ def build_thread():
                 start = time.time()
                 print("Building...")
                 pending_build = False
-                build()
-                print(f"Done building in {time.time() - start:.2f}s")
+                try:
+                    build()
+                except Exception as e:
+                    print(f"Error building: {e}")
+                print(f"> Done building in {time.time() - start:.2f}s")
 
 
 if __name__ == '__main__':
