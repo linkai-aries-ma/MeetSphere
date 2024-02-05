@@ -23,6 +23,7 @@ interface FillScheduleViewProps {
     regularity: string,
     availability?: number[][],
 
+    // CSS selector for the container to mount the schedule view
     mountPoint: string,
 }
 
