@@ -23,8 +23,12 @@ main {
     background: $c-off;
 
     border-radius: 10px;
-    padding: 1rem;
+    padding: 1rem 1rem 0;
     width: 100%;
+    overflow: hidden;
+
+    // Drop shadow
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2);
 
     .coverage {
       font-size: 1.5rem;
@@ -39,6 +43,63 @@ main {
       > span {
         display: flex;
         gap: 0.5rem;
+      }
+    }
+  }
+
+  // ========== EVENTS ==========
+  .events {
+    display: flex;
+    flex-direction: column;
+
+    > div {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      > div {
+        display: flex;
+        flex-direction: column;
+      }
+
+      // A hack to add border when there's already a padding in the parent
+      margin: 0 -1rem;
+      padding: 1rem 1rem;
+
+      border-top: 2px dashed #bbb;
+      min-height: 70px;
+
+      // Colors
+      &.st-invited {
+        background-color: #ffe8da;
+      }
+      &.st-scheduled {
+        background-color: #fff8e8;
+      }
+      &.st-complete {
+        background-color: #eeffde;
+      }
+
+      .name {
+        font-weight: bold;
+      }
+
+      img {
+        $img-len: 60px;
+        width: $img-len;
+        height: $img-len;
+        border-radius: 50%;
+      }
+
+      // Automatically fill content
+      &.st-complete > div:after {
+        content: "Complete";
+      }
+      &.st-invited > div:after {
+        content: "Invited";
+      }
+      &.st-scheduled > div:after {
+        content: "Scheduled";
       }
     }
   }
