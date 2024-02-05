@@ -48,3 +48,34 @@
         width: 100%;
     }
 }
+.calendar-table td {
+    cursor: pointer;
+}
+
+.calendar-table td.selected {
+    background-color: #5ced73;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    
+}
+
+.event-name {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+        gap: 2px;
+    }
+    
+}
+
+.event-name p {
+    margin: 0; /* Remove default margin */
+}
+
+.dropdown {
+    padding: 5px;
+    border-radius: 8px;
+}
