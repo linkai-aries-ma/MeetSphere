@@ -33,6 +33,18 @@ main {
     // Drop shadow
     box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2);
 
+    @media (max-width: $mobile-vw) {
+      .button-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .button-group button {
+        width: 100%;
+        margin: 0.2rem;
+      }
+    }
+
     .coverage {
       font-size: 1.5em;
     }
@@ -47,6 +59,23 @@ main {
         display: flex;
         gap: 0.5rem;
       }
+    }
+  }
+
+  .overlay {
+    .button-group{
+      display: flex;
+      flex-direction: column;
+    }
+
+    .button-group button {
+      width: 100%;
+      margin: 0.2rem;
+    }
+
+    .toggle-button.active {
+      background-color: $c-alt;
+      color: white;
     }
   }
 

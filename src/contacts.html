@@ -53,14 +53,32 @@
       <button id="contact-cancel" onclick="closeContactOverlay()">Cancel</button>
     </div>
   </div>
+
+  <div id="meeting-overlay" class="overlay">
+    <div>
+      <h1>Meeting Details</h1>
+      <label>
+        <input type="text" name="Meeting Topic" placeholder="Topic">
+      </label>
+      <label>
+        <input type="text" name="Description" placeholder="Topic">
+      </label>
+      <button id="meeting-submit" class="emp" onclick="closeMeetingOverlay()">Submit</button>
+      <button id="meeting-cancel" onclick="closeMeetingOverlay()">Cancel</button>
+    </div>
+  </div>
 </main>
 
 <script>
   let showContactOverlay, closeContactOverlay
+//  let showMeetingOverlay, closeMeetingOverlay
+  
 
   $(document).ready(() => {
     [showContactOverlay, closeContactOverlay] = registerOverlay("#contact-overlay")
+//    [showMeetingOverlay, closeMeetingOverlay] = registerOverlay("#meeting-overlay")
 
+    
     // Check url parameters
     const params = new URLSearchParams(window.location.search)
 
@@ -68,6 +86,7 @@
     if (params.get("select") != null) {
       console.log("Showing send buttons")
       $(".contact").each((i, el) => $(el).append('<button class="emp send">Send</button>'))
+//      $(".contact").each((i, el) => $(el).append('<button class="emp send" onclick="showMeetingOverlay()">Send</button>'))
 
       // Add .select class to the page
       $("#contact-list").addClass("select")

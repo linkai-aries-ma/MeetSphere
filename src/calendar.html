@@ -36,6 +36,7 @@
       <div class="button-group">
         <a href="contacts.html?select=1"><button class="emp">Invite</button></a>
         <a href="calendar-timepicker.html"><button class="alt">Edit</button></a>
+        <a><button class="warn" onclick="showRemindOverlay()">Remind</button></a>
       </div>
 
       <div class="events">
@@ -44,7 +45,8 @@
           <div>
             <span class="name">Website Layout Design</span>
             <span class="member">Azalea</span>
-            <span class="date">(Time Pending)</span>
+            <span class="date">Date Pending</span>
+            <span class="time">Time Pending</span>
           </div>
         </div>
 
@@ -53,7 +55,8 @@
           <div>
             <span class="name">Schedule Page Discussion</span>
             <span class="member">Henry</span>
-            <span class="date">Jan. 28th 2024 @ 1:00 PM - 2:00 PM</span>
+            <span class="date">Jan. 28th 2024</span>
+            <span class="time">1:00 PM - 2:00 PM</span>
           </div>
         </div>
 
@@ -62,7 +65,8 @@
           <div>
             <span class="name">Integration of Pages</span>
             <span class="member">Will</span>
-            <span class="date">Jan. 29th 2024 @ 10:00 AM - 11:00 AM</span>
+            <span class="date">Jan. 29th 2024</span>
+            <span class="time">10:00 AM - 11:00 AM</span>
           </div>
         </div>
 
@@ -71,7 +75,8 @@
           <div>
             <span class="name">Cat Meeting</span>
             <span class="member">LinKai</span>
-            <span class="date">Jan. 27th 2024 @ 10:00 AM - 11:00 AM</span>
+            <span class="date">Jan. 27th 2024</span>
+            <span class="time">10:00 AM - 11:00 AM</span>
           </div>
         </div>
       </div>
@@ -107,16 +112,48 @@
         </span>
       </div>
 
+      <div id="remind-overlay" class="overlay">
+        <div>
+          <h1>Remind Contacts</h1>
+          <div class="button-group">
+            <button class="toggle-button">Azalea</button>
+            <button class="toggle-button">Henry</button>
+            <button class="toggle-button">Will</button>
+          </div>
+          <button id="remind-submit" class="emp" onclick="closeRemindOverlay()">Submit</button>
+          <button id="meeting-cancel" onclick="closeRemindOverlay()">Cancel</button>
+        </div>
+      </div>
+
       <div class="events">
         <div class="st-complete">
           <img src="assets/azalea.jpg" alt="">
           <div>
             <span class="name">Arcade Session</span>
             <span class="member">Azalea</span>
-            <span class="date">Jan. 5th 2024 @ 1:00 PM - 2:00 PM</span>
+            <span class="date">Jan. 5th 2024</span>
+            <span class="time">1:00 PM - 2:00 PM</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 </main>
+
+<script>
+  let showRemindOverlay, closeRemindOverlay
+  
+  $(document).ready(() => {
+    [showRemindOverlay, closeRemindOverlay] = registerOverlay("#remind-overlay")
+  })
+
+  const toggleButtons = document.querySelectorAll('.toggle-button');
+
+  // Add click event listener to each button
+  toggleButtons.forEach(button => {
+      button.addEventListener('click', function() {
+          // Toggle the 'active' class
+          this.classList.toggle('active');
+      });
+  });
+</script>
