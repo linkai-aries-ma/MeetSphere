@@ -37,7 +37,11 @@
       </div>
     </div>
 
-    <button onclick="showContactOverlay()">+</button>
+    <div class="button-group">
+      <button onclick="showContactOverlay()">+</button>
+      <button id="cont-done-button"
+          class="emp" onclick="window.location.href='calendar.html'" style="display: none">Done</button>
+    </div>
   </div>
 
   <div id="contact-overlay" class="overlay">
@@ -61,7 +65,11 @@
         <input type="text" name="Meeting Topic" placeholder="Topic">
       </label>
       <label>
-        <input type="text" name="Description" placeholder="Topic">
+        <textarea name="Meeting Description" placeholder="Description"></textarea>
+      </label>
+      <button id="switch-online-btn" class="alt">Online Meeting</button>
+      <label class="in-person-only" style="display: none">
+        <input type="text" name="Meeting Location" placeholder="Location">
       </label>
       <button id="meeting-submit" class="emp" onclick="closeMeetingOverlay()">Submit</button>
       <button id="meeting-cancel" onclick="closeMeetingOverlay()">Cancel</button>
@@ -71,13 +79,24 @@
 
 <script>
   let showContactOverlay, closeContactOverlay
-//  let showMeetingOverlay, closeMeetingOverlay
-  
+  let showMeetingOverlay, closeMeetingOverlay, _closeMeetingOverlay
+  let forMeeting = null
 
   $(document).ready(() => {
-    [showContactOverlay, closeContactOverlay] = registerOverlay("#contact-overlay")
-//    [showMeetingOverlay, closeMeetingOverlay] = registerOverlay("#meeting-overlay")
+    [showContactOverlay, closeContactOverlay] = registerOverlay("#contact-overlay");
+    [showMeetingOverlay, _closeMeetingOverlay] = registerOverlay("#meeting-overlay");
+    closeMeetingOverlay = () => {
+      _closeMeetingOverlay()
 
+      // Change the text
+      $(forMeeting).text("✓")
+
+      // Scroll to bottom
+      forMeeting.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
+
+      // Show the "Done" button
+      $("#cont-done-button").css("display", "flex")
+    }
     
     // Check url parameters
     const params = new URLSearchParams(window.location.search)
@@ -86,15 +105,16 @@
     if (params.get("select") != null) {
       console.log("Showing send buttons")
       $(".contact").each((i, el) => $(el).append('<button class="emp send">Send</button>'))
-//      $(".contact").each((i, el) => $(el).append('<button class="emp send" onclick="showMeetingOverlay()">Send</button>'))
 
       // Add .select class to the page
       $("#contact-list").addClass("select")
 
       // Add event listener to each send button
       $(".contact .send").click(e => {
-        // Change the text
-        $(e.target).text("✓")
+        forMeeting = e.target
+
+        // Show meeting overlay
+        showMeetingOverlay()
       })
     }
 
@@ -117,6 +137,20 @@
 
       // Toggle the class "opened"
       $(e.currentTarget).toggleClass("opened")
+    })
+
+    // Toggle online / in-person meeting
+    $('#switch-online-btn').click(e => {
+      const btn = $(e.target)
+      if (btn.text() === "Online Meeting") {
+        btn.text("In-Person Meeting")
+        btn.removeClass("alt")
+        $(".in-person-only").css("display", "flex")
+      } else {
+        btn.text("Online Meeting")
+        btn.addClass("alt")
+        $(".in-person-only").css("display", "none")
+      }
     })
   })
 </script>

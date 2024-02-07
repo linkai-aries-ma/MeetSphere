@@ -107,6 +107,10 @@ button.icon {
   padding: 8px 16px;
 }
 
+button.full {
+  width: 100%;
+}
+
 input {
   padding: 10px 16px;
   min-width: 100px;
@@ -122,6 +126,21 @@ input {
 
 // input active
 input:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px $c-emp;
+}
+
+textarea {
+  padding: 10px 16px;
+  min-width: 100%;
+  width: 100%;
+
+  border: none;
+  border-radius: 10px;
+  background: $c-off;
+}
+
+textarea:focus {
   outline: none;
   box-shadow: 0 0 0 1px $c-emp;
 }

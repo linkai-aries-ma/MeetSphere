@@ -37,6 +37,16 @@
     }
   }
 
+  .button-group {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+
+    > * {
+      flex: 1;
+    }
+  }
+
   .contact {
     display: flex;
     align-items: center;
