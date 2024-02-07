@@ -3,6 +3,7 @@ This is a script to serve a static website with some build processes.
 """
 import argparse
 import os
+import shutil
 import subprocess
 import threading
 import time
@@ -16,10 +17,14 @@ SRC = Path(__file__).parent / 'src'
 DIST = Path(__file__).parent / 'P1'
 
 
-def build(src=SRC, dist=DIST):
+def build(src=SRC, dist=DIST, clean=False):
     """
     Build the static website.
     """
+    if clean:
+        print("Cleaning...")
+        shutil.rmtree(dist, ignore_errors=True)
+
     start = time.time()
 
     assert src.exists(), f"Source directory {src} does not exist."
