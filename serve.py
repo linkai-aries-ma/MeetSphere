@@ -12,34 +12,36 @@ from flask import Flask, send_from_directory
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-SRC = Path('src')
-DIST = Path('P1')
+SRC = Path(__file__).parent / 'src'
+DIST = Path(__file__).parent / 'P1'
 
 
-def build():
+def build(src=SRC, dist=DIST):
     """
     Build the static website.
     """
-    assert SRC.exists(), f"Source directory {SRC} does not exist."
-    DIST.mkdir(exist_ok=True, parents=True)
+    start = time.time()
+
+    assert src.exists(), f"Source directory {src} does not exist."
+    dist.mkdir(exist_ok=True, parents=True)
 
     # Build sass and scss into css
-    to_build = list(SRC.glob('**/*.scss')) + list(SRC.glob('**/*.sass'))
+    to_build = list(src.glob('**/*.scss')) + list(src.glob('**/*.sass'))
     for file in to_build:
-        target = (DIST / file.relative_to(SRC)).with_suffix('.css')
+        target = (dist / file.relative_to(src)).with_suffix('.css')
         subprocess.check_call(['sass', file, target])
 
     # Build html from template
-    template_file = SRC / 'template.html'
+    template_file = src / 'template.html'
     assert template_file.exists(), f"Template {template_file} does not exist."
     template = template_file.read_text('utf-8')
 
-    for file in SRC.glob('**/*.html'):
+    for file in src.glob('**/*.html'):
         if file == template_file:
             continue
 
         # Build file
-        target = (DIST / file.relative_to(SRC))
+        target = (dist / file.relative_to(src))
         head_extra = ''
         title = 'MeetSphere'
 
@@ -56,7 +58,7 @@ def build():
         # If {filename}.sass / .scss / .css exist, automatically import it
         for suffix in ['sass', 'scss', 'css']:
             if file.with_suffix('.' + suffix).is_file():
-                head_extra += f'<link rel="stylesheet" href="{file.relative_to(SRC).with_suffix(".css")}">'
+                head_extra += f'<link rel="stylesheet" href="{file.relative_to(src).with_suffix(".css")}">'
 
         # Build html
         html = (template
@@ -68,7 +70,7 @@ def build():
         target.write_text(html, 'utf-8')
 
     # Copy remaining files
-    to_copy = SRC.glob('**/*')
+    to_copy = src.glob('**/*')
     for file in to_copy:
         if file.is_dir():
             continue
@@ -76,10 +78,11 @@ def build():
         if file in to_build or file.name.endswith('.html'):
             continue
 
-        target = (DIST / file.relative_to(SRC))
+        target = (dist / file.relative_to(src))
         target.parent.mkdir(exist_ok=True, parents=True)
         target.write_bytes(file.read_bytes())
 
+    print(f"Build done in {time.time() - start:.2f}s")
 
 app = Flask(__name__)
 

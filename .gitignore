@@ -2,3 +2,4 @@
 .vscode
 P1/*
 venv
+__pycache__
