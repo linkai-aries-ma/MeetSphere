@@ -1,10 +1,48 @@
+import moment from "moment";
+
+export interface Invitation {
+    id: string
+    title: string
+    description: string
+    location: string
+    organizer: string
+    participant: string
+
+    // Requirement for the meeting time
+    regularity: 'once' | 'daily' | 'weekly'
+    duration: number // in minutes
+    timezone: string
+    daysRequired?: number
+
+    // Creator's availability
+    availability: Preference[][] // Every 15 minutes
+    startDate: string // Only relevant for regularity = 'once'
+}
+
+export interface FillScheduleViewProps {
+    nDays: number
+    startDate: string
+    regularity: string
+    availability?: number[][]
+
+    // CSS selector for the container to mount the schedule view
+    mountPoint: string
+}
+
+export enum Preference {
+    high = 3,
+    medium = 2,
+    low = 1,
+    none = 0,
+}
+
 /**
  * Create a local invitation link
  *
- * @param invitation {Invitation} Invitation object (check lib.d.ts)
- * @returns {string} Local invitation link
+ * @param invitation Invitation object (check lib.d.ts)
+ * @returns Local invitation link
  */
-function createLink(invitation) {
+export function createLink(invitation: Invitation): string {
     // Get URL base (scheme://host:port)
     const base = `${window.location.protocol}//${window.location.host}`;
 
@@ -18,10 +56,10 @@ function createLink(invitation) {
 
 /**
  * Create an empty 2D availability array
- * @param days {number} Number of days
- * @returns {number[][]} 2D array of 0s, each sub-array represents a day, each element represents 15 minutes
+ * @param days Number of days
+ * @returns 2D array of 0s, each sub-array represents a day, each element represents 15 minutes
  */
-function emptyAvailability(days) {
+function emptyAvailability(days: number): number[][] {
     return Array(days).fill(0).map(() => Array(24 * 4).fill(0));
 }
 
@@ -29,11 +67,11 @@ function emptyAvailability(days) {
  * Randomly shuffle an array.
  * This code segment comes from https://stackoverflow.com/a/2450976
  *
- * @param array {Array} Array to shuffle
- * @returns {Array} Shuffled array
+ * @param array Array to shuffle
+ * @returns Shuffled array
  */
-function shuffle(array) {
-    let currentIndex = array.length,  randomIndex;
+export function shuffle(array: any[]): any[] {
+    let currentIndex = array.length, randomIndex: number;
 
     // While there remain elements to shuffle.
     while (currentIndex > 0) {
@@ -48,35 +86,13 @@ function shuffle(array) {
     return array;
 }
 
-/**
- * Register an overlay
- *
- * @param selector {string} CSS selector of the overlay
- * @returns {function, function} Show and hide functions
- */
-function registerOverlay(selector) {
-    const overlay = $(selector)
-
-    // Toggle functions
-    const show = () => overlay.css('display', 'flex');
-    const hide = () => overlay.css('display', 'none');
-
-    // Click outside to hide
-    overlay.click(hide);
-
-    // Disable inner click event propagation
-    $(`${selector} > div`).click(e => e.stopPropagation());
-
-    return [show, hide];
-}
-
 
 /**
  * Fill the schedule view with a dynamic grid calendar for timeslot selection
  *
- * @param props {FillScheduleViewProps} Arguments for fillScheduleView
+ * @param props Arguments for fillScheduleView
  */
-function fillScheduleView(props) {
+export function fillScheduleView(props: FillScheduleViewProps) {
     // Generate the available time slot view
     // This should be a grid of n days * 24 (1-hour interval) cells
     // Each column is a day, each row is an 1-hour interval
@@ -137,14 +153,23 @@ function fillScheduleView(props) {
     }
 }
 
+export function hash(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+    }
+    return hash;
+}
+
 /**
  * Get the calendar grid for the given year and month
  *
- * @param year {number} Year
- * @param month {number} Month index (0-11) !!! Important !!!
- * @returns {Array<Array<moment>>} 2D array of the calendar grid
+ * @param year Year
+ * @param month Month index (0-11) !!! Important !!!
+ * @returns 2D array of the calendar grid
  */
-function getCalendarGrid(year, month) {
+export function getCalendarGrid(year: number, month: number): moment.Moment[][] {
     // Get the day of the week of the first day of the month
     let date = moment([year, month, 1]);
     const dow = date.day()
@@ -190,13 +215,14 @@ Array(4).fill(0).map((_, i) => avail[1][10 * 4 + i] = 2);
 // Set Wednesday 13:00 to 19:00 to 1 (available)
 Array(4 * 6).fill(0).map((_, i) => avail[3][13 * 4 + i] = 3);
 
-const DEBUG_INVITATION = {
+const DEBUG_INVITATION: Invitation = {
     id: 'ab1ab1d0-1677-46a6-a95d-e0d990a08c48',
     title: 'Cat meeting',
     description: 'We should let our cats meet to see if they get along together.',
     location: 'Azalea\'s house',
     organizer: 'Azalea',
     participant: 'Lily',
+    startDate: '2021-10-01',
 
     regularity: 'weekly',
     duration: 60,
