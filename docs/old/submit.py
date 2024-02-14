@@ -24,7 +24,7 @@ if __name__ == '__main__':
     if p1_dir.exists():
         shutil.rmtree(p1_dir)
 
-    shutil.copytree('P1', p1_dir)
+    shutil.copytree('../../P1', p1_dir)
 
     # 4. Pack git source of the current repository into the markus repository
     print("Packing...")

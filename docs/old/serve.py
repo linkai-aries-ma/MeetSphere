@@ -97,7 +97,7 @@ def index():
     """
     Serve the static website.
     """
-    return send_from_directory(DIST, 'index.html')
+    return send_from_directory(DIST, '../../index.html')
 
 
 @app.route('/<path:path>')
