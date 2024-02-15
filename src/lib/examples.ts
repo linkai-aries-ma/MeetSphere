@@ -1,4 +1,4 @@
-import {Contact, PendingMeeting} from "./types.ts";
+import { Contact, PendingMeeting } from './types.ts'
 
 export const EX_CONTACTS: Contact[] = [
   {
@@ -49,4 +49,4 @@ export const EX_MEETINGS: PendingMeeting[] = [
     time: '2024-01-30T16:00:00',
     durationMinutes: 45,
   },
-];
+]

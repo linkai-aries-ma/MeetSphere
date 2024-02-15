@@ -1,4 +1,3 @@
-
 export interface Invitation {
   id: string
   title: string
@@ -43,9 +42,9 @@ export interface Contact {
 }
 
 export interface PendingMeeting {
-  id: number;
-  with: Contact;
-  description: string;
-  time: string;
-  durationMinutes: number;
+  id: number
+  with: Contact
+  description: string
+  time: string
+  durationMinutes: number
 }
