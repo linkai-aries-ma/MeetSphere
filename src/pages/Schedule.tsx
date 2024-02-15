@@ -61,7 +61,7 @@ export function Schedule({uuid}: {uuid: string}) {
         <p>Here are two suggested time slots that might work for you. You can also select a time slot from the
                 calendar below.</p>
         <div id="ms-schedule-suggested">
-          {suggestedSlots.map(slot => <div className="suggested-card" data-day="${day}" data-interval="${interval}">
+          {suggestedSlots.map((slot, i) => <div className="suggested-card" key={i}>
             <div>
               <span className="date">
                 {(invitation.meeting.regularity === 'once')
