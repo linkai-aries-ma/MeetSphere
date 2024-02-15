@@ -35,3 +35,13 @@ export function hash(str: string): number {
   }
   return hash
 }
+
+/**
+ * Print a debug message of the object without interrupting the flow.
+ *
+ * @param obj Object to print
+ */
+export function debug(obj: any) {
+  console.log(obj)
+  return obj
+}
