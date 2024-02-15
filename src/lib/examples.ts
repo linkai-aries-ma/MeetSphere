@@ -86,9 +86,9 @@ export const EX_CALENDARS: Calendar[] = [
       {'startTime': '2024-01-28T14:30:00', 'endTime': '2024-01-28T16:30:00', 'preference': 2},
       // Time slots with partial hour duration
       {'startTime': '2024-01-29T11:15:00', 'endTime': '2024-01-29T11:45:00', 'preference': 1},
-      {'startTime': '2024-01-29T11:45:00', 'endTime': '2024-01-29T12:15:00', 'preference': 2},
+      {'startTime': '2024-01-29T11:45:00', 'endTime': '2024-01-29T12:15:00', 'preference': 3},
       // Overlapping time slots (nope, let's assume there are no overlapping time slots)
-      {'startTime': '2024-01-30T10:00:00', 'endTime': '2024-01-30T11:00:00', 'preference': 3},
+      {'startTime': '2024-01-30T10:00:00', 'endTime': '2024-01-30T10:50:00', 'preference': 2},
       // {'startTime': '2024-01-30T10:30:00', 'endTime': '2024-01-30T11:30:00', 'preference': 2},
       // Edge of a calendar range
       {'startTime': '2024-01-31T23:00:00', 'endTime': '2024-02-01T00:00:00', 'preference': 3},
