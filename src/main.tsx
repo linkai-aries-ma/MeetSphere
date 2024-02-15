@@ -5,12 +5,11 @@ import 'modern-normalize/modern-normalize.css';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {Welcome} from "./pages/Welcome.tsx";
 import {NavBar} from "./components/NavBar.tsx";
+import {Home} from "./pages/Home.tsx";
 
 const router = createBrowserRouter([
-  {
-    path: '/',
-    Component: Welcome,
-  },
+  {path: '/', Component: Welcome},
+  {path: '/home', Component: Home},
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<>
