@@ -16,6 +16,12 @@ export enum Preference {
   low = 1,
 }
 
+export const PREFERENCE_STR = {
+  3: 'High',
+  2: 'Medium',
+  1: 'Low',
+}
+
 /**
  * Contact information
  */
