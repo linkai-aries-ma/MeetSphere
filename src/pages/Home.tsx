@@ -1,15 +1,22 @@
 import * as React from 'react'
 import { useState } from 'react'
-import { PendingMeeting } from '../lib/types.ts'
+import { ScheduledMeeting } from '../lib/types.ts'
 import { Icon } from '@iconify/react'
 import moment from 'moment'
-import { EX_MEETINGS } from '../lib/examples.ts'
 import { clz } from '../lib/ui.ts'
 import './Home.scss'
+import {getScheduledMeetings} from '../lib/sdk.ts'
 
 export function Home() {
-  const [meetings, setMeetings] = useState<PendingMeeting[]>(EX_MEETINGS)
+  const [meetings, setMeetings] = useState<ScheduledMeeting[]>([])
   const [expanded, setExpanded] = useState<number[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  getScheduledMeetings()
+    .then(setMeetings)
+    .catch(err => setError(err.message))
+    .finally(() => setLoading(false))
 
   const toggleMeeting = (id: number) => {
     setExpanded(prev => (prev.includes(id) ? prev.filter(meetingId => meetingId !== id) : [...prev, id]))
@@ -43,6 +50,7 @@ export function Home() {
               key={meeting.id}
               className={clz({ opened: expanded.includes(meeting.id) }, 'meeting')}
               onClick={() => toggleMeeting(meeting.id)}>
+
               <div className="meeting-content">
                 <div>
                   <h2>With {meeting.with.name}</h2>

@@ -12,8 +12,6 @@ export interface Invitation {
   timezone: string
   daysRequired?: number
 
-  // Creator's availability
-  availability: Preference[][] // Every 15 minutes
   startDate: string // Only relevant for regularity = 'once'
 }
 
@@ -45,6 +43,26 @@ export interface PendingMeeting {
   id: number
   with: Contact
   description: string
-  time: string
   durationMinutes: number
+}
+
+export interface ScheduledMeeting extends PendingMeeting {
+  time: string // ISO time
+}
+
+export interface TimeSlot {
+  startTime: string // ISO time
+  endTime: string // ISO time
+  preference: Preference
+}
+
+export interface Calendar {
+  id: string
+  startDate: string // YYYY-MM-DD
+  endDate: string // YYYY-MM-DD
+  timeSlots: TimeSlot[]
+
+  // Metadata
+  created: string // ISO time
+  modified: string // ISO time
 }
