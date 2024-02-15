@@ -25,6 +25,9 @@ export interface FillScheduleViewProps {
   mountPoint: string
 }
 
+/**
+ * Time slot preference
+ */
 export enum Preference {
   high = 3,
   medium = 2,
@@ -32,6 +35,9 @@ export enum Preference {
   none = 0,
 }
 
+/**
+ * Contact information
+ */
 export interface Contact {
   id: number
   name: string
@@ -39,28 +45,43 @@ export interface Contact {
   pfp: string
 }
 
+/**
+ * Meeting request
+ */
 export interface PendingMeeting {
   id: number
+  calendarId: number
   with: Contact
+  title: string
   description: string
   durationMinutes: number
 }
 
+/**
+ * Scheduled meeting
+ */
 export interface ScheduledMeeting extends PendingMeeting {
   time: string // ISO time
 }
 
+/**
+ * A time slot indicating availability on a calendar
+ */
 export interface TimeSlot {
   startTime: string // ISO time
   endTime: string // ISO time
   preference: Preference
 }
 
+/**
+ * A calendar for a period of time
+ */
 export interface Calendar {
-  id: string
+  id: number
   startDate: string // YYYY-MM-DD
   endDate: string // YYYY-MM-DD
-  timeSlots: TimeSlot[]
+
+  meetings: (ScheduledMeeting | PendingMeeting)[]
 
   // Metadata
   created: string // ISO time

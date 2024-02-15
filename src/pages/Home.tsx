@@ -54,7 +54,7 @@ export function Home() {
               <div className="meeting-content">
                 <div>
                   <h2>With {meeting.with.name}</h2>
-                  <span>{meeting.description}</span>
+                  <span>{meeting.title}</span>
                   {/* format: Jan. 28th 2024 */}
                   <span>{moment(meeting.time).format('MMM. Do YYYY')}</span>
                   {/* format: 10:00 AM - 11:00 AM */}

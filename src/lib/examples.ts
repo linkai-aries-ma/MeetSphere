@@ -1,4 +1,4 @@
-import { Contact, PendingMeeting } from './types.ts'
+import {Calendar, Contact, PendingMeeting, ScheduledMeeting} from './types.ts'
 
 export const EX_CONTACTS: Contact[] = [
   {
@@ -27,26 +27,74 @@ export const EX_CONTACTS: Contact[] = [
   },
 ]
 
-export const EX_MEETINGS: PendingMeeting[] = [
+export const EX_MEETINGS: ScheduledMeeting[] = [
   {
     id: 1,
+    calendarId: 1,
     with: EX_CONTACTS[0],
-    description: 'Website Layout Design',
+    title: 'Website Layout Design',
+    description: 'We should discuss the layout of the website.',
     time: '2024-01-28T10:00:00',
     durationMinutes: 60,
   },
   {
     id: 2,
+    calendarId: 1,
     with: EX_CONTACTS[1],
-    description: 'Schedule Page Discussion',
+    title: 'Schedule Page Discussion',
+    description: 'We should finalize the schedule page and its features.',
     time: '2024-01-28T14:00:00',
     durationMinutes: 30,
   },
   {
     id: 3,
+    calendarId: 1,
     with: EX_CONTACTS[3],
-    description: 'Cat Meeting',
+    title: 'Cat Meeting',
+    description: 'We should let our cats meet to see if they get along together.',
     time: '2024-01-30T16:00:00',
     durationMinutes: 45,
   },
+]
+
+export const EX_PENDING_MEETINGS: PendingMeeting[] = [
+  {
+    id: 4,
+    calendarId: 1,
+    with: EX_CONTACTS[2],
+    title: 'Integration of Pages',
+    description: 'We should integrate our pages to work together.',
+    durationMinutes: 30,
+  },
+  ...EX_MEETINGS
+]
+
+export const EX_CALENDARS: Calendar[] = [
+  {
+    id: 1,
+    startDate: '2024-01-27',
+    endDate: '2024-02-02',
+    created: '2024-01-25T15:38:00',
+    modified: '2024-01-25T18:50:00',
+
+    meetings: EX_PENDING_MEETINGS,
+  },
+  {
+    id: 2,
+    startDate: '2024-01-05',
+    endDate: '2024-01-10',
+    created: '2024-01-03T12:00:00',
+    modified: '2024-01-03T12:00:00',
+
+    meetings: [
+      {
+        id: 5,
+        calendarId: 2,
+        with: EX_CONTACTS[0],
+        title: 'Arcade Session',
+        description: '',
+        durationMinutes: 60,
+      },
+    ],
+  }
 ]
