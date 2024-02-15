@@ -3,6 +3,7 @@ import moment from 'moment/moment'
 import {Calendar, Meeting, PREFERENCE_STR, TimeSlot} from '../lib/types.ts'
 import {useEffect, useState} from 'react'
 import './CalendarView.scss'
+import {debug} from '../lib/utils.ts'
 
 interface CalendarViewProps {
   cal: Calendar
@@ -55,7 +56,8 @@ export function CalendarView({cal, meeting}: CalendarViewProps) {
           {tsIndex[`${moment(cal.startDate).add(day, 'days').format('YYYY-MM-DD')} ${hour}`]?.map((slot, i) => {
             // Calculate height based on the duration of the slot relative to the hour
             const h = moment(slot.endTime).diff(slot.startTime, 'minutes') / 60 * 100
-            return <div key={i} className={`avail av${slot.preference}`} style={{height: `${h}%`}}>
+            const mt = moment(slot.startTime).diff(moment(slot.startTime).startOf('hour'), 'minutes') / 60 * 100
+            return <div key={i} className={`avail av${slot.preference}`} style={{height: `${h}%`, top: `${mt}%`}}>
               {PREFERENCE_STR[slot.preference]}
             </div>
           })}
