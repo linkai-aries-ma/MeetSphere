@@ -22,7 +22,7 @@ export function CalendarView({cal, meeting}: CalendarViewProps) {
 
     cal.timeSlots.forEach(slot => {
       // Extract the date and hour from the startTime
-      const startHour = moment(slot.startTime).format('YYYY-MM-DD HH')
+      const startHour = moment(slot.startTime).format('YYYY-MM-DD H')
 
       // Initialize the array if this is the first slot for this hour
       if (!index[startHour]) index[startHour] = []
