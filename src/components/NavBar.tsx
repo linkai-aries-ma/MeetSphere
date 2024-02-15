@@ -2,10 +2,9 @@ import * as React from 'react'
 import {clz} from '../lib/ui.ts'
 import {LoginOverlay} from './LoginOverlay.tsx'
 import {useState} from 'react'
-import {useLocation} from 'react-router-dom'
 
 export function NavBar(): React.JSX.Element {
-  const path = useLocation().pathname
+  const path = window.location.pathname
   const isLogin = path === '/'
   const [isSignup, setIsSignup] = useState(false)
   const [loginOverlay, setLoginOverlay] = useState(false)
