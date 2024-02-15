@@ -57,7 +57,7 @@ function OneCalendar({cal, canEdit}: {cal: Calendar, canEdit?: boolean}) {
     </div>}
 
     <div className="events">
-      {events.map(ev => <div className={`st-${ev.st}`}>
+      {events.map(ev => <div className={`st-${ev.st}`} key={ev.m.id}>
         <img src={ev.m.with.pfp} alt=""/>
         <div>
           <span className="name">{ev.m.title}</span>
@@ -104,7 +104,7 @@ export function Calendar() {
 
     <div className="created-calendar-list">
       {calendars.filter(cal => moment(cal.endDate).isAfter(DATE_NOW))
-        .map(cal => <OneCalendar cal={cal} canEdit={true}/>)}
+        .map(cal => <OneCalendar key={cal.id} cal={cal} canEdit={true}/>)}
     </div>
 
     <div className="section-header">
@@ -113,7 +113,7 @@ export function Calendar() {
 
     <div className="created-calendar-list">
       {calendars.filter(cal => moment(cal.endDate).isBefore(DATE_NOW))
-        .map(cal => <OneCalendar cal={cal} canEdit={false}/>)}
+        .map(cal => <OneCalendar key={cal.id} cal={cal} canEdit={false}/>)}
     </div>
 
     {showRemind && <div id="remind-overlay" className="overlay">
