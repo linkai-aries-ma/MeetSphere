@@ -8,6 +8,7 @@ import {Calendar, Contact, Invitation, Meeting, UserSelf} from './types.ts'
  */
 export async function getContacts(): Promise<Contact[]> {
   // TODO: Fetch contacts from server
+  await new Promise(resolve => setTimeout(resolve, 1000))
   return EX_CONTACTS
 }
 
@@ -18,6 +19,7 @@ export async function getContacts(): Promise<Contact[]> {
  */
 export async function getScheduledMeetings(): Promise<Meeting[]> {
   // TODO: Fetch scheduled meetings from server
+  await new Promise(resolve => setTimeout(resolve, 1000))
   return EX_MEETINGS
 }
 
@@ -28,6 +30,7 @@ export async function getScheduledMeetings(): Promise<Meeting[]> {
  */
 export async function getCalendars(): Promise<Calendar[]> {
   // TODO: Fetch calendars from server
+  await new Promise(resolve => setTimeout(resolve, 1000))
   return EX_CALENDARS
 }
 
@@ -38,6 +41,7 @@ export async function getCalendars(): Promise<Calendar[]> {
  */
 export async function getUserSelf(): Promise<UserSelf> {
   // TODO: Fetch user information from server
+  await new Promise(resolve => setTimeout(resolve, 1000))
   return EX_SELF
 }
 
@@ -48,6 +52,7 @@ export async function getUserSelf(): Promise<UserSelf> {
  */
 export async function getInvitation(uuid: string): Promise<Invitation> {
   // TODO: Fetch invitation from server
+  await new Promise(resolve => setTimeout(resolve, 1000))
   return {
     id: uuid,
     cal: EX_CALENDARS[0],
