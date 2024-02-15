@@ -79,51 +79,21 @@ export const EX_CALENDARS: Calendar[] = [
     timezone: 'America/New_York',
 
     timeSlots: [
-      {
-        startTime: '2024-01-27T09:00:00',
-        endTime: '2024-01-27T10:00:00',
-        preference: 3,
-      },
-      {
-        startTime: '2024-01-27T10:00:00',
-        endTime: '2024-01-27T11:00:00',
-        preference: 2,
-      },
-      {
-        startTime: '2024-01-27T11:00:00',
-        endTime: '2024-01-27T12:00:00',
-        preference: 1,
-      },
-      {
-        startTime: '2024-01-27T13:00:00',
-        endTime: '2024-01-27T14:00:00',
-        preference: 3,
-      },
-      {
-        startTime: '2024-01-27T14:00:00',
-        endTime: '2024-01-27T15:00:00',
-        preference: 2,
-      },
-      {
-        startTime: '2024-01-27T15:00:00',
-        endTime: '2024-01-27T16:00:00',
-        preference: 1,
-      },
-      {
-        startTime: '2024-01-27T17:00:00',
-        endTime: '2024-01-27T18:00:00',
-        preference: 3,
-      },
-      {
-        startTime: '2024-01-27T18:00:00',
-        endTime: '2024-01-27T19:00:00',
-        preference: 2,
-      },
-      {
-        startTime: '2024-01-27T19:00:00',
-        endTime: '2024-01-27T20:00:00',
-        preference: 1,
-      },
+      // Basic functionality test
+      {'startTime': '2024-01-27T09:00:00', 'endTime': '2024-01-27T10:00:00', 'preference': 3},
+      // Time slots spanning multiple hours
+      {'startTime': '2024-01-28T14:30:00', 'endTime': '2024-01-28T16:30:00', 'preference': 2},
+      // Time slots with partial hour duration
+      {'startTime': '2024-01-29T11:15:00', 'endTime': '2024-01-29T11:45:00', 'preference': 1},
+      {'startTime': '2024-01-29T11:45:00', 'endTime': '2024-01-29T12:15:00', 'preference': 2},
+      // Overlapping time slots
+      {'startTime': '2024-01-30T10:00:00', 'endTime': '2024-01-30T11:00:00', 'preference': 3},
+      {'startTime': '2024-01-30T10:30:00', 'endTime': '2024-01-30T11:30:00', 'preference': 2},
+      // Edge of a calendar range
+      {'startTime': '2024-01-31T23:00:00', 'endTime': '2024-02-01T00:00:00', 'preference': 3},
+      {'startTime': '2024-02-01T00:00:00', 'endTime': '2024-02-01T01:00:00', 'preference': 2},
+      // Time slots spanning multiple days
+      {'startTime': '2024-02-01T23:00:00', 'endTime': '2024-02-02T01:00:00', 'preference': 1},
     ],
 
     meetings: EX_MEETINGS,
