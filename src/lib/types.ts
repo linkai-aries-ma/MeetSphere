@@ -87,3 +87,12 @@ export interface Calendar {
   created: string // ISO time
   modified: string // ISO time
 }
+
+/**
+ * Information of the current logged-in user
+ */
+export interface UserSelf {
+  id: number
+  name: string
+  email: string
+}

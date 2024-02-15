@@ -1,4 +1,4 @@
-import {Calendar, Contact, PendingMeeting, ScheduledMeeting} from './types.ts'
+import {Calendar, Contact, PendingMeeting, ScheduledMeeting, UserSelf} from './types.ts'
 
 export const EX_CONTACTS: Contact[] = [
   {
@@ -98,3 +98,9 @@ export const EX_CALENDARS: Calendar[] = [
     ],
   }
 ]
+
+export const EX_SELF: UserSelf = {
+  id: 1,
+  name: 'LinKai',
+  email: 'linkai@example.com'
+}

@@ -1,5 +1,5 @@
-import {EX_CALENDARS, EX_CONTACTS, EX_MEETINGS} from './examples.ts'
-import {Calendar, Contact, ScheduledMeeting} from './types.ts'
+import {EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF} from './examples.ts'
+import {Calendar, Contact, ScheduledMeeting, UserSelf} from './types.ts'
 
 /**
  * Get the contact list of the current logged-in user
@@ -31,3 +31,12 @@ export async function getCalendars(): Promise<Calendar[]> {
   return EX_CALENDARS
 }
 
+/**
+ * Get the information of the current logged-in user
+ *
+ * @returns User information
+ */
+export async function getUserSelf(): Promise<UserSelf> {
+  // TODO: Fetch user information from server
+  return EX_SELF
+}
