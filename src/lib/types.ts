@@ -37,7 +37,7 @@ export interface Meeting {
   location?: string
   description: string
   durationMinutes: number
-  regularity: 'once' | 'daily' | 'weekly'
+  regularity: 'once' | 'weekly'
 
   // A meeting would be pending response if time is not set
   time?: string // ISO time
