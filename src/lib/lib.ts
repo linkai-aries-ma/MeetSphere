@@ -1,40 +1,5 @@
 import moment from "moment";
-
-export interface Invitation {
-    id: string
-    title: string
-    description: string
-    location: string
-    organizer: string
-    participant: string
-
-    // Requirement for the meeting time
-    regularity: 'once' | 'daily' | 'weekly'
-    duration: number // in minutes
-    timezone: string
-    daysRequired?: number
-
-    // Creator's availability
-    availability: Preference[][] // Every 15 minutes
-    startDate: string // Only relevant for regularity = 'once'
-}
-
-export interface FillScheduleViewProps {
-    nDays: number
-    startDate: string
-    regularity: string
-    availability?: number[][]
-
-    // CSS selector for the container to mount the schedule view
-    mountPoint: string
-}
-
-export enum Preference {
-    high = 3,
-    medium = 2,
-    low = 1,
-    none = 0,
-}
+import {FillScheduleViewProps, Invitation} from "./types.ts";
 
 /**
  * Create a local invitation link
@@ -61,29 +26,6 @@ export function createLink(invitation: Invitation): string {
  */
 function emptyAvailability(days: number): number[][] {
     return Array(days).fill(0).map(() => Array(24 * 4).fill(0));
-}
-
-/**
- * Randomly shuffle an array.
- * This code segment comes from https://stackoverflow.com/a/2450976
- *
- * @param array Array to shuffle
- * @returns Shuffled array
- */
-export function shuffle(array: any[]): any[] {
-    let currentIndex = array.length, randomIndex: number;
-
-    // While there remain elements to shuffle.
-    while (currentIndex > 0) {
-        // Pick a remaining element.
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-
-        // And swap it with the current element.
-        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-    }
-
-    return array;
 }
 
 
@@ -151,15 +93,6 @@ export function fillScheduleView(props: FillScheduleViewProps) {
             interval = end - 1;
         }
     }
-}
-
-export function hash(str: string): number {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash = ((hash << 5) - hash) + str.charCodeAt(i);
-        hash |= 0;
-    }
-    return hash;
 }
 
 /**
