@@ -1,9 +1,9 @@
 import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {ScheduledMeeting, UserSelf} from '../lib/types.ts'
-import { Icon } from '@iconify/react'
+import {Icon} from '@iconify/react'
 import moment from 'moment'
-import { clz } from '../lib/ui.ts'
+import {clz} from '../lib/ui.ts'
 import './Home.scss'
 import {getScheduledMeetings, getUserSelf} from '../lib/sdk.ts'
 
@@ -54,7 +54,7 @@ export function Home() {
         {meetings.map(meeting => (
           <article
             key={meeting.id}
-            className={clz({ opened: expanded.includes(meeting.id) }, 'meeting')}
+            className={clz({opened: expanded.includes(meeting.id)}, 'meeting')}
             onClick={() => toggleMeeting(meeting.id)}>
 
             <div className="meeting-content">
@@ -68,17 +68,17 @@ export function Home() {
                   {moment(meeting.time).format('h:mm A')} -{moment(meeting.time).add(meeting.durationMinutes, 'minutes').format('h:mm A')}
                 </span>
               </div>
-              <img src={meeting.with.pfp} alt="" className="meeting-pfp" />
+              <img src={meeting.with.pfp} alt="" className="meeting-pfp"/>
             </div>
 
             {/* Show button group only on toggle */}
             <div className="button-group">
               <button className="alt">
-                <Icon icon="fluent:person-add-20-filled" />
+                <Icon icon="fluent:person-add-20-filled"/>
               </button>
               <a href="/calendar-timepicker">
                 <button>
-                  <Icon icon="fluent:edit-20-filled" />
+                  <Icon icon="fluent:edit-20-filled"/>
                 </button>
               </a>
               <button
@@ -87,7 +87,7 @@ export function Home() {
                   e.stopPropagation()
                   deleteMeeting(meeting.id)
                 }}>
-                <Icon icon="fluent:delete-20-filled" />
+                <Icon icon="fluent:delete-20-filled"/>
               </button>
             </div>
           </article>

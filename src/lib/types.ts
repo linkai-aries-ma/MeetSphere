@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export interface Invitation {
   id: string
   title: string
@@ -48,21 +50,19 @@ export interface Contact {
 /**
  * Meeting request
  */
-export interface PendingMeeting {
+export interface Meeting {
   id: number
   calendarId: number
   with: Contact
   title: string
   description: string
   durationMinutes: number
+
+  // A meeting would be pending response if time is not set
+  time?: string // ISO time
 }
 
-/**
- * Scheduled meeting
- */
-export interface ScheduledMeeting extends PendingMeeting {
-  time: string // ISO time
-}
+export type MeetingStatus = 'invited' | 'scheduled' | 'in-progress' | 'complete'
 
 /**
  * A time slot indicating availability on a calendar
@@ -81,7 +81,7 @@ export interface Calendar {
   startDate: string // YYYY-MM-DD
   endDate: string // YYYY-MM-DD
 
-  meetings: (ScheduledMeeting | PendingMeeting)[]
+  meetings: Meeting[]
 
   // Metadata
   created: string // ISO time

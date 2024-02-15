@@ -1,5 +1,8 @@
 import moment from 'moment'
-import { FillScheduleViewProps, Invitation } from './types.ts'
+import {FillScheduleViewProps, Invitation, Meeting, MeetingStatus} from './types.ts'
+
+// TODO: Use actual data
+export const DATE_NOW = moment('2024-01-28T12:00:00')
 
 /**
  * Create a local invitation link
@@ -92,6 +95,21 @@ export function fillScheduleView(props: FillScheduleViewProps) {
       interval = end - 1
     }
   }
+}
+
+/**
+ * Get the status of a meeting
+ *
+ * @param event Meeting object
+ */
+export function getMeetingStatus(event: Meeting): MeetingStatus {
+  if (!('time' in event))
+    return 'invited'
+  if (moment(event.time).add(event.durationMinutes, 'minutes').isBefore(DATE_NOW))
+    return 'complete'
+  if (moment(event.time).isBefore(DATE_NOW))
+    return 'in-progress'
+  return 'scheduled'
 }
 
 /**

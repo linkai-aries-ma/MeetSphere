@@ -1,4 +1,4 @@
-import {Calendar, Contact, PendingMeeting, ScheduledMeeting, UserSelf} from './types.ts'
+import {Calendar, Contact, Meeting, UserSelf} from './types.ts'
 
 export const EX_CONTACTS: Contact[] = [
   {
@@ -27,7 +27,7 @@ export const EX_CONTACTS: Contact[] = [
   },
 ]
 
-export const EX_MEETINGS: ScheduledMeeting[] = [
+export const EX_MEETINGS: Meeting[] = [
   {
     id: 1,
     calendarId: 1,
@@ -55,9 +55,6 @@ export const EX_MEETINGS: ScheduledMeeting[] = [
     time: '2024-01-30T16:00:00',
     durationMinutes: 45,
   },
-]
-
-export const EX_PENDING_MEETINGS: PendingMeeting[] = [
   {
     id: 4,
     calendarId: 1,
@@ -65,8 +62,7 @@ export const EX_PENDING_MEETINGS: PendingMeeting[] = [
     title: 'Integration of Pages',
     description: 'We should integrate our pages to work together.',
     durationMinutes: 30,
-  },
-  ...EX_MEETINGS
+  }
 ]
 
 export const EX_CALENDARS: Calendar[] = [
@@ -77,7 +73,7 @@ export const EX_CALENDARS: Calendar[] = [
     created: '2024-01-25T15:38:00',
     modified: '2024-01-25T18:50:00',
 
-    meetings: EX_PENDING_MEETINGS,
+    meetings: EX_MEETINGS,
   },
   {
     id: 2,
