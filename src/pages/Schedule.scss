@@ -1,4 +1,4 @@
-@import "vars";
+@import "../vars";
 
 #schedule {
   #ms-schedule-suggested {
@@ -29,11 +29,12 @@
 
     > div {
       flex: 1;
+      display: flex;
+      gap: 0.5rem;
     }
 
     .date {
       font-weight: bold;
-      margin-bottom: 0.5em;
     }
   }
 }

@@ -7,8 +7,31 @@ import moment from 'moment'
 import {DATE_NOW, getMeetingStatus} from '../lib/lib.ts'
 import './Calendar.scss'
 
-function OneCalendar({cal, canEdit}: {cal: Calendar, canEdit?: boolean}) {
-  const events = cal.meetings.map(m => {return {m, st: getMeetingStatus(m)}})
+function RemindOverlay({cal}: {cal: Calendar}) {
+  // TODO: Make buttons work
+
+  return <div id="remind-overlay" className="overlay">
+    <div>
+      <h1>Remind Contacts</h1>
+      <div className="button-group">
+        {cal.meetings.map(m => <button className="toggle-button" key={m.with.id}>{m.with.name}</button>)}
+      </div>
+      <button id="remind-submit" className="emp">Submit</button>
+      <button id="meeting-cancel">Cancel</button>
+    </div>
+  </div>
+}
+
+interface OneCalendarProps {
+  cal: Calendar,
+  canEdit?: boolean,
+  btn: (name: string) => void
+}
+
+function OneCalendar({cal, canEdit, btn}: OneCalendarProps) {
+  const events = cal.meetings.map(m => {
+    return {m, st: getMeetingStatus(m)}
+  })
 
   // Sort by time descending (if it doesn't have time, place at the top)
   events.sort((a, b) => a.m.time ? (b.m.time ? (b.m.time < a.m.time ? -1 : 1) : 1) : -1)
@@ -45,15 +68,9 @@ function OneCalendar({cal, canEdit}: {cal: Calendar, canEdit?: boolean}) {
     </div>
 
     {canEdit && <div className="button-group">
-      <a href="/contacts?select=1">
-        <button className="emp">Invite</button>
-      </a>
-      <a href="/calendar-timepicker">
-        <button className="alt">Edit</button>
-      </a>
-      <a>
-        <button className="warn">Remind</button>
-      </a>
+      <button className="emp" onClick={() => btn('invite')}>Invite</button>
+      <button className="alt" onClick={() => btn('edit')}>Edit</button>
+      <button className="warn" onClick={() => btn('remind')}>Remind</button>
     </div>}
 
     <div className="events">
@@ -83,7 +100,7 @@ export function Calendar() {
   const [calendars, setCalendars] = useState<Calendar[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const [showRemind, setShowRemind] = useState(false)
+  const [remindCal, setRemindCal] = useState<Calendar | null>(null)
 
   // Initial fetch
   useEffect(() => {
@@ -91,6 +108,12 @@ export function Calendar() {
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
+
+  function handleClick(name: string, cal: Calendar) {
+    if (name === 'remind') {
+      setRemindCal(cal)
+    }
+  }
 
   return <main>
     <div className="section-header">
@@ -104,7 +127,8 @@ export function Calendar() {
 
     <div className="created-calendar-list">
       {calendars.filter(cal => moment(cal.endDate).isAfter(DATE_NOW))
-        .map(cal => <OneCalendar key={cal.id} cal={cal} canEdit={true}/>)}
+        .map(cal => <OneCalendar key={cal.id} cal={cal}
+          canEdit={true} btn={f => handleClick(f, cal)}/>)}
     </div>
 
     <div className="section-header">
@@ -113,20 +137,10 @@ export function Calendar() {
 
     <div className="created-calendar-list">
       {calendars.filter(cal => moment(cal.endDate).isBefore(DATE_NOW))
-        .map(cal => <OneCalendar key={cal.id} cal={cal} canEdit={false}/>)}
+        .map(cal => <OneCalendar key={cal.id} cal={cal}
+          canEdit={false} btn={f => handleClick(f, cal)}/>)}
     </div>
 
-    {showRemind && <div id="remind-overlay" className="overlay">
-      <div>
-        <h1>Remind Contacts</h1>
-        <div className="button-group">
-          <button className="toggle-button">Azalea</button>
-          <button className="toggle-button">Henry</button>
-          <button className="toggle-button">Will</button>
-        </div>
-        <button id="remind-submit" className="emp">Submit</button>
-        <button id="meeting-cancel">Cancel</button>
-      </div>
-    </div>}
+    {remindCal && <RemindOverlay cal={remindCal}/>}
   </main>
 }

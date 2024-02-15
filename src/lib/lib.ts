@@ -150,7 +150,7 @@ export function getCalendarGrid(year: number, month: number): moment.Moment[][] 
   return grid
 }
 
-const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+export const LOCAL_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 console.log('lib.js loaded')
 

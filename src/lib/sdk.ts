@@ -1,5 +1,5 @@
 import {EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF} from './examples.ts'
-import {Calendar, Contact, ScheduledMeeting, UserSelf} from './types.ts'
+import {Calendar, Contact, Invitation, Meeting, UserSelf} from './types.ts'
 
 /**
  * Get the contact list of the current logged-in user
@@ -16,7 +16,7 @@ export async function getContacts(): Promise<Contact[]> {
  *
  * @returns Scheduled meetings
  */
-export async function getScheduledMeetings(): Promise<ScheduledMeeting[]> {
+export async function getScheduledMeetings(): Promise<Meeting[]> {
   // TODO: Fetch scheduled meetings from server
   return EX_MEETINGS
 }
@@ -39,4 +39,27 @@ export async function getCalendars(): Promise<Calendar[]> {
 export async function getUserSelf(): Promise<UserSelf> {
   // TODO: Fetch user information from server
   return EX_SELF
+}
+
+/**
+ * Get the invitation information by its UUID
+ *
+ * @param uuid UUID of the invitation
+ */
+export async function getInvitation(uuid: string): Promise<Invitation> {
+  // TODO: Fetch invitation from server
+  return {
+    id: uuid,
+    cal: EX_CALENDARS[0],
+    meeting: {
+      id: 10,
+      calendarId: 1,
+      with: EX_CONTACTS[2],
+      title: 'Cat Meeting',
+      description: 'We should let our cats meet to see if they get along together.',
+      durationMinutes: 60,
+      regularity: 'once',
+    },
+    from: EX_SELF,
+  }
 }

@@ -27,45 +27,6 @@
 <script>
   // On page load, get the invitation parameters from the url
   $(document).ready(function () {
-    // Get the invitation parameters from the url
-    const urlParams = new URLSearchParams(window.location.search);
-    let json = urlParams.get('invitation');
-
-    if (json === null) {
-      // Redirect to home page
-      // window.location.href = "/";
-
-      // For testing purposes, use debug invitation
-      json = btoa(JSON.stringify(DEBUG_INVITATION))
-    }
-
-    // Json is in base64 format, decode it
-    const decodedJson = atob(json);
-
-    // Parse the invitation object
-    /** @type {Invitation} */
-    const inv = JSON.parse(decodedJson);
-
-    // Fill in information
-    $("#ms-participant").text(inv.participant);
-    $("#ms-organizer").text(inv.organizer);
-    $("#ms-description").text(inv.description);
-    const regularity = {
-      'once': 'This is a one-time meeting, please select a time slot that works best for you.',
-      'daily': 'This is a recurrent daily meeting, please select a time slot that works best for you.',
-      'weekly': 'This is a recurrent weekly meeting, please select a time slot that works best for you.',
-    }
-    $("#ms-regularity").text(regularity[inv.regularity]);
-
-    // Check if time zones match
-    if (inv.timezone === localTimezone) {
-      $("#ms-timezone").text("Your time zone matches the organizer's time zone.");
-    } else {
-      $("#ms-timezone").text(`The organizer's time zone is ${inv.timezone}, the calendar below has been automatically converted to your time zone.`);
-    }
-
-    // Show the page
-    $("#ms-schedule-info").css("display", "block");
 
     // Calculate days for the calendar
     const nDays = inv.availability.length
@@ -98,9 +59,8 @@
     let tmpHtml = '';
     for (const {day, interval} of suggested) {
       // Get the date and time
-      const date = (inv.regularity === 'once') ? moment(inv.startDate).add(day, 'days').format('ddd, MMM D')
-          : `Every ${moment().day(day).format('dddd')}`;
-      const time = `at ${moment().hour(Math.floor(interval / 4)).minute((interval % 4) * 15).format('h:mm A')}`;
+      const date = ;
+      const time = ``;
 
       tmpHtml += `
 <div class="suggested-card" data-day="${day}" data-interval="${interval}">

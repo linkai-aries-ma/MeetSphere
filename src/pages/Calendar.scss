@@ -33,6 +33,11 @@ main {
     // Drop shadow
     box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2);
 
+    .button-group {
+      display: flex;
+      gap: 1rem;
+    }
+
     @media (max-width: $mobile-vw) {
       .button-group {
         display: flex;

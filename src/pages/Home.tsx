@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {useEffect, useState} from 'react'
-import {ScheduledMeeting, UserSelf} from '../lib/types.ts'
+import {Meeting, UserSelf} from '../lib/types.ts'
 import {Icon} from '@iconify/react'
 import moment from 'moment'
 import {clz} from '../lib/ui.ts'
@@ -9,7 +9,7 @@ import {getScheduledMeetings, getUserSelf} from '../lib/sdk.ts'
 
 export function Home() {
   const [self, setSelf] = useState<UserSelf | null>(null)
-  const [meetings, setMeetings] = useState<ScheduledMeeting[]>([])
+  const [meetings, setMeetings] = useState<Meeting[]>([])
   const [expanded, setExpanded] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

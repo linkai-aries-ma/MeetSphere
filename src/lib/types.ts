@@ -2,29 +2,9 @@ import moment from 'moment'
 
 export interface Invitation {
   id: string
-  title: string
-  description: string
-  location: string
-  organizer: string
-  participant: string
-
-  // Requirement for the meeting time
-  regularity: 'once' | 'daily' | 'weekly'
-  duration: number // in minutes
-  timezone: string
-  daysRequired?: number
-
-  startDate: string // Only relevant for regularity = 'once'
-}
-
-export interface FillScheduleViewProps {
-  nDays: number
-  startDate: string
-  regularity: string
-  availability?: number[][]
-
-  // CSS selector for the container to mount the schedule view
-  mountPoint: string
+  cal: Calendar
+  meeting: Meeting
+  from: UserSelf
 }
 
 /**
@@ -34,7 +14,6 @@ export enum Preference {
   high = 3,
   medium = 2,
   low = 1,
-  none = 0,
 }
 
 /**
@@ -55,8 +34,10 @@ export interface Meeting {
   calendarId: number
   with: Contact
   title: string
+  location?: string
   description: string
   durationMinutes: number
+  regularity: 'once' | 'daily' | 'weekly'
 
   // A meeting would be pending response if time is not set
   time?: string // ISO time
@@ -86,6 +67,8 @@ export interface Calendar {
   // Metadata
   created: string // ISO time
   modified: string // ISO time
+  timeSlots: TimeSlot[]
+  timezone: string
 }
 
 /**

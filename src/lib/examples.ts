@@ -36,6 +36,7 @@ export const EX_MEETINGS: Meeting[] = [
     description: 'We should discuss the layout of the website.',
     time: '2024-01-28T10:00:00',
     durationMinutes: 60,
+    regularity: 'once',
   },
   {
     id: 2,
@@ -45,6 +46,7 @@ export const EX_MEETINGS: Meeting[] = [
     description: 'We should finalize the schedule page and its features.',
     time: '2024-01-28T14:00:00',
     durationMinutes: 30,
+    regularity: 'weekly',
   },
   {
     id: 3,
@@ -54,6 +56,7 @@ export const EX_MEETINGS: Meeting[] = [
     description: 'We should let our cats meet to see if they get along together.',
     time: '2024-01-30T16:00:00',
     durationMinutes: 45,
+    regularity: 'daily',
   },
   {
     id: 4,
@@ -62,6 +65,7 @@ export const EX_MEETINGS: Meeting[] = [
     title: 'Integration of Pages',
     description: 'We should integrate our pages to work together.',
     durationMinutes: 30,
+    regularity: 'once',
   }
 ]
 
@@ -72,6 +76,55 @@ export const EX_CALENDARS: Calendar[] = [
     endDate: '2024-02-02',
     created: '2024-01-25T15:38:00',
     modified: '2024-01-25T18:50:00',
+    timezone: 'America/New_York',
+
+    timeSlots: [
+      {
+        startTime: '2024-01-27T09:00:00',
+        endTime: '2024-01-27T10:00:00',
+        preference: 3,
+      },
+      {
+        startTime: '2024-01-27T10:00:00',
+        endTime: '2024-01-27T11:00:00',
+        preference: 2,
+      },
+      {
+        startTime: '2024-01-27T11:00:00',
+        endTime: '2024-01-27T12:00:00',
+        preference: 1,
+      },
+      {
+        startTime: '2024-01-27T13:00:00',
+        endTime: '2024-01-27T14:00:00',
+        preference: 3,
+      },
+      {
+        startTime: '2024-01-27T14:00:00',
+        endTime: '2024-01-27T15:00:00',
+        preference: 2,
+      },
+      {
+        startTime: '2024-01-27T15:00:00',
+        endTime: '2024-01-27T16:00:00',
+        preference: 1,
+      },
+      {
+        startTime: '2024-01-27T17:00:00',
+        endTime: '2024-01-27T18:00:00',
+        preference: 3,
+      },
+      {
+        startTime: '2024-01-27T18:00:00',
+        endTime: '2024-01-27T19:00:00',
+        preference: 2,
+      },
+      {
+        startTime: '2024-01-27T19:00:00',
+        endTime: '2024-01-27T20:00:00',
+        preference: 1,
+      },
+    ],
 
     meetings: EX_MEETINGS,
   },
@@ -81,6 +134,20 @@ export const EX_CALENDARS: Calendar[] = [
     endDate: '2024-01-10',
     created: '2024-01-03T12:00:00',
     modified: '2024-01-03T12:00:00',
+    timezone: 'America/New_York',
+
+    timeSlots: [
+      {
+        startTime: '2024-01-05T09:00:00',
+        endTime: '2024-01-05T14:00:00',
+        preference: 3,
+      },
+      {
+        startTime: '2024-01-07T10:00:00',
+        endTime: '2024-01-07T20:00:00',
+        preference: 2,
+      },
+    ],
 
     meetings: [
       {
@@ -90,6 +157,8 @@ export const EX_CALENDARS: Calendar[] = [
         title: 'Arcade Session',
         description: '',
         durationMinutes: 60,
+        regularity: 'once',
+        time: '2024-01-07T19:00:00',
       },
     ],
   }
@@ -98,5 +167,5 @@ export const EX_CALENDARS: Calendar[] = [
 export const EX_SELF: UserSelf = {
   id: 1,
   name: 'LinKai',
-  email: 'linkai@example.com'
+  email: 'linkai@example.com',
 }
