@@ -18,6 +18,15 @@ poetry run python manage.py migrate
 To run the frontend, run `yarn dev`
 To run the backend, run `poetry run python manage.py runserver`
 
+#### Changing Database
+
+After a database model is changed, run the following
+
+```shell
+poetry run python manage.py makemigrations
+poetry run python manage.py migrate
+```
+
 ### Requirements
 
 **Welcome/Index Page**
