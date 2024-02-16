@@ -29,17 +29,38 @@ export async function post(node: string, body?: object): Promise<any> {
   return response.json()
 }
 
+/**
+ * Register a new user
+ *
+ * @param name
+ * @param email
+ * @param password
+ */
 export async function register(name: string, email: string, password: string): Promise<void> {
-  return await post('register', { name, email, password })
+  await post('register', { name, email, password })
+
+  // Login the user
+  await login(email, password)
 }
 
+interface LoginResponse {
+  token: string
+}
+
+/**
+ * Log in the user
+ *
+ * @param email
+ * @param password
+ */
 export async function login(email: string, password: string): Promise<void> {
-  const resp = await post('login', { email, password })
+  const resp: LoginResponse = await post('login', { email, password })
 
   // Store the token
   localStorage.setItem('token', resp.token)
 
-  return resp
+  // Redirect to the home page
+  window.location.href = '/home'
 }
 
 /**
