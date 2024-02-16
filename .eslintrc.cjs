@@ -24,13 +24,14 @@ module.exports = {
             { allowConstantExport: true },
         ],
 
-        // Custom rules
+        // Custom styling rules
         'comma-dangle': ['warn', 'only-multiline'],
         'indent': ['warn', 2],
         'semi': ['warn', 'never'],
         'quotes': ['warn', 'single'],
         'arrow-parens': ['warn', 'as-needed'],
         'linebreak-style': ['warn', 'unix'],
+        'object-curly-spacing': ['warn', 'always'],
 
         // Disabled rules
         'no-unused-vars': 'off',

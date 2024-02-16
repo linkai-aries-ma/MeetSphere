@@ -1,12 +1,12 @@
 import * as React from 'react'
-import {useEffect, useState} from 'react'
-import {Meeting, UserSelf} from '../lib/types.ts'
-import {Icon} from '@iconify/react'
+import { useEffect, useState } from 'react'
+import { Meeting, UserSelf } from '../lib/types.ts'
+import { Icon } from '@iconify/react'
 import moment from 'moment'
-import {clz} from '../lib/ui.ts'
+import { clz } from '../lib/ui.ts'
 import './Home.scss'
-import {getScheduledMeetings, getUserSelf} from '../lib/sdk.ts'
-import {Loading} from '../components/Loading.tsx'
+import { getScheduledMeetings, getUserSelf } from '../lib/sdk.ts'
+import { Loading } from '../components/Loading.tsx'
 
 export function Home() {
   const [self, setSelf] = useState<UserSelf | null>(null)
@@ -56,7 +56,7 @@ export function Home() {
           {meetings.map(meeting => (
             <article
               key={meeting.id}
-              className={clz({opened: expanded.includes(meeting.id)}, 'meeting')}
+              className={clz({ opened: expanded.includes(meeting.id) }, 'meeting')}
               onClick={() => toggleMeeting(meeting.id)}>
 
               <div className="meeting-content">

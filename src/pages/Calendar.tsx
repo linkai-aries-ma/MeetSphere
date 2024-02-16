@@ -1,13 +1,13 @@
 import * as React from 'react'
-import {Icon} from '@iconify/react'
-import {Calendar} from '../lib/types.ts'
-import {useEffect, useState} from 'react'
-import {getCalendars} from '../lib/sdk.ts'
+import { Icon } from '@iconify/react'
+import { Calendar } from '../lib/types.ts'
+import { useEffect, useState } from 'react'
+import { getCalendars } from '../lib/sdk.ts'
 import moment from 'moment'
-import {DATE_NOW, getMeetingStatus} from '../lib/lib.ts'
+import { DATE_NOW, getMeetingStatus } from '../lib/lib.ts'
 import './Calendar.scss'
 
-function RemindOverlay({cal}: {cal: Calendar}) {
+function RemindOverlay({ cal }: {cal: Calendar}) {
   // TODO: Make buttons work
 
   return <div id="remind-overlay" className="overlay">
@@ -28,9 +28,9 @@ interface OneCalendarProps {
   btn: (name: string) => void
 }
 
-function OneCalendar({cal, canEdit, btn}: OneCalendarProps) {
+function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
   const events = cal.meetings.map(m => {
-    return {m, st: getMeetingStatus(m)}
+    return { m, st: getMeetingStatus(m) }
   })
 
   // Sort by time descending (if it doesn't have time, place at the top)

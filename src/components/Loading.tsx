@@ -1,13 +1,13 @@
 import * as React from 'react'
 import './Loading.sass'
-import {Icon} from '@iconify/react'
+import { Icon } from '@iconify/react'
 
 interface LoadingProps {
     loading: boolean
     error: string | null
 }
 
-export function Loading({loading, error}: LoadingProps) {
+export function Loading({ loading, error }: LoadingProps) {
   return <>
     {loading && <div className="overlay">
       <div className="spinner">

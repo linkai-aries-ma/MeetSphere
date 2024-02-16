@@ -1,5 +1,5 @@
-import {EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF} from './examples.ts'
-import {Calendar, Contact, Invitation, Meeting, UserSelf} from './types.ts'
+import { EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF } from './examples.ts'
+import { Calendar, Contact, Invitation, Meeting, UserSelf } from './types.ts'
 
 /**
  * Get the contact list of the current logged-in user

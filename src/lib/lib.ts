@@ -1,5 +1,5 @@
 import moment from 'moment'
-import {Meeting, MeetingStatus} from './types.ts'
+import { Meeting, MeetingStatus } from './types.ts'
 
 // TODO: Use actual data
 export const DATE_NOW = moment('2024-01-28T12:00:00')

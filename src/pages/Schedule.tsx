@@ -1,12 +1,12 @@
 import * as React from 'react'
-import {Invitation, Preference, TimeSlot} from '../lib/types.ts'
-import {useEffect, useState} from 'react'
-import {getInvitation} from '../lib/sdk.ts'
-import {LOCAL_TZ} from '../lib/lib.ts'
+import { Invitation, Preference, TimeSlot } from '../lib/types.ts'
+import { useEffect, useState } from 'react'
+import { getInvitation } from '../lib/sdk.ts'
+import { LOCAL_TZ } from '../lib/lib.ts'
 import './Schedule.scss'
 import moment from 'moment'
-import {CalendarView} from '../components/CalendarView.tsx'
-import {Loading} from '../components/Loading.tsx'
+import { CalendarView } from '../components/CalendarView.tsx'
+import { Loading } from '../components/Loading.tsx'
 
 const regularity = {
   'once': 'This is a one-time meeting, please select a time slot that works best for you.',
@@ -14,7 +14,7 @@ const regularity = {
   'weekly': 'This is a recurrent weekly meeting, please select a time slot that works best for you.',
 }
 
-export function Schedule({uuid}: {uuid: string}) {
+export function Schedule({ uuid }: {uuid: string}) {
   const [invitation, setInvitation] = useState<Invitation | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)

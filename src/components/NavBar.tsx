@@ -1,7 +1,7 @@
 import * as React from 'react'
-import {clz} from '../lib/ui.ts'
-import {LoginOverlay} from './LoginOverlay.tsx'
-import {useState} from 'react'
+import { clz } from '../lib/ui.ts'
+import { LoginOverlay } from './LoginOverlay.tsx'
+import { useState } from 'react'
 
 export function NavBar(): React.JSX.Element {
   const path = window.location.pathname
@@ -41,7 +41,7 @@ export function NavBar(): React.JSX.Element {
           <div className="right" id="ms-nav-portal">
             {Object.keys(paths).map(key => (
               <a href={paths[key]} key={key}>
-                <button className={clz({emp: path.toLowerCase().startsWith(paths[key])})}>{key}</button>
+                <button className={clz({ emp: path.toLowerCase().startsWith(paths[key]) })}>{key}</button>
               </a>
             ))}
           </div>
