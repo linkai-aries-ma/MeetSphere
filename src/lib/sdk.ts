@@ -1,6 +1,47 @@
 import { EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF } from './examples.ts'
 import { Calendar, Contact, Invitation, Meeting, UserSelf } from './types.ts'
 
+const HOST = 'http://localhost:8000'
+
+
+/**
+ * Post data to the server
+ *
+ * @param node API endpoint
+ * @param body Request body object
+ */
+export async function post(node: string, body?: object): Promise<any> {
+  const response = await fetch(`${HOST}/${node}/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body ?? {}),
+  })
+
+  if (!response.ok) {
+    const result = await response.json()
+
+    // If result has only one field, treat it as an error message
+    if (Object.keys(result).length === 1)
+      throw new Error(result[Object.keys(result)[0]])
+    throw new Error(result.message || 'An error occurred')
+  }
+
+  return response.json()
+}
+
+export async function register(name: string, email: string, password: string): Promise<void> {
+  return await post('register', { name, email, password })
+}
+
+export async function login(email: string, password: string): Promise<void> {
+  const resp = await post('login', { email, password })
+
+  // Store the token
+  localStorage.setItem('token', resp.token)
+
+  return resp
+}
+
 /**
  * Get the contact list of the current logged-in user
  *

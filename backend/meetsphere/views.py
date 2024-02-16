@@ -20,15 +20,7 @@ def user_register(request):
 def user_login(request):
     serializer = UserLoginSerializer(data=request.data)
     if serializer.is_valid():
-        user = authenticate(
-            email=serializer.validated_data['email'],
-            password=serializer.validated_data['password']
-        )
-        if user is not None:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'token': str(refresh.token),
-            })
-        return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        user = serializer.validated_data
+        refresh = RefreshToken.for_user(user)
+        return Response({'token': str(refresh.token)})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
