@@ -1,28 +1,22 @@
 ### Development Instructions
 
-To setup, please install python 3.12 and [sass](https://sass-lang.com/install/) first.
+To setup, please install python 3.12 and nodejs first.
 
-Then, run the following commands:
+Then, setup the environment by running the following commands:
 
 ```bash
+npm i -g yarn
+yarn install
+
 python3 -m venv venv
-pip install -r requirements.txt
+source venv/bin/activate
+pip install poetry
+poetry install
+poetry run python manage.py migrate
 ```
 
-To run the dev server, run the following command:
-
-```bash
-./run.sh
-```
-
-To build the frontend into static html, run the following command:
-
-```bash
-./run.sh --build-only
-```
-
-Note: You should NEVER edit files in `P1`. These files are generated. You should always edit files in `src`, and running the script will update the generated files automatically.
-
+To run the frontend, run `yarn dev`
+To run the backend, run `poetry run python manage.py runserver`
 
 ### Requirements
 
