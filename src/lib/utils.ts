@@ -13,13 +13,25 @@ export function shuffle(array: any[]): any[] {
   while (currentIndex > 0) {
     // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex)
-    currentIndex--
+    currentIndex--;
 
     // And swap it with the current element.
-    ;[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
+    [ array[currentIndex], array[randomIndex] ] = [ array[randomIndex], array[currentIndex] ]
   }
 
   return array
+}
+
+/**
+ * Toggle the value in the array.
+ *
+ * @param arr Array to toggle
+ * @param value Value to toggle
+ * @returns New array with the value toggled
+ */
+export function toggle(arr: any[], value: any): any[] {
+  if (arr.includes(value)) return arr.filter(v => v !== value)
+  return [ ...arr, value ]
 }
 
 /**
