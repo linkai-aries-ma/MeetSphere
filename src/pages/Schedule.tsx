@@ -15,12 +15,12 @@ const regularity = {
 }
 
 export function Schedule({ uuid }: {uuid: string}) {
-  const [invitation, setInvitation] = useState<Invitation | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [ invitation, setInvitation ] = useState<Invitation | null>(null)
+  const [ error, setError ] = useState<string | null>(null)
+  const [ loading, setLoading ] = useState(true)
 
   // Computed
-  const [suggestedSlots, setSuggestedSlots] = useState<TimeSlot[]>([])
+  const [ suggestedSlots, setSuggestedSlots ] = useState<TimeSlot[]>([])
 
   // Fetch invitation
   useEffect(() => {
@@ -31,7 +31,7 @@ export function Schedule({ uuid }: {uuid: string}) {
       const selected: TimeSlot[] = [];
 
       // Select high availability time slots first
-      [Preference.high, Preference.medium, Preference.low].forEach(p => {
+      [ Preference.high, Preference.medium, Preference.low ].forEach(p => {
         // Check if the time slot is long enough
         const slots = inv.cal.timeSlots.filter(slot => slot.preference === p)
           .filter(slot => moment(slot.endTime).diff(slot.startTime, 'minutes') >= inv.meeting.durationMinutes)

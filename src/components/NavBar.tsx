@@ -6,8 +6,8 @@ import { useState } from 'react'
 export function NavBar(): React.JSX.Element {
   const path = window.location.pathname
   const isLogin = path === '/'
-  const [isSignup, setIsSignup] = useState(false)
-  const [loginOverlay, setLoginOverlay] = useState(false)
+  const [ isSignup, setIsSignup ] = useState(false)
+  const [ loginOverlay, setLoginOverlay ] = useState(false)
 
   const paths = {
     home: '/home',

@@ -10,8 +10,8 @@ interface CalendarViewProps {
 }
 
 export function CalendarView({ cal, meeting }: CalendarViewProps) {
-  const [nDays, setNDays] = useState<number>(0)
-  const [tsIndex, setTsIndex] = useState<{[key: string]: TimeSlot[]}>({})
+  const [ nDays, setNDays ] = useState<number>(0)
+  const [ tsIndex, setTsIndex ] = useState<{[key: string]: TimeSlot[]}>({})
 
   // Compute values based on properties
   useEffect(() => {

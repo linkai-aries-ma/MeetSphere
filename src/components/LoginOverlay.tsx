@@ -7,11 +7,11 @@ interface LoginOverlayProps {
 }
 
 export function LoginOverlay({ isSignup, close }: LoginOverlayProps): React.JSX.Element {
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirm, setPasswordConfirm] = useState('')
-  const [error, setError] = useState('')
+  const [ username, setUsername ] = useState('')
+  const [ email, setEmail ] = useState('')
+  const [ password, setPassword ] = useState('')
+  const [ passwordConfirm, setPasswordConfirm ] = useState('')
+  const [ error, setError ] = useState('')
 
   function handleClick() {
     // Check if all fields have value

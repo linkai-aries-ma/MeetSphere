@@ -28,7 +28,7 @@ export function getMeetingStatus(event: Meeting): MeetingStatus {
  */
 export function getCalendarGrid(year: number, month: number): moment.Moment[][] {
   // Get the day of the week of the first day of the month
-  let date = moment([year, month, 1])
+  let date = moment([ year, month, 1 ])
   const dow = date.day()
 
   // Grid row

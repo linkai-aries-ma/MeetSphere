@@ -9,16 +9,16 @@ import { getScheduledMeetings, getUserSelf } from '../lib/sdk.ts'
 import { Loading } from '../components/Loading.tsx'
 
 export function Home() {
-  const [self, setSelf] = useState<UserSelf | null>(null)
-  const [meetings, setMeetings] = useState<Meeting[]>([])
-  const [expanded, setExpanded] = useState<number[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [ self, setSelf ] = useState<UserSelf | null>(null)
+  const [ meetings, setMeetings ] = useState<Meeting[]>([])
+  const [ expanded, setExpanded ] = useState<number[]>([])
+  const [ loading, setLoading ] = useState(true)
+  const [ error, setError ] = useState<string | null>(null)
 
   // Initial fetch
   useEffect(() => {
-    Promise.all([getScheduledMeetings(), getUserSelf()])
-      .then(([meetings, user]) => {
+    Promise.all([ getScheduledMeetings(), getUserSelf() ])
+      .then(([ meetings, user ]) => {
         setMeetings(meetings)
         setSelf(user)
       })
@@ -27,7 +27,7 @@ export function Home() {
   }, [])
 
   const toggleMeeting = (id: number) => {
-    setExpanded(prev => (prev.includes(id) ? prev.filter(meetingId => meetingId !== id) : [...prev, id]))
+    setExpanded(prev => (prev.includes(id) ? prev.filter(meetingId => meetingId !== id) : [ ...prev, id ]))
     console.log('toggle', id, expanded)
   }
 

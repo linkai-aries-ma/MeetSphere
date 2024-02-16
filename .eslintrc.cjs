@@ -21,7 +21,7 @@ module.exports = {
     rules: {
         'react-refresh/only-export-components': [
             'warn',
-            { allowConstantExport: true },
+            {allowConstantExport: true},
         ],
 
         // Custom styling rules
@@ -32,6 +32,11 @@ module.exports = {
         'arrow-parens': ['warn', 'as-needed'],
         'linebreak-style': ['warn', 'unix'],
         'object-curly-spacing': ['warn', 'always'],
+        'array-bracket-spacing': ["error", "always", {
+            "singleValue": false,
+            "objectsInArrays": false,
+            "arraysInArrays": false
+        }],
 
         // Disabled rules
         'no-unused-vars': 'off',

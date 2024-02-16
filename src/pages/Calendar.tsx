@@ -97,10 +97,10 @@ function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
 }
 
 export function Calendar() {
-  const [calendars, setCalendars] = useState<Calendar[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [remindCal, setRemindCal] = useState<Calendar | null>(null)
+  const [ calendars, setCalendars ] = useState<Calendar[]>([])
+  const [ error, setError ] = useState<string | null>(null)
+  const [ loading, setLoading ] = useState(true)
+  const [ remindCal, setRemindCal ] = useState<Calendar | null>(null)
 
   // Initial fetch
   useEffect(() => {
