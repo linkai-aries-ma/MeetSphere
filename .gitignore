@@ -27,3 +27,4 @@ dist-ssr
 P1/*
 venv
 __pycache__
+db.sqlite3
