@@ -27,13 +27,25 @@ POST `/register` (Unauthenticated)
 * email: string
 * password: string
 
-## TODO
+## User Management
+
+Assigned to Azalea
+
+### Get User
+GET `/user`
+
+Returns:
+
+* user: User
 
 ### Edit User
 PUT `/user`
 
-* name: string
-* email: string
+* user: User
+
+## Contact Management
+
+Assigned to LinKai
 
 ### List Contacts
 GET `/contacts`
@@ -62,6 +74,10 @@ POST `/contacts/:id/picture`
 ### Delete Contact
 DELETE `/contacts/:id`
 
+## Calendar Management
+
+Assigned to Will
+
 ### List Calendars
 GET `/calendars`
 
@@ -81,6 +97,10 @@ PUT `/calendars/:id`
 
 ### Delete Calendar
 DELETE `/calendars/:id`
+
+## Meeting Management
+
+Assigned to Henry & Azalea
 
 ### List Meetings for Calendar
 GET `/calendars/:id/meetings`
