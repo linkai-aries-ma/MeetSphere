@@ -38,7 +38,7 @@ class Meeting(models.Model):
     # People
     calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='meetings')
     creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='meetings')
-    invitee = models.OneToOneField(Contact, related_name='meetings', field_name='participant', to=Contact)
+    invitee = models.OneToOneField(Contact, on_delete=models.CASCADE, related_name='meetings')
 
     # Time
     start_time = models.DateTimeField()
