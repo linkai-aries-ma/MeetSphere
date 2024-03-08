@@ -22,5 +22,5 @@ def user_login(request):
     if serializer.is_valid():
         user = serializer.validated_data
         refresh = RefreshToken.for_user(user)
-        return Response({'token': str(refresh.token)})
+        return Response({'token': str(refresh)})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
