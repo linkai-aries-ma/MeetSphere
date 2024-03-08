@@ -60,3 +60,12 @@ def list_contacts(request):
     contacts = Contact.objects.filter(owner=request.user)
     serializer = AddContactSerializer(contacts, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def add_calendar(request):
+    if request.method == 'POST':
+        serializer = AddCalendarSerializer(data=request.data)
+        if serializer.is_valid():
+            calendar = serializer.save(owner=request.user)  # Assuming the authenticated user is the owner
+            return Response({'id': calendar.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
