@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, Contact, Calendar, Meeting
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -24,3 +24,9 @@ class UserLoginSerializer(serializers.Serializer):
         if user is None or not user.is_active:
             raise serializers.ValidationError("Invalid login credentials.")
         return user
+
+
+class AddContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = ['name', 'email', 'profile_image']

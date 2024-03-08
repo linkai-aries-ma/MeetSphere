@@ -17,10 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from .meetsphere.views import user_register, user_login
+from .meetsphere.views import user_register, user_login, add_contact, delete_contact, list_contacts, user_logout
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', user_register, name='register'),
     path('login/', user_login, name='login'),
+    path('add_contact/', add_contact, name='add_contact'),
+    path('delete_contact/', delete_contact, name='delete_contact'),
+    path('list_contacts/', list_contacts, name='list_contacts'),
+    path('logout/', user_logout, name='logout'),
 ]

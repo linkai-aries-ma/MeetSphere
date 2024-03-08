@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "meetsphere"
+name = "backend"
 version = "0.1.0"
 description = "CSC309 Course Project - 1 on 1 meeting web application"
 authors = ["Your Name <you@example.com>"]
