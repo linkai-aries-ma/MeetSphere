@@ -31,8 +31,9 @@ class UserLoginSerializer(serializers.Serializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'name', 'email', 'password']
+        fields = ['id', 'name', 'email', 'password', 'profile_image']
         read_only_fields = ['id']
+        extra_kwargs = {'password': {'write_only': True}}
 
 
 class AddContactSerializer(serializers.ModelSerializer):

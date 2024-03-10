@@ -1,5 +1,6 @@
 import { EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF } from './examples.ts'
 import { Calendar, Contact, Invitation, Meeting, UserSelf } from './types.ts'
+import { RequestInit } from 'node/globals'
 
 const HOST = 'http://localhost:8000'
 
@@ -13,16 +14,31 @@ const HOST = 'http://localhost:8000'
  */
 export async function send(node: string, body?: object, method: string = 'POST'): Promise<any> {
   const headers = { 'Content-Type': 'application/json' }
+  const init: RequestInit = { method, headers }
+
+  // Add token if exists
   if (localStorage.getItem('token')) {
     headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`
   }
 
-  const response = await fetch(`${HOST}/${node}/`, {
-    method, headers, body: body ? JSON.stringify(body) : undefined,
-  })
+  // Add body, treat file as multipart/form-data
+  if (body instanceof File) {
+    const formData = new FormData()
+    formData.append('file', body)
+    init.body = formData
+    headers['Content-Type'] = 'multipart/form-data'
+  }
+  else if (body) init.body = JSON.stringify(body)
+
+  const response = await fetch(`${HOST}/${node}/`, init)
+  const resp = await response.text()
 
   if (!response.ok) {
-    const result = await response.json()
+    let result: any
+    try {
+      result = JSON.parse(resp)
+    }
+    catch (e) { throw new Error(resp) }
 
     // If result has only one field, treat it as an error message
     if (Object.keys(result).length === 1)
@@ -30,7 +46,10 @@ export async function send(node: string, body?: object, method: string = 'POST')
     throw new Error(result.message || 'An error occurred')
   }
 
-  return response.json()
+  try {
+    return JSON.parse(resp)
+  }
+  catch (e) { return resp }
 }
 
 const post = (node: string, body: object): Promise<any> => send(node, body, 'POST')
@@ -94,6 +113,7 @@ export async function getUserSelf(): Promise<UserSelf> {
 export async function updateUser(user: { name?: string, email?: string, password?: string }): Promise<UserSelf> {
   return await post('user', user)
 }
+export const uploadUserPfp = (file: File): Promise<void> => post('user/pfp', file)
 
 export const getContacts = (): Promise<Contact[]> => get('contacts')
 export const addContact = (contact: { name: string, email: string }): Promise<void> => post('contacts', contact)
