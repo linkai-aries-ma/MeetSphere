@@ -30,3 +30,17 @@ class AddContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = ['name', 'email', 'profile_image']
+
+
+class AddCalendarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Calendar
+        fields = ['start_date', 'end_date', 'availability']
+
+    def create(self, validated_data):
+        return Calendar.objects.create(**validated_data)
+    
+class CalendarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Calendar
+        fields = ['id', 'created_at', 'updated_at', 'start_date', 'end_date', 'availability']
