@@ -35,7 +35,7 @@ export async function send(node: string, body?: object, method: string = 'POST')
 
 const post = (node: string, body: object): Promise<any> => send(node, body, 'POST')
 const get = (node: string): Promise<any> => send(node, undefined, 'GET')
-const delete_ = (node: string): Promise<any> => send(node, undefined, 'DELETE')
+const delete_ = (node: string, body: object): Promise<any> => send(node, body, 'DELETE')
 
 
 /**
@@ -97,7 +97,7 @@ export async function updateUser(user: { name?: string, email?: string, password
 
 export const getContacts = (): Promise<Contact[]> => get('contacts')
 export const addContact = (contact: { name: string, email: string }): Promise<void> => post('contacts', contact)
-export const deleteContact = (id: number): Promise<void> => delete_(`contacts/${id}`)
+export const deleteContact = (id: number): Promise<void> => delete_('contacts', { id })
 
 /**
  * Get the scheduled meetings of the current logged-in user
