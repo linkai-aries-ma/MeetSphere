@@ -11,6 +11,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+        validated_data['email'] = validated_data['email'].lower()
         validated_data['password'] = make_password(validated_data.get('password'))
         return super(UserRegistrationSerializer, self).create(validated_data)
 
@@ -20,6 +21,7 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
     def validate(self, data):
+        data['email'] = data['email'].lower()
         user = authenticate(email=data.get('email'), password=data.get('password'))
         if user is None or not user.is_active:
             raise serializers.ValidationError("Invalid login credentials.")
