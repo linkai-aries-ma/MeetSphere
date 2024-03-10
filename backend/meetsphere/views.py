@@ -1,11 +1,13 @@
 from django.contrib.auth import authenticate, logout
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import AnonymousUser
 
-from backend.meetsphere.models import Contact
-from backend.meetsphere.serailizers import UserRegistrationSerializer, UserLoginSerializer, AddContactSerializer
+
+from backend.meetsphere.models import Contact, Calendar
+from backend.meetsphere.serailizers import UserRegistrationSerializer, UserLoginSerializer, AddContactSerializer, AddCalendarSerializer, CalendarSerializer
 
 
 @api_view(['POST'])
@@ -66,6 +68,35 @@ def add_calendar(request):
     if request.method == 'POST':
         serializer = AddCalendarSerializer(data=request.data)
         if serializer.is_valid():
-            calendar = serializer.save(owner=request.user)  # Assuming the authenticated user is the owner
+            calendar = serializer.save(owner=request.user)
             return Response({'id': calendar.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['GET', 'PUT', 'PATCH'])
+def calendar(request):
+    if request.method == 'GET':
+        if isinstance(request.user, AnonymousUser):
+            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            calendar = Calendar.objects.get(owner=request.user.pk)  # Use user's primary key
+            serializer = CalendarSerializer(calendar)
+            return Response(serializer.data)
+        except Calendar.DoesNotExist:
+            return Response({'error': 'Calendar not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    elif request.method in ['PUT', 'PATCH']:
+        if isinstance(request.user, AnonymousUser):
+            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            calendar = Calendar.objects.get(owner=request.user.pk)
+        except Calendar.DoesNotExist:
+            return Response({'error': 'Calendar not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CalendarSerializer(calendar, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

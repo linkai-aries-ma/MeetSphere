@@ -39,3 +39,8 @@ class AddCalendarSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Calendar.objects.create(**validated_data)
+    
+class CalendarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Calendar
+        fields = ['id', 'created_at', 'updated_at', 'start_date', 'end_date', 'availability']
