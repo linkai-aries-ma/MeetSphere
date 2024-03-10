@@ -138,3 +138,4 @@ def test_email(request: Request):
         ["azalea@hydev.org"],
         fail_silently=False,
     )
+    return Response(status=status.HTTP_200_OK)
