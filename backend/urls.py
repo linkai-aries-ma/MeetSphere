@@ -27,5 +27,7 @@ urlpatterns = [
     path('user/', user_info, name='View/Edit user info (GET/POST)'),
     path('contacts/', contacts, name='Add/List/Delete contacts (GET/POST/DELETE)'),
     path('add_calendar/', add_calendar, name='Add calendar (POST)'),
-    path('calendar/', calendar, name='Calendar (GET/POST)')
+    path('calendar/', calendar, name='Calendar (GET/POST)'),
+
+    path('test-send-email/', test_email)
 ]

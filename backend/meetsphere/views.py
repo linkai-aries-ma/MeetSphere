@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.contrib.auth import logout
+from django.core.mail import send_mail
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -8,8 +10,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import AnonymousUser
 
 
-from backend.meetsphere.models import *
-from backend.meetsphere.serailizers import *
+from .models import *
+from .serailizers import *
 
 
 @api_view(['POST'])
@@ -124,3 +126,15 @@ def calendar(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def test_email(request: Request):
+    # Send out a test email
+    send_mail(
+        "Subject here",
+        "Here is the message.",
+        settings.EMAIL_HOST_USER,
+        ["azalea@hydev.org"],
+        fail_silently=False,
+    )

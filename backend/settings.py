@@ -22,6 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ar!%xv9%&6qkhwu0dsyk8&g6@c1u0z$#_4n&5_yv+$38g!vmkb'
 
+# Email Configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'xiaohao6448@gmail.com'
+EMAIL_HOST_PASSWORD = 'hxmt drlb xpmq dhdw'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
