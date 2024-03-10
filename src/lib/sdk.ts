@@ -33,13 +33,10 @@ export async function send(node: string, body?: object, method: string = 'POST')
   return response.json()
 }
 
-function post(node: string, body: object): Promise<any> {
-  return send(node, body, 'POST')
-}
+const post = (node: string, body: object): Promise<any> => send(node, body, 'POST')
+const get = (node: string): Promise<any> => send(node, undefined, 'GET')
+const delete_ = (node: string): Promise<any> => send(node, undefined, 'DELETE')
 
-function get(node: string): Promise<any> {
-  return send(node, undefined, 'GET')
-}
 
 /**
  * Register a new user
@@ -98,19 +95,9 @@ export async function updateUser(user: { name?: string, email?: string, password
   return await post('user', user)
 }
 
-
-export async function addContact(contact: { name: string, email: string }): Promise<void> {
-  await post('contacts', contact)
-}
-
-/**
- * Get the contact list of the current logged-in user
- *
- * @returns Contact list
- */
-export async function getContacts(): Promise<Contact[]> {
-  return await get('contacts')
-}
+export const getContacts = (): Promise<Contact[]> => get('contacts')
+export const addContact = (contact: { name: string, email: string }): Promise<void> => post('contacts', contact)
+export const deleteContact = (id: number): Promise<void> => delete_(`contacts/${id}`)
 
 /**
  * Get the scheduled meetings of the current logged-in user

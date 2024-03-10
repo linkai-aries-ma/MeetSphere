@@ -1,4 +1,4 @@
-import { addContact, getContacts, getUserSelf, login, logout, register, updateUser } from '../sdk.ts'
+import { addContact, deleteContact, getContacts, getUserSelf, login, logout, register, updateUser } from '../sdk.ts'
 import 'whatwg-fetch'
 
 const PASSWORD = 'password123'
@@ -74,13 +74,18 @@ test('User features', async () => {
 
 test('Contact features', async () => {
   await createSession()
+  const testEmail = 'test@gmail.com'
 
   // Test get contacts
   const contacts = await getContacts()
   expect(contacts.length).toBe(0)
 
+  // Invalid input should fail
+  await expect(addContact({ name: '', email: testEmail })).rejects.toThrow()
+  await expect(addContact({ name: 'Test', email: '' })).rejects.toThrow()
+  await expect(addContact({ name: 'Test', email: 'invalidEmail' })).rejects.toThrow()
+
   // Test adding contact
-  const testEmail = 'test@gmail.com'
   await expect(addContact({ name: 'Test', email: testEmail })).resolves.not.toThrow()
 
   const newContacts = await getContacts()
@@ -88,7 +93,18 @@ test('Contact features', async () => {
   expect(newContacts[0].email).toBe(testEmail)
   expect(newContacts[0].name).toBe('Test')
 
+  // Test adding a second contact
+  const secondTestEmail = 'test2@mail.com'
+  await expect(addContact({ name: 'Test2', email: secondTestEmail })).resolves.not.toThrow()
+
+  const newContacts2 = await getContacts()
+  expect(newContacts2.length).toBe(2)
+  expect(newContacts2.find(c => c.email === secondTestEmail)).toBeTruthy()
+
   // Test adding the same contact
   await expect(addContact({ name: 'Test', email: testEmail })).rejects.toThrow()
+  await expect(addContact({ name: 'Test', email: testEmail.toUpperCase() })).rejects.toThrow()
 
+  // Delete the contacts
+  await expect(deleteContact(newContacts[0].pk)).resolves.not.toThrow()
 })

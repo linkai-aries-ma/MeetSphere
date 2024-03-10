@@ -26,7 +26,7 @@ export const PREFERENCE_STR = {
  * Contact information
  */
 export interface Contact {
-  id: number
+  pk: number
   name: string
   email: string
   pfp: string
