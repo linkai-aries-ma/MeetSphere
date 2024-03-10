@@ -98,15 +98,18 @@ export async function updateUser(user: { name?: string, email?: string, password
   return await post('user', user)
 }
 
+
+export async function addContact(contact: { name: string, email: string }): Promise<void> {
+  await post('contacts', contact)
+}
+
 /**
  * Get the contact list of the current logged-in user
  *
  * @returns Contact list
  */
 export async function getContacts(): Promise<Contact[]> {
-  // TODO: Fetch contacts from server
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  return EX_CONTACTS
+  return await get('contacts')
 }
 
 /**

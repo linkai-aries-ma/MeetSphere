@@ -1,4 +1,4 @@
-import { getUserSelf, login, logout, register, updateUser } from '../sdk.ts'
+import { addContact, getContacts, getUserSelf, login, logout, register, updateUser } from '../sdk.ts'
 import 'whatwg-fetch'
 
 const PASSWORD = 'password123'
@@ -10,6 +10,14 @@ Object.defineProperty(window, 'location', {
     assign: jest.fn(),
   },
 })
+
+
+async function createSession() {
+  const randStr = Math.random().toString(36).substring(7)
+  const email = `${randStr}@gmail.com`
+  await register(randStr, email, PASSWORD)
+  await login(email, PASSWORD)
+}
 
 
 test('User features', async () => {
@@ -61,4 +69,26 @@ test('User features', async () => {
   // getUserSelf and updateUser should throw an error after logout
   await expect(getUserSelf()).rejects.toThrow()
   await expect(updateUser({ name: 'a' })).rejects.toThrow()
+})
+
+
+test('Contact features', async () => {
+  await createSession()
+
+  // Test get contacts
+  const contacts = await getContacts()
+  expect(contacts.length).toBe(0)
+
+  // Test adding contact
+  const testEmail = 'test@gmail.com'
+  await expect(addContact({ name: 'Test', email: testEmail })).resolves.not.toThrow()
+
+  const newContacts = await getContacts()
+  expect(newContacts.length).toBe(1)
+  expect(newContacts[0].email).toBe(testEmail)
+  expect(newContacts[0].name).toBe('Test')
+
+  // Test adding the same contact
+  await expect(addContact({ name: 'Test', email: testEmail })).rejects.toThrow()
+
 })

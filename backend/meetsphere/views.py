@@ -55,39 +55,39 @@ def user_info(request: Request):
         return Response(ser.errors, status=400)
 
 
+@api_view(['GET', 'POST', 'DELETE'])
+def contacts(request: Request):
+    if request.method == 'GET':
+        contacts = Contact.objects.filter(owner=request.user)
+        serializer = AddContactSerializer(contacts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    if request.method == 'POST':
+        serializer = AddContactSerializer(data=request.data)
+        if serializer.is_valid():
+            # Check if already exists
+            if Contact.objects.filter(email=serializer.validated_data['email'], owner=request.user).exists():
+                return Response({"error": "Contact already exists"}, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'DELETE':
+        pk = request.data.get('pk')
+        if not pk:
+            return Response({"error": "Primary key is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            contact = Contact.objects.get(pk=pk, owner=request.user)
+        except Contact.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        contact.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(['POST'])
-def add_contact(request):
-    serializer = AddContactSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save(owner=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['DELETE'])
-def delete_contact(request):
-    pk = request.data.get('pk')
-    if not pk:
-        return Response({"error": "Primary key is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        contact = Contact.objects.get(pk=pk, owner=request.user)
-    except Contact.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    contact.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(['GET'])
-def list_contacts(request):
-    contacts = Contact.objects.filter(owner=request.user)
-    serializer = AddContactSerializer(contacts, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@api_view(['POST'])
-def add_calendar(request):
+def add_calendar(request: Request):
     if request.method == 'POST':
         serializer = AddCalendarSerializer(data=request.data)
         if serializer.is_valid():
@@ -97,7 +97,7 @@ def add_calendar(request):
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-@api_view(['GET', 'PUT', 'PATCH'])
+@api_view(['GET', 'PUT', 'POST'])
 def calendar(request):
     if request.method == 'GET':
         if isinstance(request.user, AnonymousUser):
@@ -110,7 +110,7 @@ def calendar(request):
         except Calendar.DoesNotExist:
             return Response({'error': 'Calendar not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    elif request.method in ['PUT', 'PATCH']:
+    elif request.method in ['PUT', 'POST']:
         if isinstance(request.user, AnonymousUser):
             return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 

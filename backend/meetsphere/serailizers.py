@@ -40,6 +40,10 @@ class AddContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = ['name', 'email', 'profile_image']
 
+    def validate(self, data):
+        data['email'] = data['email'].lower()
+        return data
+
 
 class AddCalendarSerializer(serializers.ModelSerializer):
     class Meta:
