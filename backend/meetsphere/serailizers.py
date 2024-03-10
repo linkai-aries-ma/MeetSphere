@@ -26,6 +26,13 @@ class UserLoginSerializer(serializers.Serializer):
         return user
 
 
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'name', 'email', 'password']
+        read_only_fields = ['id']
+
+
 class AddContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
@@ -39,7 +46,8 @@ class AddCalendarSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Calendar.objects.create(**validated_data)
-    
+
+
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendar

@@ -1,13 +1,15 @@
 from django.contrib.auth import logout
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import AnonymousUser
 
 
-from backend.meetsphere.models import Contact, Calendar
-from backend.meetsphere.serailizers import UserRegistrationSerializer, UserLoginSerializer, AddContactSerializer, AddCalendarSerializer, CalendarSerializer
+from backend.meetsphere.models import *
+from backend.meetsphere.serailizers import *
 
 
 @api_view(['POST'])
@@ -20,7 +22,7 @@ def user_register(request):
 
 
 @api_view(['POST'])
-def user_login(request):
+def user_login(request: Request):
     serializer = UserLoginSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.validated_data
@@ -29,10 +31,28 @@ def user_login(request):
         return Response({'token': access_token})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['POST'])
-def user_logout(request):
+def user_logout(request: Request):
     logout(request)
     return Response({"detail": "Logout successful"}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def user_info(request: Request):
+    user: CustomUser = request.user
+    if request.method == 'GET':
+        ser = CustomUserSerializer(user)
+        return Response(ser.data)
+    if request.method == 'POST':
+        ser = CustomUserSerializer(user, data=request.data, partial=True)
+        if ser.is_valid():
+            if 'password' in ser.validated_data:
+                user.set_password(ser.validated_data.pop('password'))
+            ser.save()
+            return Response(ser.data)
+        return Response(ser.errors, status=400)
 
 
 @api_view(['POST'])
@@ -42,6 +62,7 @@ def add_contact(request):
         serializer.save(owner=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['DELETE'])
 def delete_contact(request):
@@ -57,11 +78,13 @@ def delete_contact(request):
     contact.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['GET'])
 def list_contacts(request):
     contacts = Contact.objects.filter(owner=request.user)
     serializer = AddContactSerializer(contacts, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 def add_calendar(request):
@@ -72,6 +95,7 @@ def add_calendar(request):
             return Response({'id': calendar.id}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
 @api_view(['GET', 'PUT', 'PATCH'])
 def calendar(request):
