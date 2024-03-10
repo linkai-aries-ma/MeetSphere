@@ -9,12 +9,16 @@ const HOST = 'http://localhost:8000'
  *
  * @param node API endpoint
  * @param body Request body object
+ * @param method HTTP method
  */
-export async function post(node: string, body?: object): Promise<any> {
+export async function send(node: string, body?: object, method: string = 'POST'): Promise<any> {
+  const headers = { 'Content-Type': 'application/json' }
+  if (localStorage.getItem('token')) {
+    headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`
+  }
+
   const response = await fetch(`${HOST}/${node}/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body ?? {}),
+    method, headers, body: body ? JSON.stringify(body) : undefined,
   })
 
   if (!response.ok) {
@@ -27,6 +31,14 @@ export async function post(node: string, body?: object): Promise<any> {
   }
 
   return response.json()
+}
+
+function post(node: string, body: object): Promise<any> {
+  return send(node, body, 'POST')
+}
+
+function get(node: string): Promise<any> {
+  return send(node, undefined, 'GET')
 }
 
 /**
@@ -43,9 +55,7 @@ export async function register(name: string, email: string, password: string): P
   await login(email, password)
 }
 
-interface LoginResponse {
-  token: string
-}
+interface LoginResponse { token: string }
 
 /**
  * Log in the user
@@ -60,7 +70,32 @@ export async function login(email: string, password: string): Promise<void> {
   localStorage.setItem('token', resp.token)
 
   // Redirect to the home page
-  window.location.href = '/home'
+  window.location.assign('/home')
+}
+
+export async function logout(): Promise<void> {
+  await post('logout', {})
+  localStorage.removeItem('token')
+  window.location.assign('/')
+}
+
+/**
+ * Get the information of the current logged-in user
+ *
+ * @returns User information
+ */
+export async function getUserSelf(): Promise<UserSelf> {
+  return get('user')
+}
+
+/**
+ * Update the information of the current logged-in user
+ *
+ * @param user New user information
+ * @returns Updated user information
+ */
+export async function updateUser(user: { name?: string, email?: string, password?: string }): Promise<UserSelf> {
+  return await post('user', user)
 }
 
 /**
@@ -94,17 +129,6 @@ export async function getCalendars(): Promise<Calendar[]> {
   // TODO: Fetch calendars from server
   await new Promise(resolve => setTimeout(resolve, 1000))
   return EX_CALENDARS
-}
-
-/**
- * Get the information of the current logged-in user
- *
- * @returns User information
- */
-export async function getUserSelf(): Promise<UserSelf> {
-  // TODO: Fetch user information from server
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  return EX_SELF
 }
 
 /**
