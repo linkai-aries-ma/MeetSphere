@@ -75,8 +75,6 @@ test('User features', async () => {
   const file = new File([''], 'public/assets/azalea.jpg', { type: 'image/jpeg' })
   await uploadUserPfp(file)
 
-  console.log(await getUserSelf())
-
   expect((await getUserSelf()).profile_image).toBeTruthy()
 
   // Test logout
