@@ -200,17 +200,24 @@ This endpoint is used to send out an invitation email to ask the invitee to sele
 *Payload*: None \
 *Return*: None
 
+=== Send out a reminder for a meeting
+This endpoint is used to send out a reminder email. There are two cases here which are handled differently: If the invitee already accepted the invitation, the reminder will be a reminder to attend the meeting. If the invitee has not accepted the invitation, the reminder will be a reminder to select a time for the meeting.
+
+*Endpoint*: POST /meetings/{id}/remind (Authenticated) \
+*Payload*: None \
+*Return*: None
+
 === Get a meeting (from an invitation link)
-This endpoint is used to get the meeting information from a UUID sent in an invitation email.
+This endpoint is used to get the meeting information from a UUID sent in an invitation email. This endpoint is not authenticated.
 
 *Endpoint*: GET /meetings/{id} \
 *Payload*: None \
 *Return*: Meeting object
 
 === Accepting an invitation
-This endpoint is used to accept an invitation to a meeting.
+This endpoint is used to accept an invitation to a meeting. This endpoint is not authenticated.
 
-*Endpoint*: POST /meetings/{id}/accept (Authenticated) \
+*Endpoint*: POST /meetings/{id}/accept \
 *Payload*: { time: string } \
 *Return*: None
 
