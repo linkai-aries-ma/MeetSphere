@@ -2,6 +2,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from .models import CustomUser, Contact, Calendar, Meeting
+from django.utils import timezone
+from rest_framework.serializers import ListSerializer
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -51,14 +53,53 @@ class AddCalendarSerializer(serializers.ModelSerializer):
         model = Calendar
         fields = ['start_date', 'end_date', 'availability']
 
+    def validate_start_date(self, value):
+        if value < timezone.now().date():
+            raise serializers.ValidationError("Start date cannot be in the past.")
+        return value
+
+    def validate(self, attrs):
+        start_date = attrs.get('start_date')
+        end_date = attrs.get('end_date')
+
+        if start_date and end_date and end_date <= start_date:
+            raise serializers.ValidationError("End date must be after start date.")
+
+        return attrs
+
     def create(self, validated_data):
         return Calendar.objects.create(**validated_data)
 
+
+class CustomCalendarListSerializer(ListSerializer):
+    def update(self, instance, validated_data):
+        # Maps each calendar instance to its primary key for efficient lookup
+        calendar_mapping = {calendar.pk: calendar for calendar in instance}
+
+        # Loop through each item in the validated data
+        for item in validated_data:
+            # Extract the primary key of the calendar from the data
+            calendar_id = item.get('id', None)
+            if calendar_id is None:
+                # If the ID is missing, skip this item
+                continue
+
+            # Check if a calendar with this ID exists in the current instance
+            if calendar_id in calendar_mapping:
+                # If it exists, update the instance with the validated data
+                calendar = calendar_mapping[calendar_id]
+                self.child.update(calendar, item)
+            else:
+                # If it doesn't exist, create a new instance
+                instance.append(self.child.create(item))
+
+        return instance
 
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendar
         fields = ['id', 'created_at', 'updated_at', 'start_date', 'end_date', 'availability']
+        list_serializer_class = CustomCalendarListSerializer
 
 
 class AddMeetingSerializer(serializers.ModelSerializer):

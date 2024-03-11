@@ -18,7 +18,7 @@ class Calendar(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     availability = models.JSONField()
-    owner = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='calendar')
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='calendar')
 
 
 class Contact(models.Model):
