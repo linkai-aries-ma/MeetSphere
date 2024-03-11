@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -43,7 +45,7 @@ class Contact(models.Model):
 class Meeting(models.Model):
     objects: models.Manager
 
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100)
     description = models.TextField(default='')
     is_virtual = models.BooleanField(default=True)

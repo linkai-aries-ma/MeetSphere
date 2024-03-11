@@ -29,7 +29,7 @@ urlpatterns = [
     path('user/pfp/', user_profile_image, name='Change profile picture (POST)'),
     path('contacts/', contacts_api, name='Add/List/Delete/Modify contacts (GET/POST/DELETE/PATCH)'),
     path('calendar/', calendar_api, name='Add/List/Delete/Modify calendars (GET/POST/DELETE/PATCH)'),
-    path('meetings/', meetings, name='Add/List/Delete/Modify Meetings (GET/POST/DELETE/PATCH)'),
+    path('meetings/', meetings_api, name='Add/List/Delete/Modify Meetings (GET/POST/DELETE/PATCH)'),
     path('confirm_meeting/', confirm_meeting, name='Confirm Meetings (PATCH)'),
 
     path('test-send-email/', test_email)

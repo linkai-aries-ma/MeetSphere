@@ -1,9 +1,9 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from .models import CustomUser, Contact, Calendar, Meeting
-from django.utils import timezone
 from rest_framework.serializers import ListSerializer
+
+from .models import CustomUser, Contact, Calendar, Meeting
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
