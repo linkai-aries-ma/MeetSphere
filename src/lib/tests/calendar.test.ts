@@ -30,6 +30,16 @@ test('Calendar features', async () => {
   await expect(CALENDAR.delete(calendars.find(calendar => calendar.start_date === '2022-12-16').id))
     .resolves.not.toThrow()
 
+  // Check if the fields in the calendar are properly created
+  const calendar = (await CALENDAR.list())[0]
+  expect(calendar.start_date).toBe('2022-12-12')
+  expect(calendar.end_date).toBe('2022-12-15')
+  expect(calendar.timezone).toBe('America/New_York')
+  expect(calendar.id >= 0).toBeTruthy()
+  expect(calendar.created).toBeTruthy()
+  expect(calendar.modified).toBeTruthy()
+  expect(calendar.time_slots).toEqual([])
+
   // Add time slots
   await expect(CALENDAR.update({
     id: calendars[0].id,
@@ -61,6 +71,20 @@ test('Calendar features', async () => {
 
   // Check if fields are still there
   expect((await CALENDAR.list())[0].timezone).toBe('America/Los_Angeles')
+
+  await deleteSession()
+})
+
+
+test('Calendar error handling', async () => {
+  await createSession()
+
+  // Invalid input: start date after end date
+  await expect(CALENDAR.add({
+    start_date: '2022-12-16',
+    end_date: '2022-12-15',
+    timezone: 'America/New_York',
+  })).rejects.toThrow()
 
   await deleteSession()
 })

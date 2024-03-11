@@ -51,12 +51,7 @@ class AddContactSerializer(serializers.ModelSerializer):
 class AddCalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendar
-        fields = ['start_date', 'end_date', 'availability']
-
-    def validate_start_date(self, value):
-        if value < timezone.now().date():
-            raise serializers.ValidationError("Start date cannot be in the past.")
-        return value
+        fields = ['start_date', 'end_date', 'timezone']
 
     def validate(self, attrs):
         start_date = attrs.get('start_date')
@@ -68,7 +63,7 @@ class AddCalendarSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        return Calendar.objects.create(**validated_data)
+        return Calendar.objects.create(**validated_data, time_slots=[])
 
 
 class CustomCalendarListSerializer(ListSerializer):
@@ -95,17 +90,19 @@ class CustomCalendarListSerializer(ListSerializer):
 
         return instance
 
+
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendar
-        fields = ['id', 'created_at', 'updated_at', 'start_date', 'end_date', 'availability']
+        fields = ['id', 'created', 'modified', 'start_date', 'end_date', 'time_slots', 'timezone']
         list_serializer_class = CustomCalendarListSerializer
 
 
 class AddMeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
-        fields = ['id', 'title', 'description', 'location', 'is_virtual', 'invitee', 'start_time', 'duration', 'calendar', 'confirmed']
+        fields = ['id', 'title', 'description', 'location', 'is_virtual', 'invitee', 'time', 'duration', 'calendar']
+
 
 class ConfirmMeetingSerializer(serializers.ModelSerializer):
     start_time = serializers.DateTimeField(required=True)
@@ -113,9 +110,11 @@ class ConfirmMeetingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Meeting
-        fields = ['start_time', 'duration', 'confirmed']
+        fields = ['start_time', 'duration']
+
 
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
-        fields = ['id', 'title', 'description', 'location', 'is_virtual', 'created_at', 'updated_at', 'calendar', 'creator', 'invitee', 'start_time', 'duration', 'confirmed']
+        fields = ['id', 'title', 'description', 'location', 'is_virtual', 'created_at', 'updated_at', 'calendar',
+                  'creator', 'invitee', 'time', 'duration']
