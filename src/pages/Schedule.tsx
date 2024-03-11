@@ -33,8 +33,8 @@ export function Schedule({ uuid }: {uuid: string}) {
       // Select high availability time slots first
       [ Preference.high, Preference.medium, Preference.low ].forEach(p => {
         // Check if the time slot is long enough
-        const slots = inv.cal.timeSlots.filter(slot => slot.preference === p)
-          .filter(slot => moment(slot.endTime).diff(slot.startTime, 'minutes') >= inv.meeting.durationMinutes)
+        const slots = inv.cal.time_slots.filter(slot => slot.preference === p)
+          .filter(slot => moment(slot.end).diff(slot.start, 'minutes') >= inv.meeting.duration)
 
         while (slots.length > 0 && selected.length < 2) {
           const slot = slots.shift()

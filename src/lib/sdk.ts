@@ -1,6 +1,5 @@
 import { EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF } from './examples.ts'
 import { Calendar, Contact, Invitation, Meeting, UserSelf } from './types.ts'
-import { RequestInit } from 'node/globals'
 
 const HOST = 'http://localhost:8000'
 
@@ -155,12 +154,12 @@ export async function getInvitation(uuid: string): Promise<Invitation> {
     id: uuid,
     cal: EX_CALENDARS[0],
     meeting: {
-      id: 10,
+      pk: 10,
       calendarId: 1,
-      with: EX_CONTACTS[2],
+      invitee: EX_CONTACTS[2],
       title: 'Cat Meeting',
       description: 'We should let our cats meet to see if they get along together.',
-      durationMinutes: 60,
+      duration: 60,
       regularity: 'once',
     },
     from: EX_SELF,

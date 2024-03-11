@@ -15,14 +15,14 @@ export function CalendarView({ cal, meeting }: CalendarViewProps) {
 
   // Compute values based on properties
   useEffect(() => {
-    setNDays(moment(cal.endDate).diff(moment(cal.startDate), 'days') + 1)
+    setNDays(moment(cal.end_date).diff(moment(cal.start_date), 'days') + 1)
 
     // Compute time slot index
     const index = {}
 
-    cal.timeSlots.forEach(slot => {
+    cal.time_slots.forEach(slot => {
       // Extract the date and hour from the startTime
-      const startHour = moment(slot.startTime).format('YYYY-MM-DD H')
+      const startHour = moment(slot.start).format('YYYY-MM-DD H')
 
       // TODO: Fix time slots spanning multiple days
 
@@ -42,7 +42,7 @@ export function CalendarView({ cal, meeting }: CalendarViewProps) {
       <tr id="ms-schedule-header">
         <th></th>
         {meeting.regularity === 'once' && Array(nDays).fill(0).map((_, i) => <th key={i}>
-          {moment(cal.startDate).add(i, 'days').format('MM-DD')}
+          {moment(cal.start_date).add(i, 'days').format('MM-DD')}
         </th>)}
         {meeting.regularity === 'weekly' && Array(7).fill(0).map((_, i) => <th key={i}>
           {moment().day(i).format('ddd')}
@@ -54,7 +54,7 @@ export function CalendarView({ cal, meeting }: CalendarViewProps) {
         <td className="time">{hour}:00</td>
         {Array(nDays).fill(0).map((_, day) => <td key={day} className="day" data-day={day} data-hour={hour}>
           {/* Find the time slots in this bucket */}
-          {tsIndex[`${moment(cal.startDate).add(day, 'days').format('YYYY-MM-DD')} ${hour}`]?.map((slot, i) => {
+          {tsIndex[`${moment(cal.start_date).add(day, 'days').format('YYYY-MM-DD')} ${hour}`]?.map((slot, i) => {
             // Calculate height based on the duration of the slot relative to the hour
             const h = moment(slot.endTime).diff(slot.startTime, 'minutes') / 60 * 100
             const mt = moment(slot.startTime).diff(moment(slot.startTime).startOf('hour'), 'minutes') / 60 * 100

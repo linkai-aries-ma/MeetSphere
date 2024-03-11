@@ -7,10 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.models import AnonymousUser
 
-
-from .models import *
 from .serailizers import *
 
 
@@ -47,6 +44,7 @@ def user_info(request: Request):
     if request.method == 'GET':
         ser = CustomUserSerializer(user)
         return Response(ser.data)
+
     if request.method == 'POST':
         ser = CustomUserSerializer(user, data=request.data, partial=True)
         if ser.is_valid():
@@ -117,6 +115,7 @@ def contacts(request: Request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_calendar(request: Request):
     if request.method == 'POST':
         serializer = AddCalendarSerializer(data=request.data)
@@ -127,12 +126,10 @@ def add_calendar(request: Request):
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-@api_view(['GET', 'PUT', 'POST', 'DELETE'])
+@api_view(['GET', 'POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def calendar(request):
     if request.method == 'GET':
-        if isinstance(request.user, AnonymousUser):
-            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
-        
         try:
             calendar = Calendar.objects.filter(owner=request.user)
             serializer = CalendarSerializer(calendar, many=True)
@@ -140,10 +137,7 @@ def calendar(request):
         except Calendar.DoesNotExist:
             return Response({'error': 'Calendar not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    elif request.method in ['PUT', 'POST']:
-        if isinstance(request.user, AnonymousUser):
-            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
-
+    elif request.method == 'POST':
         calendar_id = request.data.get('id')
         if calendar_id is None:
             return Response({'error': 'Calendar id is required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -161,6 +155,7 @@ def calendar(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     elif request.method == 'DELETE':
         id = request.data.get('id')
         if not id:
@@ -186,6 +181,7 @@ def test_email(request: Request):
         fail_silently=False,
     )
     return Response(status=status.HTTP_200_OK)
+
 
 @api_view(['GET', 'POST', 'DELETE', 'PATCH'])
 @permission_classes([IsAuthenticated])
@@ -230,13 +226,14 @@ def meetings(request: Request):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 @api_view(['PATCH'])
 def confirm_meeting(request: Request):
     pk = request.data.get('pk')
     if not pk:
         return Response({"error": "Primary key is required"}, status=status.HTTP_400_BAD_REQUEST)
-    
+
     try:
         meeting = Meeting.objects.get(pk=pk)
     except Meeting.DoesNotExist:

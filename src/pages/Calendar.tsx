@@ -14,7 +14,7 @@ function RemindOverlay({ cal }: {cal: Calendar}) {
     <div>
       <h1>Remind Contacts</h1>
       <div className="button-group">
-        {cal.meetings.map(m => <button className="toggle-button" key={m.with.id}>{m.with.name}</button>)}
+        {cal.meetings.map(m => <button className="toggle-button" key={m.invitee.id}>{m.invitee.name}</button>)}
       </div>
       <button id="remind-submit" className="emp">Submit</button>
       <button id="meeting-cancel">Cancel</button>
@@ -39,9 +39,9 @@ function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
   return <div className="created-calendar">
     {/* Format: Jan 27th 2024 - Feb 2nd 2024 */}
     <div className="coverage">
-      {moment(cal.startDate).format('MMM Do YYYY')}
+      {moment(cal.start_date).format('MMM Do YYYY')}
       -
-      {moment(cal.endDate).format('MMM Do YYYY')}
+      {moment(cal.end_date).format('MMM Do YYYY')}
     </div>
 
     <div className="details">
@@ -74,11 +74,11 @@ function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
     </div>}
 
     <div className="events">
-      {events.map(ev => <div className={`st-${ev.st}`} key={ev.m.id}>
-        <img src={ev.m.with.pfp} alt=""/>
+      {events.map(ev => <div className={`st-${ev.st}`} key={ev.m.pk}>
+        <img src={ev.m.invitee.pfp} alt=""/>
         <div>
           <span className="name">{ev.m.title}</span>
-          <span className="member">{ev.m.with.name}</span>
+          <span className="member">{ev.m.invitee.name}</span>
           {'time' in ev.m ? <>
             <span className="date">
               {moment(ev.m.time).format('MMM Do YYYY')}

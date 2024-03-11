@@ -36,13 +36,21 @@ export interface Contact {
  * Meeting request
  */
 export interface Meeting {
-  id: number
-  calendarId: number
-  with: Contact
+  pk: number
+
   title: string
-  location?: string
   description: string
-  durationMinutes: number
+  is_virtual?: boolean
+  location?: string
+
+  created_at?: string // ISO time
+  updated_at?: string // ISO time
+
+  calendarId: number
+  creator: UserSelf
+  invitee: Contact
+
+  duration: number // minutes
   regularity: 'once' | 'weekly'
 
   // A meeting would be pending response if time is not set
@@ -55,8 +63,8 @@ export type MeetingStatus = 'invited' | 'scheduled' | 'in-progress' | 'complete'
  * A time slot indicating availability on a calendar
  */
 export interface TimeSlot {
-  startTime: string // ISO time
-  endTime: string // ISO time
+  start: string // ISO time
+  end: string // ISO time
   preference: Preference
 }
 
@@ -64,16 +72,16 @@ export interface TimeSlot {
  * A calendar for a period of time
  */
 export interface Calendar {
-  id: number
-  startDate: string // YYYY-MM-DD
-  endDate: string // YYYY-MM-DD
+  pk: number
+  start_date: string // YYYY-MM-DD
+  end_date: string // YYYY-MM-DD
 
   meetings: Meeting[]
 
   // Metadata
   created: string // ISO time
   modified: string // ISO time
-  timeSlots: TimeSlot[]
+  time_slots: TimeSlot[]
   timezone: string
 }
 
@@ -84,5 +92,5 @@ export interface UserSelf {
   id: number
   name: string
   email: string
-  profile_image: string
+  profile_image?: string
 }
