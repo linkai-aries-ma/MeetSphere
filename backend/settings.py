@@ -29,6 +29,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'xiaohao6448@gmail.com'
 EMAIL_HOST_PASSWORD = 'hxmt drlb xpmq dhdw'
 
+# Profile image uploading
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

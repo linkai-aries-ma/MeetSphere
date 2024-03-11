@@ -57,6 +57,17 @@ def user_info(request: Request):
         return Response(ser.errors, status=400)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def user_profile_image(request: Request):
+    user: CustomUser = request.user
+    if 'file' not in request.data:
+        return Response({"error": "file is required"}, status=status.HTTP_400_BAD_REQUEST)
+    user.profile_image = request.data['file']
+    user.save()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(['GET', 'POST', 'DELETE'])
 def contacts(request: Request):
     if request.method == 'GET':

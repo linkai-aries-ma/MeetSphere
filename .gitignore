@@ -29,3 +29,5 @@ venv
 __pycache__
 db.sqlite3
 *.iml
+media
+.bash_profile

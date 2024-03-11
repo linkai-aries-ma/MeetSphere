@@ -1,5 +1,16 @@
 import { EX_CALENDARS } from '../examples.ts'
-import { addContact, addCalendar, deleteContact, getCalendars, getContacts, getUserSelf, login, logout, register, updateUser, getCalendar } from '../sdk.ts'
+import {
+  addContact,
+  deleteContact,
+  getCalendar,
+  getContacts,
+  getUserSelf,
+  login,
+  logout,
+  register,
+  updateUser,
+  uploadUserPfp
+} from '../sdk.ts'
 import 'whatwg-fetch'
 
 const PASSWORD = 'password123'
@@ -61,6 +72,12 @@ test('User features', async () => {
 
   await updateUser({ password: PASSWORD })
   await login(newEmail, PASSWORD)
+
+  // Test uploading a profile picture
+  const file = new File([''], 'public/assets/azalea.jpg', { type: 'image/jpeg' })
+  await uploadUserPfp(file)
+
+  expect((await getUserSelf()).profile_image).toBeTruthy()
 
   // Test logout
   await logout()
