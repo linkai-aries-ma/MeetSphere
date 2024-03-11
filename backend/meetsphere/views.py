@@ -206,8 +206,28 @@ def meetings(request: Request):
         except Meeting.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = AddMeetingSerializer(meeting, data=request.data)
+        serializer = AddMeetingSerializer(meeting, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['PATCH'])
+def confirm_meeting(request: Request):
+    pk = request.data.get('pk')
+    if not pk:
+        return Response({"error": "Primary key is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        meeting = Meeting.objects.get(pk=pk)
+    except Meeting.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    data = request.data.copy()
+    data['confirmed'] = True
+
+    serializer = ConfirmMeetingSerializer(meeting, data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

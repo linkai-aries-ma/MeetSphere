@@ -64,10 +64,17 @@ class CalendarSerializer(serializers.ModelSerializer):
 class AddMeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
-        fields = ['title', 'description', 'location', 'is_virtual', 'invitee', 'start_time', 'duration', 'calendar']
+        fields = ['id', 'title', 'description', 'location', 'is_virtual', 'invitee', 'start_time', 'duration', 'calendar', 'confirmed']
 
+class ConfirmMeetingSerializer(serializers.ModelSerializer):
+    start_time = serializers.DateTimeField(required=True)
+    duration = serializers.DurationField(required=True)
+
+    class Meta:
+        model = Meeting
+        fields = ['start_time', 'duration', 'confirmed']
 
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
-        fields = ['id', 'title', 'description', 'location', 'is_virtual', 'created_at', 'updated_at', 'calendar', 'creator', 'invitee', 'start_time', 'duration']
+        fields = ['id', 'title', 'description', 'location', 'is_virtual', 'created_at', 'updated_at', 'calendar', 'creator', 'invitee', 'start_time', 'duration', 'confirmed']

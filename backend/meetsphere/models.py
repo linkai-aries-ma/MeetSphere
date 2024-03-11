@@ -34,6 +34,7 @@ class Meeting(models.Model):
     is_virtual = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    confirmed = models.BooleanField(default=False)
     if is_virtual:
         location = models.TextField(default='')
     else:
@@ -45,5 +46,5 @@ class Meeting(models.Model):
     invitee = models.ForeignKey(Contact, related_name='meetings', on_delete=models.CASCADE)
 
     # Time
-    start_time = models.DateTimeField()
-    duration = models.DurationField()
+    start_time = models.DateTimeField(null=True, blank=True)
+    duration = models.DurationField(null=True, blank=True)
