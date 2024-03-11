@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export DEBIAN_FRONTEND=noninteractive
+
 # Check if sudo is installed
 if ! command -v sudo &> /dev/null
 then
@@ -12,28 +14,23 @@ then
     fi
 
     echo "> User has root privileges, but sudo is not installed. Installing sudo..."
-    apt-get update
+    apt-get update -y
     apt-get install sudo -y
 fi
 
 # Check for Python and Poetry
-if ! command -v python3 &> /dev/null
+if ! command -v python3.12 &> /dev/null
 then
     echo "Python 3 is not installed. Installing Python 3..."
-    sudo apt-get update
-    sudo apt-get install python3 python3-pip python3-poetry -y
+    sudo apt-get install software-properties-common -y
+    sudo add-apt-repository ppa:deadsnakes/ppa -y
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install python3.12 python3.12-venv python3.12-distutils python3-pip -y
 fi
 
 # Install dependencies using Poetry
 echo "Installing dependencies..."
-python3 -m venv venv
+python3.12 -m venv venv
 source venv/bin/activate
 pip install poetry
 poetry install
-
-# Running migrations
-echo "Running migrations..."
-poetry run python manage.py migrate
-
-echo "Starting server..."
-poetry run python manage.py runserver
