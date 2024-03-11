@@ -99,16 +99,16 @@ def add_calendar(request: Request):
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-@api_view(['GET', 'PUT', 'POST'])
+@api_view(['GET', 'PUT', 'POST', 'DELETE'])
 def calendar(request):
     if request.method == 'GET':
         if isinstance(request.user, AnonymousUser):
             return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
         
         try:
-            calendar = Calendar.objects.get(owner=request.user.pk)  # Use user's primary key
-            serializer = CalendarSerializer(calendar)
-            return Response(serializer.data)
+            calendar = Calendar.objects.filter(owner=request.user)
+            serializer = CalendarSerializer(calendar, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Calendar.DoesNotExist:
             return Response({'error': 'Calendar not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -116,16 +116,35 @@ def calendar(request):
         if isinstance(request.user, AnonymousUser):
             return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
+        calendar_id = request.data.get('id')
+        if calendar_id is None:
+            return Response({'error': 'Calendar id is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Retrieve the specific calendar associated with the user
         try:
-            calendar = Calendar.objects.get(owner=request.user.pk)
+            calendar = Calendar.objects.get(id=calendar_id, owner=request.user)
         except Calendar.DoesNotExist:
             return Response({'error': 'Calendar not found'}, status=status.HTTP_404_NOT_FOUND)
 
+        # Use the retrieved calendar instance for serialization
         serializer = CalendarSerializer(calendar, data=request.data, partial=True)
         if serializer.is_valid():
+            print("CNSAJKL")
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        id = request.data.get('id')
+        if not id:
+            return Response({"error": "ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            calendar = Calendar.objects.get(id=id, owner=request.user)
+        except Calendar.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        calendar.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['POST'])

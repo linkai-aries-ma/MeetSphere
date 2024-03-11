@@ -1,5 +1,5 @@
 import { EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF } from './examples.ts'
-import { Calendar, Contact, Invitation, Meeting, UserSelf } from './types.ts'
+import { Calendar, Contact, Invitation, Meeting, TimeSlot, UserSelf } from './types.ts'
 
 const HOST = 'http://localhost:8000'
 
@@ -120,6 +120,8 @@ export async function getCalendars(): Promise<Calendar[]> {
   await new Promise(resolve => setTimeout(resolve, 1000))
   return EX_CALENDARS
 }
+export const getCalendar = (): Promise<Calendar[]> => get('calendar')
+export const addCalendar = (calendar: { start_date: string, end_date: string, availability: TimeSlot[] }): Promise<void> => post('add_calendar', calendar)
 
 /**
  * Get the invitation information by its UUID

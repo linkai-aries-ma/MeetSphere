@@ -1,4 +1,5 @@
-import { addContact, deleteContact, getContacts, getUserSelf, login, logout, register, updateUser } from '../sdk.ts'
+import { EX_CALENDARS } from '../examples.ts'
+import { addContact, addCalendar, deleteContact, getCalendars, getContacts, getUserSelf, login, logout, register, updateUser, getCalendar } from '../sdk.ts'
 import 'whatwg-fetch'
 
 const PASSWORD = 'password123'
@@ -107,4 +108,48 @@ test('Contact features', async () => {
 
   // Delete the contacts
   await expect(deleteContact(newContacts[0].pk)).resolves.not.toThrow()
+})
+
+test('Calendar features', async () => {
+  // Test get calendars
+  await createSession()
+  
+  const calendars = EX_CALENDARS
+
+  //Add calendar
+  await expect(addCalendar({ start_date: calendars[0].startDate, end_date: calendars[0].endDate, availability: calendars[0].timeSlots })).rejects.toThrow(/Start date cannot be in the past/)
+  await expect(addCalendar({ start_date: '2024-06-27', end_date: calendars[0].endDate, availability: calendars[0].timeSlots })).rejects.toThrow(/End date must be after start date/)
+  expect(() => addCalendar({ start_date: '2024-06-27', end_date: '2024-07-01', availability: calendars[0].timeSlots })).not.toThrow()
+
+  const calendars1 = await getCalendar()
+  //expect(calendars1.length).toBe(2)
+  console.log(calendars1)
+
+  // Invalid input should fail
+  /*await expect(addContact({ name: '', email: testEmail })).rejects.toThrow()
+  await expect(addContact({ name: 'Test', email: '' })).rejects.toThrow()
+  await expect(addContact({ name: 'Test', email: 'invalidEmail' })).rejects.toThrow()
+
+  // Test adding contact
+  await expect(addContact({ name: 'Test', email: testEmail })).resolves.not.toThrow()
+
+  const newContacts = await getContacts()
+  expect(newContacts.length).toBe(1)
+  expect(newContacts[0].email).toBe(testEmail)
+  expect(newContacts[0].name).toBe('Test')
+
+  // Test adding a second contact
+  const secondTestEmail = 'test2@mail.com'
+  await expect(addContact({ name: 'Test2', email: secondTestEmail })).resolves.not.toThrow()
+
+  const newContacts2 = await getContacts()
+  expect(newContacts2.length).toBe(2)
+  expect(newContacts2.find(c => c.email === secondTestEmail)).toBeTruthy()
+
+  // Test adding the same contact
+  await expect(addContact({ name: 'Test', email: testEmail })).rejects.toThrow()
+  await expect(addContact({ name: 'Test', email: testEmail.toUpperCase() })).rejects.toThrow()
+
+  // Delete the contacts
+  await expect(deleteContact(newContacts[0].pk)).resolves.not.toThrow()*/
 })
