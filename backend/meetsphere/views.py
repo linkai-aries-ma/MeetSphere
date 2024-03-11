@@ -167,6 +167,11 @@ def meetings_api(request: Request):
     if request.method == 'POST':
         serializer = AddMeetingSerializer(data=request.data)
         if serializer.is_valid():
+            # Check if request.user owns the calendar and contact
+            if serializer.validated_data['calendar'].owner != request.user:
+                return Response({"error": "Invalid calendar"}, status=status.HTTP_400_BAD_REQUEST)
+            if serializer.validated_data['invitee'].owner != request.user:
+                return Response({"error": "Invalid contact"}, status=status.HTTP_400_BAD_REQUEST)
             serializer.save(creator=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
