@@ -27,9 +27,10 @@ urlpatterns = [
     path('logout/', user_logout, name='Logout'),
     path('user/', user_info, name='View/Edit user info (GET/POST)'),
     path('user/pfp/', user_profile_image, name='Change profile picture (POST)'),
-    path('contacts/', contacts, name='Add/List/Delete contacts (GET/POST/DELETE)'),
+    path('contacts/', contacts, name='Add/List/Delete/Modify contacts (GET/POST/DELETE/PATCH)'),
     path('add_calendar/', add_calendar, name='Add calendar (POST)'),
     path('calendar/', calendar, name='Calendar (GET/POST)'),
+    path('meetings/', meetings, name='Add/List/Delete/Modify Meetings (GET/POST/DELETE/PATCH)'),
 
     path('test-send-email/', test_email)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

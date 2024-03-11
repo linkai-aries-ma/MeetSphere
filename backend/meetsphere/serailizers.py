@@ -41,7 +41,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class AddContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = ['name', 'email', 'profile_image']
+        fields = ['id', 'name', 'email', 'profile_image']
 
     def validate(self, data):
         data['email'] = data['email'].lower()
@@ -100,3 +100,15 @@ class CalendarSerializer(serializers.ModelSerializer):
         model = Calendar
         fields = ['id', 'created_at', 'updated_at', 'start_date', 'end_date', 'availability']
         list_serializer_class = CustomCalendarListSerializer
+
+
+class AddMeetingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Meeting
+        fields = ['title', 'description', 'location', 'is_virtual', 'invitee', 'start_time', 'duration', 'calendar']
+
+
+class MeetingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Meeting
+        fields = ['id', 'title', 'description', 'location', 'is_virtual', 'created_at', 'updated_at', 'calendar', 'creator', 'invitee', 'start_time', 'duration']
