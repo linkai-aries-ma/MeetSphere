@@ -48,7 +48,6 @@ test('Meeting features', async () => {
   })).resolves.not.toThrow()
 
   const meetings = await MEETING.list()
-  console.log(meetings)
   expect(meetings.length).toBe(1)
   expect(meetings[0].title).toBe(TEST_MEETING.title)
   expect(meetings[0].description).toBe(TEST_MEETING.description)
@@ -57,11 +56,15 @@ test('Meeting features', async () => {
   expect(meetings[0].calendar.id).toBe(calendar.id)
   expect(meetings[0].invitee.id).toBe(contact.id)
 
-  // Send out invitations
-
-
+  // Send out invitations (this will actually send out an email)
+  // await expect(MEETING.invite(meetings[0].id)).resolves.not.toThrow()
+  // Send out a reminder (this will actually send out an email)
+  // await expect(MEETING.remind(meetings[0].id)).resolves.not.toThrow()
 
   await deleteSession()
+
+  // Accept the invitation (this endpoint should be unauthenticated)
+  await expect(MEETING.accept(meetings[0].id, '2022-12-12T09:00:00')).resolves.not.toThrow()
 })
 
 test('Meeting error handling', async () => {
@@ -96,6 +99,12 @@ test('Meeting error handling', async () => {
     calendar: calendar.id,
     invitee: contact.id,
   })).rejects.toThrow()
+
+  // Accepting a meeting that doesn't exist
+  await expect(MEETING.accept('invalidId', '2022-12-12T09:00:00')).rejects.toThrow()
+
+  // Inviting to a meeting that doesn't exist
+  await expect(MEETING.invite('invalidId')).rejects.toThrow()
 
   await deleteSession()
 })

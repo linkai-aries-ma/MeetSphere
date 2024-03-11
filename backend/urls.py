@@ -32,6 +32,7 @@ urlpatterns = [
     re_path('calendar/?$', calendar_api, name='Add/List/Delete/Modify calendars (GET/POST/DELETE/PATCH)'),
     re_path('meetings/?$', meetings_api, name='Add/List/Delete/Modify Meetings (GET/POST/DELETE/PATCH)'),
     re_path(r'meetings/(?P<pk>[\w-]+)/invite/?$', send_invite, name='Send meeting invite (POST)'),
+    re_path(r'meetings/(?P<pk>[\w-]+)/remind/?$', send_remind, name='Send meeting reminder (POST)'),
     re_path(r'meetings/(?P<pk>[\w-]+)/accept/?$', accept_meeting, name='Accept meeting invite (POST)'),
 
     re_path('test-send-email/?$', test_email)

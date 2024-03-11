@@ -115,11 +115,11 @@ class AddMeetingSerializer(serializers.ModelSerializer):
 
 
 class ConfirmMeetingSerializer(serializers.ModelSerializer):
-    start_time = serializers.DateTimeField(required=True)
+    time = serializers.DateTimeField(required=True)
 
     class Meta:
         model = Meeting
-        fields = ['start_time']
+        fields = ['time']
 
 
 class MeetingSerializer(serializers.ModelSerializer):

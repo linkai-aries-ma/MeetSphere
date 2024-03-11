@@ -123,6 +123,9 @@ export const MEETING = {
   add: (meeting: NewMeeting): Promise<void> => post('meetings', meeting),
   delete: (id: string): Promise<void> => delete_('meetings', { id }),
   update: (meeting: Partial<Meeting>): Promise<void> => patch('meetings', meeting),
+  invite: (id: string): Promise<void> => post(`meetings/${id}/invite`, {}),
+  accept: (id: string, time: string) => post(`meetings/${id}/accept`, { time }),
+  remind: (id: string) => post(`meetings/${id}/remind`, {}),
 }
 
 /**
