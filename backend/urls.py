@@ -22,7 +22,7 @@ from .meetsphere.views import *
 from .meetsphere.views_meeting import *
 
 urlpatterns = [
-    re_path('admin/?$', admin.site.urls),
+    path('admin/', admin.site.urls),
     re_path('register/?$', user_register, name='Register'),
     re_path('login/?$', user_login, name='Login'),
     re_path('logout/?$', user_logout, name='Logout'),
@@ -31,8 +31,8 @@ urlpatterns = [
     re_path('contacts/?$', contacts_api, name='Add/List/Delete/Modify contacts (GET/POST/DELETE/PATCH)'),
     re_path('calendar/?$', calendar_api, name='Add/List/Delete/Modify calendars (GET/POST/DELETE/PATCH)'),
     re_path('meetings/?$', meetings_api, name='Add/List/Delete/Modify Meetings (GET/POST/DELETE/PATCH)'),
-    re_path('meetings/(?P<pk>[\w-]+)/invite/?$', send_invite, name='Send meeting invite (POST)'),
-    re_path('meetings/(?P<pk>[\w-]+)/accept/?$', accept_meeting, name='Accept meeting invite (POST)'),
+    re_path(r'meetings/(?P<pk>[\w-]+)/invite/?$', send_invite, name='Send meeting invite (POST)'),
+    re_path(r'meetings/(?P<pk>[\w-]+)/accept/?$', accept_meeting, name='Accept meeting invite (POST)'),
 
     re_path('test-send-email/?$', test_email)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

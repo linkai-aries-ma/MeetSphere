@@ -48,6 +48,7 @@ test('Meeting features', async () => {
   })).resolves.not.toThrow()
 
   const meetings = await MEETING.list()
+  console.log(meetings)
   expect(meetings.length).toBe(1)
   expect(meetings[0].title).toBe(TEST_MEETING.title)
   expect(meetings[0].description).toBe(TEST_MEETING.description)

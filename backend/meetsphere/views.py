@@ -71,7 +71,7 @@ def user_profile_image(request: Request):
 def contacts_api(request: Request):
     if request.method == 'GET':
         contacts = Contact.objects.filter(owner=request.user)
-        serializer = AddContactSerializer(contacts, many=True)
+        serializer = ContactSerializer(contacts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     if request.method == 'POST':

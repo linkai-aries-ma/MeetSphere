@@ -41,11 +41,17 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class AddContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = ['id', 'name', 'email', 'profile_image']
+        fields = ['name', 'email', 'profile_image']
 
     def validate(self, data):
         data['email'] = data['email'].lower()
         return data
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = '__all__'
 
 
 class AddCalendarSerializer(serializers.ModelSerializer):
@@ -94,7 +100,7 @@ class CustomCalendarListSerializer(ListSerializer):
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendar
-        fields = ['id', 'created', 'modified', 'start_date', 'end_date', 'time_slots', 'timezone']
+        fields = '__all__'
         list_serializer_class = CustomCalendarListSerializer
 
 
@@ -104,7 +110,7 @@ class AddMeetingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Meeting
-        fields = ['title', 'description', 'location',
+        fields = ['title', 'description', 'location', 'regularity',
                   'is_virtual', 'invitee', 'time', 'duration', 'calendar']
 
 
@@ -117,7 +123,9 @@ class ConfirmMeetingSerializer(serializers.ModelSerializer):
 
 
 class MeetingSerializer(serializers.ModelSerializer):
+    invitee = ContactSerializer(read_only=True)
+    calendar = CalendarSerializer(read_only=True)
+
     class Meta:
         model = Meeting
-        fields = ['id', 'title', 'description', 'location', 'is_virtual', 'created_at', 'updated_at', 'calendar',
-                  'creator', 'invitee', 'time', 'duration']
+        fields = '__all__'
