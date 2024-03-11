@@ -27,7 +27,7 @@ export const PREFERENCE_STR = {
  */
 export interface Contact extends NewContact {
   id: number
-  pfp: string
+  pfp?: string
 }
 
 export interface NewContact {
@@ -38,26 +38,32 @@ export interface NewContact {
 /**
  * Meeting request
  */
-export interface Meeting {
+export interface Meeting extends NewMeeting {
   id: string // UUID
+  calendar: Calendar
+
+  created_at?: string // ISO time
+  updated_at?: string // ISO time
+
+  creator: UserSelf
+  invitee: Contact
+
+  // A meeting would be pending response if time is not set
+  time?: string // ISO time
+}
+
+export interface NewMeeting {
+  calendar: number | Calendar
 
   title: string
   description: string
   is_virtual?: boolean
   location?: string
 
-  created_at?: string // ISO time
-  updated_at?: string // ISO time
-
-  calendarId: number
-  creator: UserSelf
-  invitee: Contact
-
   duration: number // minutes
   regularity: 'once' | 'weekly'
 
-  // A meeting would be pending response if time is not set
-  time?: string // ISO time
+  invitee: number | Contact
 }
 
 export type MeetingStatus = 'invited' | 'scheduled' | 'in-progress' | 'complete'

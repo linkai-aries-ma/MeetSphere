@@ -99,9 +99,13 @@ class CalendarSerializer(serializers.ModelSerializer):
 
 
 class AddMeetingSerializer(serializers.ModelSerializer):
+    invitee = serializers.PrimaryKeyRelatedField(queryset=Contact.objects.all())
+    calendar = serializers.PrimaryKeyRelatedField(queryset=Calendar.objects.all())
+
     class Meta:
         model = Meeting
-        fields = ['id', 'title', 'description', 'location', 'is_virtual', 'invitee', 'time', 'duration', 'calendar']
+        fields = ['title', 'description', 'location',
+                  'is_virtual', 'invitee', 'time', 'duration', 'calendar']
 
 
 class ConfirmMeetingSerializer(serializers.ModelSerializer):

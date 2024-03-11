@@ -36,7 +36,7 @@ export const EX_CONTACTS: Contact[] = [
 export const EX_MEETINGS: Meeting[] = [
   {
     id: '1',
-    calendarId: 1,
+    calendar: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[0],
     title: 'Website Layout Design',
@@ -47,7 +47,7 @@ export const EX_MEETINGS: Meeting[] = [
   },
   {
     id: '2',
-    calendarId: 1,
+    calendar: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[1],
     title: 'Schedule Page Discussion',
@@ -58,7 +58,7 @@ export const EX_MEETINGS: Meeting[] = [
   },
   {
     id: '3',
-    calendarId: 1,
+    calendar: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[3],
     title: 'Cat Meeting',
@@ -69,7 +69,7 @@ export const EX_MEETINGS: Meeting[] = [
   },
   {
     id: '4',
-    calendarId: 1,
+    calendar: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[2],
     title: 'Integration of Pages',
@@ -133,7 +133,7 @@ export const EX_CALENDARS: Calendar[] = [
     meetings: [
       {
         id: '5',
-        calendarId: 2,
+        calendar: 2,
         creator: EX_SELF,
         invitee: EX_CONTACTS[0],
         title: 'Arcade Session',

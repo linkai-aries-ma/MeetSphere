@@ -1,5 +1,5 @@
 import { EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF } from './examples.ts'
-import { Calendar, Contact, Invitation, Meeting, NewCalendar, NewContact, UserSelf } from './types.ts'
+import { Calendar, Contact, Invitation, Meeting, NewCalendar, NewContact, NewMeeting, UserSelf } from './types.ts'
 
 const HOST = 'http://localhost:8000'
 
@@ -118,6 +118,13 @@ export const CALENDAR = {
   update: (calendar: Partial<Calendar>): Promise<void> => patch('calendar', calendar),
 }
 
+export const MEETING = {
+  list: (): Promise<Meeting[]> => get('meetings'),
+  add: (meeting: NewMeeting): Promise<void> => post('meetings', meeting),
+  delete: (id: string): Promise<void> => delete_('meetings', { id }),
+  update: (meeting: Partial<Meeting>): Promise<void> => patch('meetings', meeting),
+}
+
 /**
  * Get the scheduled meetings of the current logged-in user
  *
@@ -154,8 +161,8 @@ export async function getInvitation(uuid: string): Promise<Invitation> {
     id: uuid,
     cal: EX_CALENDARS[0],
     meeting: {
-      id: 10,
-      calendarId: 1,
+      id: '10',
+      calendar: 1,
       creator: EX_SELF,
       invitee: EX_CONTACTS[2],
       title: 'Cat Meeting',
