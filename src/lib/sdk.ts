@@ -100,15 +100,22 @@ export const USER = {
   login,
   logout,
   get: (): Promise<UserSelf> => get('user'),
-  update: (user: { name?: string, email?: string, password?: string }): Promise<UserSelf> => post('user', user),
+  update: (user: Partial<UserSelf>): Promise<UserSelf> => post('user', user),
   uploadPfp: (file: File): Promise<void> => post('user/pfp', file),
 }
 
 export const CONTACT = {
-  get: (): Promise<Contact[]> => get('contacts'),
+  list: (): Promise<Contact[]> => get('contacts'),
   add: (contact: { name: string, email: string }): Promise<void> => post('contacts', contact),
   delete: (id: number): Promise<void> => delete_('contacts', { id }),
-  update: (contact: Contact): Promise<void> => patch('contacts', contact),
+  update: (contact: Partial<Contact>): Promise<void> => patch('contacts', contact),
+}
+
+export const CALENDAR = {
+  list: (): Promise<Calendar[]> => get('calendar'),
+  add: (calendar: Calendar): Promise<void> => post('add_calendar', calendar),
+  delete: (id: number): Promise<void> => delete_('calendar', { id }),
+  update: (calendar: Partial<Calendar>): Promise<void> => patch('calendar', calendar),
 }
 
 /**

@@ -71,17 +71,19 @@ export interface TimeSlot {
 /**
  * A calendar for a period of time
  */
-export interface Calendar {
+export interface Calendar extends NewCalendar {
   id: number
-  start_date: string // YYYY-MM-DD
-  end_date: string // YYYY-MM-DD
-
   meetings: Meeting[]
 
   // Metadata
   created: string // ISO time
   modified: string // ISO time
   time_slots: TimeSlot[]
+}
+
+export interface NewCalendar {
+  start_date: string // YYYY-MM-DD
+  end_date: string // YYYY-MM-DD
   timezone: string
 }
 
@@ -93,4 +95,5 @@ export interface UserSelf {
   name: string
   email: string
   profile_image?: string
+  password: string
 }
