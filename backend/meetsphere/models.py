@@ -59,7 +59,7 @@ class Meeting(models.Model):
     invitee = models.ForeignKey(Contact, related_name='meetings', on_delete=models.CASCADE)
 
     # Time
-    duration = models.DurationField(null=False)
+    duration = models.IntegerField()
     regularity = models.CharField(max_length=10, default='once')
 
     # A meeting would be pending if time is not set

@@ -31,3 +31,4 @@ db.sqlite3
 *.iml
 media
 .bash_profile
+backend/meetsphere/migrations
