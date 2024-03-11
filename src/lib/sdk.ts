@@ -95,25 +95,14 @@ export async function logout(): Promise<void> {
   window.location.assign('/')
 }
 
-/**
- * Get the information of the current logged-in user
- *
- * @returns User information
- */
-export async function getUserSelf(): Promise<UserSelf> {
-  return get('user')
+export const USER = {
+  register,
+  login,
+  logout,
+  get: (): Promise<UserSelf> => get('user'),
+  update: (user: { name?: string, email?: string, password?: string }): Promise<UserSelf> => post('user', user),
+  uploadPfp: (file: File): Promise<void> => post('user/pfp', file),
 }
-
-/**
- * Update the information of the current logged-in user
- *
- * @param user New user information
- * @returns Updated user information
- */
-export async function updateUser(user: { name?: string, email?: string, password?: string }): Promise<UserSelf> {
-  return await post('user', user)
-}
-export const uploadUserPfp = (file: File): Promise<void> => post('user/pfp', file)
 
 export const CONTACT = {
   get: (): Promise<Contact[]> => get('contacts'),

@@ -1,14 +1,5 @@
 import { EX_CALENDARS } from '../examples.ts'
-import {
-  CONTACT,
-  getCalendar,
-  getUserSelf,
-  login,
-  logout,
-  register,
-  updateUser,
-  uploadUserPfp
-} from '../sdk.ts'
+import { CONTACT, USER, getCalendar } from '../sdk.ts'
 import 'whatwg-fetch'
 
 const PASSWORD = 'password123'
@@ -25,8 +16,8 @@ Object.defineProperty(window, 'location', {
 async function createSession() {
   const randStr = Math.random().toString(36).substring(7)
   const email = `${randStr}@gmail.com`
-  await register(randStr, email, PASSWORD)
-  await login(email, PASSWORD)
+  await USER.register(randStr, email, PASSWORD)
+  await USER.login(email, PASSWORD)
 }
 
 
@@ -37,54 +28,54 @@ test('User features', async () => {
 
   // Register
   // > Registration should fail when missing fields
-  await expect(register('', email, 'test1231')).rejects.toThrow()
-  await expect(register(randStr, '', 'test1231')).rejects.toThrow()
-  await expect(register(randStr, email, '')).rejects.toThrow()
+  await expect(USER.register('', email, 'test1231')).rejects.toThrow()
+  await expect(USER.register(randStr, '', 'test1231')).rejects.toThrow()
+  await expect(USER.register(randStr, email, '')).rejects.toThrow()
   // > Invalid email format
-  await expect(register(randStr, 'invalidemail', 'test1231')).rejects.toThrow()
+  await expect(USER.register(randStr, 'invalidemail', 'test1231')).rejects.toThrow()
   // > Registration should succeed when all fields are filled
-  await expect(register(randStr, email, 'test1231')).resolves.not.toThrow()
+  await expect(USER.register(randStr, email, 'test1231')).resolves.not.toThrow()
   // > Registration should fail when the email is already taken
-  await expect(register(randStr, email, 'test1231')).rejects.toThrow()
+  await expect(USER.register(randStr, email, 'test1231')).rejects.toThrow()
 
   // Login
   // > Logging in with a wrong password should throw an error
-  await expect(login(email, 'wrongpassword')).rejects.toThrow()
+  await expect(USER.login(email, 'wrongpassword')).rejects.toThrow()
   // > Logging in with the correct password should succeed
-  await expect(login(email, 'test1231')).resolves.not.toThrow()
+  await expect(USER.login(email, 'test1231')).resolves.not.toThrow()
   // > Logging in with uppercase email should succeed
-  await expect(login(email.toUpperCase(), 'test1231')).resolves.not.toThrow()
+  await expect(USER.login(email.toUpperCase(), 'test1231')).resolves.not.toThrow()
 
   // Test get user self
-  const user = await getUserSelf()
+  const user = await USER.get()
   expect(user.email).toBe(email)
   expect(user.name).toBe(randStr)
   expect(window.location.assign).toHaveBeenCalledWith('/home')
 
   // Test updating user
   const newName = 'New Name'
-  expect((await updateUser({ name: newName })).name).toBe(newName)
+  expect((await USER.update({ name: newName })).name).toBe(newName)
 
   const newEmail = 'a' + email
-  expect((await updateUser({ email: newEmail })).email).toBe(newEmail)
+  expect((await USER.update({ email: newEmail })).email).toBe(newEmail)
 
-  await updateUser({ password: PASSWORD })
-  await login(newEmail, PASSWORD)
+  await USER.update({ password: PASSWORD })
+  await USER.login(newEmail, PASSWORD)
 
   // Test uploading a profile picture
   const file = new File([''], 'public/assets/azalea.jpg', { type: 'image/jpeg' })
-  await uploadUserPfp(file)
+  await USER.uploadPfp(file)
 
-  expect((await getUserSelf()).profile_image).toBeTruthy()
+  expect((await USER.get()).profile_image).toBeTruthy()
 
   // Test logout
-  await logout()
+  await USER.logout()
   expect(localStorage.getItem('token')).toBeNull()
   expect(window.location.assign).toHaveBeenCalledWith('/')
 
   // getUserSelf and updateUser should throw an error after logout
-  await expect(getUserSelf()).rejects.toThrow()
-  await expect(updateUser({ name: 'a' })).rejects.toThrow()
+  await expect(USER.get()).rejects.toThrow()
+  await expect(USER.update({ name: 'a' })).rejects.toThrow()
 })
 
 
