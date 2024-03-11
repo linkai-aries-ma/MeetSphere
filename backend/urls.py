@@ -16,21 +16,23 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 
 from .meetsphere.views import *
+from .meetsphere.views_meeting import *
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('register/', user_register, name='Register'),
-    path('login/', user_login, name='Login'),
-    path('logout/', user_logout, name='Logout'),
-    path('user/', user_info, name='View/Edit user info (GET/POST)'),
-    path('user/pfp/', user_profile_image, name='Change profile picture (POST)'),
-    path('contacts/', contacts_api, name='Add/List/Delete/Modify contacts (GET/POST/DELETE/PATCH)'),
-    path('calendar/', calendar_api, name='Add/List/Delete/Modify calendars (GET/POST/DELETE/PATCH)'),
-    path('meetings/', meetings_api, name='Add/List/Delete/Modify Meetings (GET/POST/DELETE/PATCH)'),
-    path('confirm_meeting/', confirm_meeting, name='Confirm Meetings (PATCH)'),
+    re_path('admin/?$', admin.site.urls),
+    re_path('register/?$', user_register, name='Register'),
+    re_path('login/?$', user_login, name='Login'),
+    re_path('logout/?$', user_logout, name='Logout'),
+    re_path('user/?$', user_info, name='View/Edit user info (GET/POST)'),
+    re_path('user/pfp/?$', user_profile_image, name='Change profile picture (POST)'),
+    re_path('contacts/?$', contacts_api, name='Add/List/Delete/Modify contacts (GET/POST/DELETE/PATCH)'),
+    re_path('calendar/?$', calendar_api, name='Add/List/Delete/Modify calendars (GET/POST/DELETE/PATCH)'),
+    re_path('meetings/?$', meetings_api, name='Add/List/Delete/Modify Meetings (GET/POST/DELETE/PATCH)'),
+    re_path('meetings/(?P<pk>[\w-]+)/invite/?$', send_invite, name='Send meeting invite (POST)'),
+    re_path('meetings/(?P<pk>[\w-]+)/accept/?$', accept_meeting, name='Accept meeting invite (POST)'),
 
-    path('test-send-email/', test_email)
+    re_path('test-send-email/?$', test_email)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

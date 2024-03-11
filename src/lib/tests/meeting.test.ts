@@ -17,7 +17,7 @@ const TEST_CALENDAR = {
   timezone: 'America/New_York',
 }
 
-const TEST_CONTACT = { name: 'Neko', email: 'neko@hydev.org' }
+const TEST_CONTACT = { name: 'Azalea', email: 'hykilpikonna@gmail.com' }
 
 async function createCalendarAndContact() {
   await Promise.all([
@@ -46,6 +46,19 @@ test('Meeting features', async () => {
     calendar: calendar.id,
     invitee: contact.id,
   })).resolves.not.toThrow()
+
+  const meetings = await MEETING.list()
+  expect(meetings.length).toBe(1)
+  expect(meetings[0].title).toBe(TEST_MEETING.title)
+  expect(meetings[0].description).toBe(TEST_MEETING.description)
+  expect(meetings[0].duration).toBe(TEST_MEETING.duration)
+  expect(meetings[0].regularity).toBe(TEST_MEETING.regularity)
+  expect(meetings[0].calendar.id).toBe(calendar.id)
+  expect(meetings[0].invitee.id).toBe(contact.id)
+
+  // Send out invitations
+
+
 
   await deleteSession()
 })

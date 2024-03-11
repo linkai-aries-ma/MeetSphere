@@ -33,6 +33,8 @@ EMAIL_HOST_PASSWORD = 'hxmt drlb xpmq dhdw'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+APPEND_SLASH = False
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
