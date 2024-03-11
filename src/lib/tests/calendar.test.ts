@@ -1,5 +1,4 @@
 import { createSession, deleteSession } from './test_helper.ts'
-import { EX_CALENDARS } from '../examples.ts'
 import { CALENDAR } from '../sdk.ts'
 
 test('Calendar features', async () => {

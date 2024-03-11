@@ -35,7 +35,7 @@ export const EX_CONTACTS: Contact[] = [
 
 export const EX_MEETINGS: Meeting[] = [
   {
-    id: 1,
+    id: '1',
     calendarId: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[0],
@@ -46,7 +46,7 @@ export const EX_MEETINGS: Meeting[] = [
     regularity: 'once',
   },
   {
-    id: 2,
+    id: '2',
     calendarId: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[1],
@@ -57,7 +57,7 @@ export const EX_MEETINGS: Meeting[] = [
     regularity: 'weekly',
   },
   {
-    id: 3,
+    id: '3',
     calendarId: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[3],
@@ -68,7 +68,7 @@ export const EX_MEETINGS: Meeting[] = [
     regularity: 'weekly',
   },
   {
-    id: 4,
+    id: '4',
     calendarId: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[2],
@@ -132,7 +132,7 @@ export const EX_CALENDARS: Calendar[] = [
 
     meetings: [
       {
-        id: 5,
+        id: '5',
         calendarId: 2,
         creator: EX_SELF,
         invitee: EX_CONTACTS[0],

@@ -39,7 +39,7 @@ export interface NewContact {
  * Meeting request
  */
 export interface Meeting {
-  id: number
+  id: string // UUID
 
   title: string
   description: string
@@ -98,5 +98,5 @@ export interface UserSelf {
   name: string
   email: string
   profile_image?: string
-  password: string
+  password?: string
 }
