@@ -3,6 +3,9 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
+    objects: models.Manager
+
+    id = models.AutoField(primary_key=True)
     username = None
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
@@ -13,6 +16,9 @@ class CustomUser(AbstractUser):
 
 
 class Calendar(models.Model):
+    objects: models.Manager
+
+    id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='calendar')
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -25,6 +31,9 @@ class Calendar(models.Model):
 
 
 class Contact(models.Model):
+    objects: models.Manager
+
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     email = models.EmailField()
     profile_image = models.ImageField(upload_to='profile_images', null=True, blank=True)
@@ -32,6 +41,9 @@ class Contact(models.Model):
 
 
 class Meeting(models.Model):
+    objects: models.Manager
+
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
     description = models.TextField(default='')
     is_virtual = models.BooleanField(default=True)

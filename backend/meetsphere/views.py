@@ -68,7 +68,7 @@ def user_profile_image(request: Request):
 
 @api_view(['GET', 'POST', 'DELETE', 'PATCH'])
 @permission_classes([IsAuthenticated])
-def contacts(request: Request):
+def contacts_api(request: Request):
     if request.method == 'GET':
         contacts = Contact.objects.filter(owner=request.user)
         serializer = AddContactSerializer(contacts, many=True)
@@ -84,29 +84,20 @@ def contacts(request: Request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    # Delete and patch requires an id and a valid contact
+    pk = request.data.get('id')
+    if not pk:
+        return Response({"error": "Primary key is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    contact = Contact.objects.filter(id=pk, owner=request.user).first()
+    if not contact:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
     if request.method == 'DELETE':
-        pk = request.data.get('pk')
-        if not pk:
-            return Response({"error": "Primary key is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            contact = Contact.objects.get(pk=pk, owner=request.user)
-        except Contact.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
         contact.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     if request.method == 'PATCH':
-        pk = request.data.get('pk')
-        if not pk:
-            return Response({"error": "Primary key is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            contact = Contact.objects.get(pk=pk, owner=request.user)
-        except Contact.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
         serializer = AddContactSerializer(contact, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()

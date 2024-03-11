@@ -1,9 +1,7 @@
 import { EX_CALENDARS } from '../examples.ts'
 import {
-  addContact,
-  deleteContact,
+  CONTACT,
   getCalendar,
-  getContacts,
   getUserSelf,
   login,
   logout,
@@ -95,42 +93,56 @@ test('Contact features', async () => {
   const testEmail = 'test@gmail.com'
 
   // Test get contacts
-  const contacts = await getContacts()
+  const contacts = await CONTACT.get()
   expect(contacts.length).toBe(0)
 
   // Invalid input should fail
-  await expect(addContact({ name: '', email: testEmail })).rejects.toThrow()
-  await expect(addContact({ name: 'Test', email: '' })).rejects.toThrow()
-  await expect(addContact({ name: 'Test', email: 'invalidEmail' })).rejects.toThrow()
+  await expect(CONTACT.add({ name: '', email: testEmail })).rejects.toThrow()
+  await expect(CONTACT.add({ name: 'Test', email: '' })).rejects.toThrow()
+  await expect(CONTACT.add({ name: 'Test', email: 'invalidEmail' })).rejects.toThrow()
 
   // Test adding contact
-  await expect(addContact({ name: 'Test', email: testEmail })).resolves.not.toThrow()
+  await expect(CONTACT.add({ name: 'Test', email: testEmail })).resolves.not.toThrow()
 
-  const newContacts = await getContacts()
+  const newContacts = await CONTACT.get()
   expect(newContacts.length).toBe(1)
   expect(newContacts[0].email).toBe(testEmail)
   expect(newContacts[0].name).toBe('Test')
 
   // Test adding a second contact
   const secondTestEmail = 'test2@mail.com'
-  await expect(addContact({ name: 'Test2', email: secondTestEmail })).resolves.not.toThrow()
+  await expect(CONTACT.add({ name: 'Test2', email: secondTestEmail })).resolves.not.toThrow()
 
-  const newContacts2 = await getContacts()
+  const newContacts2 = await CONTACT.get()
   expect(newContacts2.length).toBe(2)
   expect(newContacts2.find(c => c.email === secondTestEmail)).toBeTruthy()
 
   // Test adding the same contact
-  await expect(addContact({ name: 'Test', email: testEmail })).rejects.toThrow()
-  await expect(addContact({ name: 'Test', email: testEmail.toUpperCase() })).rejects.toThrow()
+  await expect(CONTACT.add({ name: 'Test', email: testEmail })).rejects.toThrow()
+  await expect(CONTACT.add({ name: 'Test', email: testEmail.toUpperCase() })).rejects.toThrow()
 
   // Delete the contacts
-  await expect(deleteContact(newContacts[0].pk)).resolves.not.toThrow()
+  expect(newContacts[0].id).toBeTruthy()
+  await expect(CONTACT.delete(newContacts[0].id)).resolves.not.toThrow()
+
+  const newContacts3 = await CONTACT.get()
+  expect(newContacts3.length).toBe(1)
+  expect(newContacts3[0].email).toBe(secondTestEmail)
+
+  // Edit a contact
+  const newName = 'New Name'
+  const contact = newContacts3[0]
+  contact.name = newName
+  await expect(CONTACT.update(contact)).resolves.not.toThrow()
+
+  const newContacts4 = await CONTACT.get()
+  expect(newContacts4[0].name).toBe(newName)
 })
 
 test('Calendar features', async () => {
-  // Test get calendars
   await createSession()
-  
+
+  // Test get calendars
   const calendars = EX_CALENDARS
   console.log(calendars[1])
 

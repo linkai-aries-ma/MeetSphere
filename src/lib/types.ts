@@ -26,7 +26,7 @@ export const PREFERENCE_STR = {
  * Contact information
  */
 export interface Contact {
-  pk: number
+  id: number
   name: string
   email: string
   pfp: string
@@ -36,7 +36,7 @@ export interface Contact {
  * Meeting request
  */
 export interface Meeting {
-  pk: number
+  id: number
 
   title: string
   description: string
@@ -72,7 +72,7 @@ export interface TimeSlot {
  * A calendar for a period of time
  */
 export interface Calendar {
-  pk: number
+  id: number
   start_date: string // YYYY-MM-DD
   end_date: string // YYYY-MM-DD
 

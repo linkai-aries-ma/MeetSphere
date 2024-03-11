@@ -54,6 +54,7 @@ export async function send(node: string, body?: object, method: string = 'POST')
 const post = (node: string, body: object): Promise<any> => send(node, body, 'POST')
 const get = (node: string): Promise<any> => send(node, undefined, 'GET')
 const delete_ = (node: string, body: object): Promise<any> => send(node, body, 'DELETE')
+const patch = (node: string, body: object): Promise<any> => send(node, body, 'PATCH')
 
 
 /**
@@ -114,9 +115,12 @@ export async function updateUser(user: { name?: string, email?: string, password
 }
 export const uploadUserPfp = (file: File): Promise<void> => post('user/pfp', file)
 
-export const getContacts = (): Promise<Contact[]> => get('contacts')
-export const addContact = (contact: { name: string, email: string }): Promise<void> => post('contacts', contact)
-export const deleteContact = (id: number): Promise<void> => delete_('contacts', { id })
+export const CONTACT = {
+  get: (): Promise<Contact[]> => get('contacts'),
+  add: (contact: { name: string, email: string }): Promise<void> => post('contacts', contact),
+  delete: (id: number): Promise<void> => delete_('contacts', { id }),
+  update: (contact: Contact): Promise<void> => patch('contacts', contact),
+}
 
 /**
  * Get the scheduled meetings of the current logged-in user
@@ -154,8 +158,9 @@ export async function getInvitation(uuid: string): Promise<Invitation> {
     id: uuid,
     cal: EX_CALENDARS[0],
     meeting: {
-      pk: 10,
+      id: 10,
       calendarId: 1,
+      creator: EX_SELF,
       invitee: EX_CONTACTS[2],
       title: 'Cat Meeting',
       description: 'We should let our cats meet to see if they get along together.',

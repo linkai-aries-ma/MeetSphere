@@ -74,7 +74,7 @@ function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
     </div>}
 
     <div className="events">
-      {events.map(ev => <div className={`st-${ev.st}`} key={ev.m.pk}>
+      {events.map(ev => <div className={`st-${ev.st}`} key={ev.m.id}>
         <img src={ev.m.invitee.pfp} alt=""/>
         <div>
           <span className="name">{ev.m.title}</span>

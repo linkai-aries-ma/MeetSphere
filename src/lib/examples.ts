@@ -8,25 +8,25 @@ export const EX_SELF: UserSelf = {
 
 export const EX_CONTACTS: Contact[] = [
   {
-    pk: 1,
+    id: 1,
     name: 'Azalea',
     email: 'azalea@example.com',
     pfp: 'assets/azalea.jpg',
   },
   {
-    pk: 2,
+    id: 2,
     name: 'Henry',
     email: 'henry@example.com',
     pfp: 'assets/henry.jpg',
   },
   {
-    pk: 3,
+    id: 3,
     name: 'Will',
     email: 'will@example.com',
     pfp: 'assets/will.jpg',
   },
   {
-    pk: 4,
+    id: 4,
     name: 'LinKai',
     email: 'linkai@example.com',
     pfp: 'assets/linkai.jpg',
@@ -35,7 +35,7 @@ export const EX_CONTACTS: Contact[] = [
 
 export const EX_MEETINGS: Meeting[] = [
   {
-    pk: 1,
+    id: 1,
     calendarId: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[0],
@@ -46,7 +46,7 @@ export const EX_MEETINGS: Meeting[] = [
     regularity: 'once',
   },
   {
-    pk: 2,
+    id: 2,
     calendarId: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[1],
@@ -57,7 +57,7 @@ export const EX_MEETINGS: Meeting[] = [
     regularity: 'weekly',
   },
   {
-    pk: 3,
+    id: 3,
     calendarId: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[3],
@@ -68,7 +68,7 @@ export const EX_MEETINGS: Meeting[] = [
     regularity: 'weekly',
   },
   {
-    pk: 4,
+    id: 4,
     calendarId: 1,
     creator: EX_SELF,
     invitee: EX_CONTACTS[2],
@@ -81,7 +81,7 @@ export const EX_MEETINGS: Meeting[] = [
 
 export const EX_CALENDARS: Calendar[] = [
   {
-    pk: 1,
+    id: 1,
     start_date: '2025-01-27',
     end_date: '2026-02-02',
     created: '2024-01-25T15:38:00',
@@ -110,7 +110,7 @@ export const EX_CALENDARS: Calendar[] = [
     meetings: EX_MEETINGS,
   },
   {
-    pk: 2,
+    id: 2,
     start_date: '2024-01-05',
     end_date: '2024-01-10',
     created: '2024-01-03T12:00:00',
@@ -132,7 +132,7 @@ export const EX_CALENDARS: Calendar[] = [
 
     meetings: [
       {
-        pk: 5,
+        id: 5,
         calendarId: 2,
         creator: EX_SELF,
         invitee: EX_CONTACTS[0],
