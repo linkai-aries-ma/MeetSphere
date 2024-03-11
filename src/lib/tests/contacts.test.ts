@@ -1,4 +1,3 @@
-import { EX_CALENDARS } from '../examples.ts'
 import { CONTACT, USER, CALENDAR } from '../sdk.ts'
 import { createSession, deleteSession } from './test_helper.ts'
 

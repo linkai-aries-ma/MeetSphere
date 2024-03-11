@@ -28,9 +28,18 @@ then
     sudo DEBIAN_FRONTEND=noninteractive apt-get install python3.12 python3.12-venv python3.12-distutils python3-pip -y
 fi
 
+if ! command -v node &> /dev/null
+then
+    echo "Node.js is not installed. Installing Node.js..."
+    sudo apt-get install nodejs npm -y
+fi
+
 # Install dependencies using Poetry
 echo "Installing dependencies..."
 python3.12 -m venv venv
 source venv/bin/activate
 pip install poetry
 poetry install
+
+npm install -g yarn
+yarn install
