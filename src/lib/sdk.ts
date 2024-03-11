@@ -1,5 +1,5 @@
 import { EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF } from './examples.ts'
-import { Calendar, Contact, Invitation, Meeting, UserSelf } from './types.ts'
+import { Calendar, Contact, Invitation, Meeting, NewCalendar, NewContact, UserSelf } from './types.ts'
 
 const HOST = 'http://localhost:8000'
 
@@ -106,14 +106,14 @@ export const USER = {
 
 export const CONTACT = {
   list: (): Promise<Contact[]> => get('contacts'),
-  add: (contact: { name: string, email: string }): Promise<void> => post('contacts', contact),
+  add: (contact: NewContact): Promise<void> => post('contacts', contact),
   delete: (id: number): Promise<void> => delete_('contacts', { id }),
   update: (contact: Partial<Contact>): Promise<void> => patch('contacts', contact),
 }
 
 export const CALENDAR = {
   list: (): Promise<Calendar[]> => get('calendar'),
-  add: (calendar: Calendar): Promise<void> => post('add_calendar', calendar),
+  add: (calendar: NewCalendar): Promise<void> => post('calendar', calendar),
   delete: (id: number): Promise<void> => delete_('calendar', { id }),
   update: (calendar: Partial<Calendar>): Promise<void> => patch('calendar', calendar),
 }

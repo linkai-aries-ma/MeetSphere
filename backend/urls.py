@@ -28,8 +28,7 @@ urlpatterns = [
     path('user/', user_info, name='View/Edit user info (GET/POST)'),
     path('user/pfp/', user_profile_image, name='Change profile picture (POST)'),
     path('contacts/', contacts_api, name='Add/List/Delete/Modify contacts (GET/POST/DELETE/PATCH)'),
-    path('add_calendar/', add_calendar, name='Add calendar (POST)'),
-    path('calendar/', calendar, name='Calendar (GET/POST)'),
+    path('calendar/', calendar_api, name='Add/List/Delete/Modify calendars (GET/POST/DELETE/PATCH)'),
     path('meetings/', meetings, name='Add/List/Delete/Modify Meetings (GET/POST/DELETE/PATCH)'),
     path('confirm_meeting/', confirm_meeting, name='Confirm Meetings (PATCH)'),
 

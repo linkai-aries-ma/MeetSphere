@@ -25,11 +25,14 @@ export const PREFERENCE_STR = {
 /**
  * Contact information
  */
-export interface Contact {
+export interface Contact extends NewContact {
   id: number
+  pfp: string
+}
+
+export interface NewContact {
   name: string
   email: string
-  pfp: string
 }
 
 /**
