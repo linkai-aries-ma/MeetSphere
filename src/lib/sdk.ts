@@ -126,6 +126,7 @@ export const MEETING = {
   invite: (id: string): Promise<void> => post(`meetings/${id}/invite`, {}),
   accept: (id: string, time: string) => post(`meetings/${id}/accept`, { time }),
   remind: (id: string) => post(`meetings/${id}/remind`, {}),
+  get: (id: string): Promise<Meeting> => get(`meetings/${id}`),
 }
 
 /**

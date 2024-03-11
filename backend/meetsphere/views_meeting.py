@@ -122,3 +122,13 @@ def accept_meeting(request: Request, pk: str):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])  # Intentionally unauthenticated
+def get_meeting(request: Request, pk: str):
+    meeting = Meeting.objects.filter(pk=pk).first()
+    if not meeting:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = MeetingSerializer(meeting)
+    return Response(serializer.data)

@@ -34,6 +34,7 @@ urlpatterns = [
     re_path(r'meetings/(?P<pk>[\w-]+)/invite/?$', send_invite, name='Send meeting invite (POST)'),
     re_path(r'meetings/(?P<pk>[\w-]+)/remind/?$', send_remind, name='Send meeting reminder (POST)'),
     re_path(r'meetings/(?P<pk>[\w-]+)/accept/?$', accept_meeting, name='Accept meeting invite (POST)'),
+    re_path(r'meetings/(?P<pk>[\w-]+)/?$', get_meeting, name='Get meeting (GET)'),
 
     re_path('test-send-email/?$', test_email)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
