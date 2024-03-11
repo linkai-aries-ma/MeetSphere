@@ -72,8 +72,8 @@ export const EX_MEETINGS: Meeting[] = [
 export const EX_CALENDARS: Calendar[] = [
   {
     id: 1,
-    startDate: '2024-01-27',
-    endDate: '2024-02-02',
+    startDate: '2025-01-27',
+    endDate: '2026-02-02',
     created: '2024-01-25T15:38:00',
     modified: '2024-01-25T18:50:00',
     timezone: 'America/New_York',

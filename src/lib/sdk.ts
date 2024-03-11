@@ -140,6 +140,8 @@ export async function getCalendars(): Promise<Calendar[]> {
   await new Promise(resolve => setTimeout(resolve, 1000))
   return EX_CALENDARS
 }
+export const getCalendar = (): Promise<Calendar[]> => get('calendar')
+export const addCalendar = (calendar: Calendar): Promise<void> => post('add_calendar', calendar)
 
 /**
  * Get the invitation information by its UUID

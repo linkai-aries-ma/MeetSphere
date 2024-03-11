@@ -1,6 +1,8 @@
+import { EX_CALENDARS } from '../examples.ts'
 import {
   addContact,
   deleteContact,
+  getCalendar,
   getContacts,
   getUserSelf,
   login,
@@ -123,4 +125,22 @@ test('Contact features', async () => {
 
   // Delete the contacts
   await expect(deleteContact(newContacts[0].pk)).resolves.not.toThrow()
+})
+
+test('Calendar features', async () => {
+  // Test get calendars
+  await createSession()
+  
+  const calendars = EX_CALENDARS
+  console.log(calendars[1])
+
+  //Add calendar
+  //const a = await expect(addCalendar(calendars[1]))
+  //console.log(a)
+  //await expect(addCalendar(calendars[0])).rejects.toThrow()
+  //expect(() => addCalendar(calendars[0])).not.toThrow()
+
+  const calendars1 = await getCalendar()
+  //expect(calendars1.length).toBe(2)
+  console.log(calendars1)
 })
