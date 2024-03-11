@@ -30,11 +30,14 @@ class Contact(models.Model):
 
 class Meeting(models.Model):
     title = models.CharField(max_length=100)
-    description = models.TextField()
-    location = models.TextField()
+    description = models.TextField(default='')
     is_virtual = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    if is_virtual:
+        location = models.TextField(default='')
+    else:
+        location = models.TextField(max_length=100)
 
     # People
     calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='meetings')

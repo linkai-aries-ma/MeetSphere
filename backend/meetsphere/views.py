@@ -68,7 +68,8 @@ def user_profile_image(request: Request):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'POST', 'DELETE', 'PATCH'])
+@permission_classes([IsAuthenticated])
 def contacts(request: Request):
     if request.method == 'GET':
         contacts = Contact.objects.filter(owner=request.user)
@@ -97,6 +98,22 @@ def contacts(request: Request):
 
         contact.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    if request.method == 'PATCH':
+        pk = request.data.get('pk')
+        if not pk:
+            return Response({"error": "Primary key is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            contact = Contact.objects.get(pk=pk, owner=request.user)
+        except Contact.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AddContactSerializer(contact, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -150,3 +167,47 @@ def test_email(request: Request):
         fail_silently=False,
     )
     return Response(status=status.HTTP_200_OK)
+
+@api_view(['GET', 'POST', 'DELETE', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def meetings(request: Request):
+    if request.method == 'GET':
+        meetings = Meeting.objects.filter(creator=request.user)
+        serializer = MeetingSerializer(meetings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    if request.method == 'POST':
+        serializer = AddMeetingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(creator=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'DELETE':
+        pk = request.data.get('pk')
+        if not pk:
+            return Response({"error": "Primary key is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            meeting = Meeting.objects.get(pk=pk, creator=request.user)
+        except Meeting.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        meeting.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    if request.method == 'PATCH':
+        pk = request.data.get('pk')
+        if not pk:
+            return Response({"error": "Primary key is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            meeting = Meeting.objects.get(pk=pk, creator=request.user)
+        except Meeting.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AddMeetingSerializer(meeting, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
