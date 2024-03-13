@@ -71,7 +71,7 @@ a {
   text-decoration: none;
 }
 
-button {
+#root button {
   padding: 10px 16px;
   min-width: 100px;
 
@@ -81,43 +81,93 @@ button {
 
   // For the hover effect
   transition: all 0.2s ease-in-out;
+
+  &.emp {
+    background-color: $c-emp;
+    color: white;
+  }
+
+  &.warn {
+    background-color: $c-warn;
+    color: white;
+  }
+
+  &.alt {
+    background-color: $c-alt;
+    color: white;
+  }
+
+  &:hover {
+    cursor: pointer;
+
+    transform: translateY(-4px);
+
+    // Drop shadow
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+  }
+
+  &.icon {
+    min-width: unset;
+    font-size: 20px;
+    padding: 8px 16px;
+  }
+
+  &.full {
+      width: 100%;
+  }
 }
 
-button.emp {
-  background-color: $c-emp;
-  color: white;
-}
-
-button.warn {
-  background-color: $c-warn;
-  color: white;
-}
-
-button.alt {
-  background-color: $c-alt;
-  color: white;
-}
-
-button:hover {
-  cursor: pointer;
-
-  transform: translateY(-4px);
-
-  // Drop shadow
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
-}
-
-button.icon {
+#root .rs-picker button {
+  padding: unset;
   min-width: unset;
-  font-size: 20px;
-  padding: 8px 16px;
+  border: unset;
+  border-radius: unset;
+  background: unset;
+  transition: unset;
+  box-shadow: unset;
+  transform: unset;
+
+  // Reset the styles for the specific button variants
+  &.emp, &.warn, &.alt, &.icon, &.full {
+    background-color: unset;
+    color: unset;
+    min-width: unset;
+    font-size: unset;
+    padding: unset;
+    width: unset;
+  }
+
+  // Reset the hover effect
+  &:hover {
+    cursor: unset;
+    transform: unset;
+    box-shadow: unset;
+  }
 }
 
-button.full {
+#root select {
+  padding: 10px 16px;
+  min-width: 100px;
   width: 100%;
+
+  border: none;
+  border-radius: 10px;
+  background: $c-off;
+
+  // For the hover effect
+  transition: all 0.2s ease-in-out;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 0 0 1px $c-emp;
+  }
 }
 
-input[type="text"], input[type="password"], input[type="email"], input[type="number"] {
+#root input[type="text"], input[type="password"], input[type="email"], input[type="number"] {
   padding: 10px 16px;
   min-width: 100px;
   width: 100%;

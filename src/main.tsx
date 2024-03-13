@@ -9,11 +9,13 @@ import { Home } from './pages/Home.tsx'
 import { CalendarView } from './pages/CalendarView.tsx'
 import { Schedule } from './pages/Schedule.tsx'
 import { Contacts } from './pages/Contacts.tsx'
+import { CalendarCreate } from './pages/CalendarCreate.tsx'
 
 const routes = createBrowserRouter([
   { path: '/', Component: Welcome },
   { path: '/home', Component: Home },
   { path: '/calendar', Component: CalendarView },
+  { path: '/calendar-create', Component: CalendarCreate },
   { path: '/schedule/:uuid', Component: Schedule },
   { path: '/contacts', Component: Contacts },
   { path: '*', Component: () => {

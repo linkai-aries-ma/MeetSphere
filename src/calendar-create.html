@@ -1,47 +1,6 @@
 @title Calendar
 
-<main id="calendar-page">
-  <h2>Let's find your perfect time for the meeting.</h2>
 
-  <div class="create-event">
-
-    <label class="event-name">
-      <span>Event Name:</span>
-      <input>
-    </label>
-
-    <div class="select-hour">
-      <div>Select the hours which could work</div>
-
-      <label for="time-from">
-        <select id="time-from" class="dropdown from"></select>
-        <span>to</span>
-        <select id="time-to" class="dropdown to"></select>
-      </label>
-    </div>
-
-    <div class="calendar">
-      <h2 class="calendar-title">February 2024</h2>
-
-      <table class="calendar-table">
-        <tr>
-          <th>Sun</th>
-          <th>Mon</th>
-          <th>Tue</th>
-          <th>Wed</th>
-          <th>Thu</th>
-          <th>Fri</th>
-          <th>Sat</th>
-        </tr>
-
-        <tbody id="ms-calendar-grid">
-          <!-- Values will be filled in using js -->
-        </tbody>
-      </table>
-    </div>
-    <a href="calendar-timepicker.html"><button class="emp">Create</button></a>
-  </div>
-</main>
 
 <script>
   $(document).ready(() => {
@@ -52,27 +11,5 @@
     // Select 9:00 by default for the "from" dropdown, and 20:00 for the "to" dropdown
     $('.dropdown.from').val(9)
     $('.dropdown.to').val(20)
-
-    // Generate the calendar grid
-    const now = moment()
-    const arr = getCalendarGrid(now.year(), now.month())
-
-    // Fill in the calendar grid
-    arr.forEach(week => {
-      const tr = $('<tr></tr>')
-      week.forEach(day => {
-        const td = $(`<td>${day.date()}</td>`)
-        if (day < now) td.addClass('past')
-        tr.append(td)
-      })
-      $('#ms-calendar-grid').append(tr)
-    })
-
-    // Make the calendar grid clickable
-    $('.calendar-table td:not(.past)').click(e =>
-    {
-      if ($(e.target).text() === '') return
-      $(e.target).toggleClass('selected')
-    })
   })
 </script>
