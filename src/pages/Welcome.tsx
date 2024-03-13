@@ -1,12 +1,7 @@
 import * as React from 'react'
 import './Welcome.scss'
-import { useState } from 'react'
 
 export function Welcome(): React.JSX.Element {
-  function loginSubmit() {
-    // Redirect to /home
-  }
-
   return (
     <main id="index">
       <div className="title">

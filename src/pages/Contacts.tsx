@@ -4,7 +4,7 @@ import { Contact } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
 import { CONTACT } from '../lib/sdk.ts'
 import { Loading } from '../components/Loading.tsx'
-import { clz } from '../lib/ui.ts'
+import { clz, getAvatar } from '../lib/ui.ts'
 import { Icon } from '@iconify/react'
 import { toggle } from '../lib/utils.ts'
 
@@ -109,7 +109,7 @@ export function Contacts({ select }: ContactsProps) {
           onClick={() => {setExpanded(arr => toggle(arr, contact.id))}}
           className={clz({ opened: expanded.includes(contact.id) }, 'contact')}>
 
-          <img src={contact.pfp} alt="contact-pfp"/>
+          <img src={getAvatar(contact)} alt="contact-pfp"/>
           <div>
             <span>{contact.name}</span>
             <span>{contact.email}</span>

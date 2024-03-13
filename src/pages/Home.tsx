@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Meeting, UserSelf } from '../lib/types.ts'
 import { Icon } from '@iconify/react'
 import moment from 'moment'
-import { clz } from '../lib/ui.ts'
+import { clz, getAvatar } from '../lib/ui.ts'
 import './Home.scss'
 import { MEETING, USER } from '../lib/sdk.ts'
 import { Loading } from '../components/Loading.tsx'
@@ -39,11 +39,14 @@ export function Home() {
       .catch(err => setError(err.message))
   }
 
+  const upcomingMeetings = meetings.filter(meeting => moment(meeting.time).isAfter(moment()))
+  const meetingsToday = meetings.filter(meeting => moment(meeting.time).isSame(moment(), 'day'))
+
   return <>
     {(meetings && self) && <main>
       <section className="welcome-section">
         <h2>Welcome {self.name}!</h2>
-        <span>You have {meetings.length} upcoming meetings today.</span>
+        <span>You have {meetingsToday.length === 0 ? 'no' : meetingsToday.length} meetings today.</span>
       </section>
 
       <div className="content">
@@ -51,13 +54,13 @@ export function Home() {
           <div className="section-header">
             <div>
               <h2>Upcoming Meetings</h2>
-              <a href="/pages/CalendarView">
+              <a href="/calendar">
                 <button>+</button>
               </a>
             </div>
           </div>
 
-          {meetings.map(meeting => (
+          {upcomingMeetings.map(meeting => (
             <article
               key={meeting.id}
               className={clz({ opened: expanded.includes(meeting.id) }, 'meeting')}
@@ -68,13 +71,13 @@ export function Home() {
                   <h2>With {meeting.invitee.name}</h2>
                   <span>{meeting.title}</span>
                   {/* format: Jan. 28th 2024 */}
-                  <span>{moment(meeting.time).format('MMM. Do YYYY')}</span>
+                  <span>{moment(meeting.time).format('MMM. Do YYYY')} ({moment(meeting.time).fromNow()})</span>
                   {/* format: 10:00 AM - 11:00 AM */}
                   <span>
-                    {moment(meeting.time).format('h:mm A')} -{moment(meeting.time).add(meeting.duration, 'minutes').format('h:mm A')}
+                    {moment(meeting.time).format('h:mm A')} ~ {moment(meeting.time).add(meeting.duration, 'minutes').format('h:mm A')}
                   </span>
                 </div>
-                <img src={meeting.invitee.pfp} alt="" className="meeting-pfp"/>
+                <img src={getAvatar(meeting.invitee)} alt="" className="meeting-pfp"/>
               </div>
 
               {/* Show button group only on toggle */}
