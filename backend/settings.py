@@ -41,6 +41,10 @@ DEBUG = True
 ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'meetsphere.CustomUser'
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=999),
+}
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

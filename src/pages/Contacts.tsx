@@ -1,6 +1,6 @@
 import * as React from 'react'
 import './Contacts.scss'
-import { Contact } from '../lib/types.ts'
+import { Contact, NewContact } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
 import { CONTACT } from '../lib/sdk.ts'
 import { Loading } from '../components/Loading.tsx'
@@ -39,7 +39,7 @@ function InviteOverlay({ close, contact }: {close: (submit: boolean) => void, co
   </div>
 }
 
-function AddContactOverlay({ close }: { close: (submit: Contact | null) => void }) {
+function AddContactOverlay({ close }: { close: (submit: NewContact | null) => void }) {
   const [ name, setName ] = useState<string>()
   const [ email, setEmail ] = useState<string>()
 
@@ -58,7 +58,7 @@ function AddContactOverlay({ close }: { close: (submit: Contact | null) => void 
           value={email} onChange={e => setEmail(e.target.value)}/>
       </label>
       <button id="contact-submit" className="emp"
-        onClick={() => close({ id: 0, name, email, pfp: '' })}>Submit</button>
+        onClick={() => close({ name, email })}>Submit</button>
       <button id="contact-cancel" onClick={() => close(null)}>Cancel</button>
     </div>
   </div>
@@ -82,12 +82,14 @@ export function Contacts({ select }: ContactsProps) {
   const [ invited, setInvited ] = useState<number[]>([])
   const [ expanded, setExpanded ] = useState<number[]>([])
 
-  // Fetch contacts from server
-  useEffect(() => {
+  const refresh = () => {
     CONTACT.list().then(setContacts)
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
-  }, [])
+  }
+
+  // Fetch contacts from server
+  useEffect(() => refresh(), [])
 
   function deleteContact(contact: Contact) {
     if (!window.confirm(`Are you sure you want to delete ${contact.name}?`)) return
@@ -95,6 +97,12 @@ export function Contacts({ select }: ContactsProps) {
     CONTACT.delete(contact.id).then(() => {
       setContacts(contacts.filter(c => c.id !== contact.id))
     }).catch(err => setError(err.message))
+  }
+
+  function addContact(d: NewContact) {
+    CONTACT.add(d).then(refresh)
+      .catch(err => setError(err.message))
+      .finally(() => setOvAdd(false))
   }
 
   return <>
@@ -130,7 +138,10 @@ export function Contacts({ select }: ContactsProps) {
         </div>
       </div>
 
-      {ovAdd && <AddContactOverlay close={() => setOvAdd(false)}/>}
+      {ovAdd && <AddContactOverlay close={d => {
+        if (d) addContact(d)
+        else setOvAdd(false)
+      }}/>}
       {ovInvite && <InviteOverlay close={submit => {
         setOvInvite(null)
         if (submit) {
