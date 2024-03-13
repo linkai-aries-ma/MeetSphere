@@ -1,5 +1,4 @@
-import { EX_CALENDARS, EX_CONTACTS, EX_MEETINGS, EX_SELF } from './examples.ts'
-import { Calendar, Contact, Invitation, Meeting, NewCalendar, NewContact, NewMeeting, UserSelf } from './types.ts'
+import { Calendar, Contact, Meeting, NewCalendar, NewContact, NewMeeting, UserSelf } from './types.ts'
 
 const HOST = 'http://localhost:8000'
 
@@ -38,6 +37,12 @@ export async function send(node: string, body?: object, method: string = 'POST')
       result = JSON.parse(resp)
     }
     catch (e) { throw new Error(resp) }
+
+    // Check if the error is token invalid
+    if (result.code === 'token_not_valid') {
+      localStorage.removeItem('token')
+      window.location.reload()
+    }
 
     // If result has only one field, treat it as an error message
     if (Object.keys(result).length === 1)
@@ -129,51 +134,10 @@ export const MEETING = {
   get: (id: string): Promise<Meeting> => get(`meetings/${id}`),
 }
 
-/**
- * Get the scheduled meetings of the current logged-in user
- *
- * @returns Scheduled meetings
- */
-export async function getScheduledMeetings(): Promise<Meeting[]> {
-  // TODO: Fetch scheduled meetings from server
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  return EX_MEETINGS
-}
-
-/**
- * Get the calendars of the current logged-in user
- *
- * @returns Calendars
- */
-export async function getCalendars(): Promise<Calendar[]> {
-  // TODO: Fetch calendars from server
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  return EX_CALENDARS
-}
-export const getCalendar = (): Promise<Calendar[]> => get('calendar')
-export const addCalendar = (calendar: Calendar): Promise<void> => post('add_calendar', calendar)
-
-/**
- * Get the invitation information by its UUID
- *
- * @param uuid UUID of the invitation
- */
-export async function getInvitation(uuid: string): Promise<Invitation> {
-  // TODO: Fetch invitation from server
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  return {
-    id: uuid,
-    cal: EX_CALENDARS[0],
-    meeting: {
-      id: '10',
-      calendar: 1,
-      creator: EX_SELF,
-      invitee: EX_CONTACTS[2],
-      title: 'Cat Meeting',
-      description: 'We should let our cats meet to see if they get along together.',
-      duration: 60,
-      regularity: 'once',
-    },
-    from: EX_SELF,
-  }
-}
+// Expose api tools in global scope
+Object.assign(window, { api: {
+  user: USER,
+  contact: CONTACT,
+  calendar: CALENDAR,
+  meeting: MEETING
+} })

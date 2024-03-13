@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Icon } from '@iconify/react'
 import { Calendar } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
-import { getCalendars } from '../lib/sdk.ts'
+import { CALENDAR } from '../lib/sdk.ts'
 import moment from 'moment'
 import { DATE_NOW, getMeetingStatus } from '../lib/lib.ts'
 import './Calendar.scss'
@@ -84,7 +84,7 @@ function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
               {moment(ev.m.time).format('MMM Do YYYY')}
             </span>
             <span className="time">
-              {moment(ev.m.time).format('h:mm A')} - {moment(ev.m.time).add(ev.m.durationMinutes, 'minutes').format('h:mm A')}
+              {moment(ev.m.time).format('h:mm A')} - {moment(ev.m.time).add(ev.m.duration, 'minutes').format('h:mm A')}
             </span>
           </> : <>
             <span className="date">Date Pending</span>
@@ -96,7 +96,7 @@ function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
   </div>
 }
 
-export function Calendar() {
+export function CalendarView() {
   const [ calendars, setCalendars ] = useState<Calendar[]>([])
   const [ error, setError ] = useState<string | null>(null)
   const [ loading, setLoading ] = useState(true)
@@ -104,7 +104,7 @@ export function Calendar() {
 
   // Initial fetch
   useEffect(() => {
-    getCalendars().then(setCalendars)
+    CALENDAR.list().then(setCalendars)
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
@@ -126,7 +126,7 @@ export function Calendar() {
     </div>
 
     <div className="created-calendar-list">
-      {calendars.filter(cal => moment(cal.endDate).isAfter(DATE_NOW))
+      {calendars.filter(cal => moment(cal.end_date).isAfter(DATE_NOW))
         .map(cal => <OneCalendar key={cal.id} cal={cal}
           canEdit={true} btn={f => handleClick(f, cal)}/>)}
     </div>
@@ -136,7 +136,7 @@ export function Calendar() {
     </div>
 
     <div className="created-calendar-list">
-      {calendars.filter(cal => moment(cal.endDate).isBefore(DATE_NOW))
+      {calendars.filter(cal => moment(cal.end_date).isBefore(DATE_NOW))
         .map(cal => <OneCalendar key={cal.id} cal={cal}
           canEdit={false} btn={f => handleClick(f, cal)}/>)}
     </div>

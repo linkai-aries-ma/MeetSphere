@@ -1,12 +1,5 @@
 import moment from 'moment'
 
-export interface Invitation {
-  id: string
-  cal: Calendar
-  meeting: Meeting
-  from: UserSelf
-}
-
 /**
  * Time slot preference
  */

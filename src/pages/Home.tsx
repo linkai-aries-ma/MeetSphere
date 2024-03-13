@@ -5,19 +5,19 @@ import { Icon } from '@iconify/react'
 import moment from 'moment'
 import { clz } from '../lib/ui.ts'
 import './Home.scss'
-import { getScheduledMeetings, getUserSelf } from '../lib/sdk.ts'
+import { MEETING, USER } from '../lib/sdk.ts'
 import { Loading } from '../components/Loading.tsx'
 
 export function Home() {
   const [ self, setSelf ] = useState<UserSelf | null>(null)
   const [ meetings, setMeetings ] = useState<Meeting[]>([])
-  const [ expanded, setExpanded ] = useState<number[]>([])
+  const [ expanded, setExpanded ] = useState<string[]>([])
   const [ loading, setLoading ] = useState(true)
   const [ error, setError ] = useState<string | null>(null)
 
   // Initial fetch
   useEffect(() => {
-    Promise.all([ getScheduledMeetings(), getUserSelf() ])
+    Promise.all([ MEETING.list(), USER.get() ])
       .then(([ meetings, user ]) => {
         setMeetings(meetings)
         setSelf(user)
@@ -26,13 +26,17 @@ export function Home() {
       .finally(() => setLoading(false))
   }, [])
 
-  const toggleMeeting = (id: number) => {
+  const toggleMeeting = (id: string) => {
     setExpanded(prev => (prev.includes(id) ? prev.filter(meetingId => meetingId !== id) : [ ...prev, id ]))
     console.log('toggle', id, expanded)
   }
 
-  const deleteMeeting = (id: number) => {
-    if (window.confirm('Are you sure you want to cancel this meeting?')) setMeetings(meetings.filter(meeting => meeting.id !== id))
+  const deleteMeeting = (id: string) => {
+    if (!window.confirm('Are you sure you want to cancel this meeting?')) return
+
+    MEETING.delete(id)
+      .then(() => setMeetings(meetings.filter(meeting => meeting.id !== id)))
+      .catch(err => setError(err.message))
   }
 
   return <>
@@ -47,7 +51,7 @@ export function Home() {
           <div className="section-header">
             <div>
               <h2>Upcoming Meetings</h2>
-              <a href="/calendar">
+              <a href="/pages/CalendarView">
                 <button>+</button>
               </a>
             </div>
@@ -61,16 +65,16 @@ export function Home() {
 
               <div className="meeting-content">
                 <div>
-                  <h2>With {meeting.with.name}</h2>
+                  <h2>With {meeting.invitee.name}</h2>
                   <span>{meeting.title}</span>
                   {/* format: Jan. 28th 2024 */}
                   <span>{moment(meeting.time).format('MMM. Do YYYY')}</span>
                   {/* format: 10:00 AM - 11:00 AM */}
                   <span>
-                    {moment(meeting.time).format('h:mm A')} -{moment(meeting.time).add(meeting.durationMinutes, 'minutes').format('h:mm A')}
+                    {moment(meeting.time).format('h:mm A')} -{moment(meeting.time).add(meeting.duration, 'minutes').format('h:mm A')}
                   </span>
                 </div>
-                <img src={meeting.with.pfp} alt="" className="meeting-pfp"/>
+                <img src={meeting.invitee.pfp} alt="" className="meeting-pfp"/>
               </div>
 
               {/* Show button group only on toggle */}

@@ -2,7 +2,7 @@ import * as React from 'react'
 import './Contacts.scss'
 import { Contact } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
-import { getContacts } from '../lib/sdk.ts'
+import { CONTACT } from '../lib/sdk.ts'
 import { Loading } from '../components/Loading.tsx'
 import { clz } from '../lib/ui.ts'
 import { Icon } from '@iconify/react'
@@ -84,7 +84,7 @@ export function Contacts({ select }: ContactsProps) {
 
   // Fetch contacts from server
   useEffect(() => {
-    getContacts().then(setContacts)
+    CONTACT.list().then(setContacts)
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
@@ -92,10 +92,9 @@ export function Contacts({ select }: ContactsProps) {
   function deleteContact(contact: Contact) {
     if (!window.confirm(`Are you sure you want to delete ${contact.name}?`)) return
 
-    // Update the contact list
-    setContacts(contacts.filter(c => c.id !== contact.id))
-
-    // TODO: Send delete request to server
+    CONTACT.delete(contact.id).then(() => {
+      setContacts(contacts.filter(c => c.id !== contact.id))
+    }).catch(err => setError(err.message))
   }
 
   return <>
