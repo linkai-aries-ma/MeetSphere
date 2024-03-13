@@ -44,7 +44,8 @@ class AddContactSerializer(serializers.ModelSerializer):
         fields = ['name', 'email', 'profile_image']
 
     def validate(self, data):
-        data['email'] = data['email'].lower()
+        if 'email' in data:
+            data['email'] = data.get('email').lower()
         return data
 
 
