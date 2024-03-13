@@ -51,7 +51,7 @@ class Meeting(models.Model):
     is_virtual = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    location = models.TextField(max_length=100, default='')
+    location = models.TextField(max_length=100, default='', blank=True)
 
     # People
     calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='meetings')

@@ -1,20 +1,47 @@
 import * as React from 'react'
 import './Contacts.scss'
-import { Contact, NewContact } from '../lib/types.ts'
+import { Calendar, Contact, NewContact, NewMeeting } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
-import { CONTACT } from '../lib/sdk.ts'
+import { CALENDAR, CONTACT, MEETING, send } from '../lib/sdk.ts'
 import { Loading } from '../components/Loading.tsx'
 import { clz, getAvatar } from '../lib/ui.ts'
 import { Icon } from '@iconify/react'
 import { toggle } from '../lib/utils.ts'
 
-function InviteOverlay({ close, contact }: {close: (submit: boolean) => void, contact: Contact}) {
-  const [ topic, setTopic ] = useState<string>()
-  const [ desc, setDesc ] = useState<string>()
-  const [ online, setOnline ] = useState<boolean>(false)
-  const [ location, setLocation ] = useState<string>()
+function InviteOverlay({ close, contact, calendar }: {close: (submit: boolean) => void, contact: Contact, calendar: number}) {
+  const [ topic, setTopic ] = useState<string>('')
+  const [ desc, setDesc ] = useState<string>('')
+  const [ online, setOnline ] = useState<boolean>(true)
+  const [ location, setLocation ] = useState<string>('')
+  const [ duration, setDuration ] = useState<number>(30)
+  const [ error, setError ] = useState<string>()
+  const [ sending, setSending ] = useState<boolean>(false)
 
-  return <div id="meeting-overlay" className="overlay" onClick={() => close(true)}>
+  function submit() {
+    if (!topic || !desc) return setError('Please fill in topic and description.')
+
+    // Check duration between 1 minute and 1 day
+    if (duration < 1) return setError('Duration must be at least 1 minute.')
+    if (duration > 24 * 60) return setError('Duration must be at most 1 day.')
+
+    // Check location if not online
+    if (!online && !location) return setError('Please fill in location for an in-person meeting.')
+
+    // Create the meeting
+    const meeting: NewMeeting = {
+      title: topic, description: desc, is_virtual: online,
+      location, duration, regularity: 'once',
+      invitee: contact.id, calendar
+    }
+
+    // Send to server
+    setSending(true)
+    MEETING.add(meeting).then(() => close(true))
+      .catch(err => setError(err.message))
+      .finally(() => setSending(false))
+  }
+
+  return <div id="meeting-overlay" className="overlay" onClick={() => close(false)}>
     <div onClick={e => e.stopPropagation()}>
       <h1>Meeting Details</h1>
       <span>With: {contact.name}</span>
@@ -29,19 +56,27 @@ function InviteOverlay({ close, contact }: {close: (submit: boolean) => void, co
       <button id="switch-online-btn" className={online ? 'alt' : ''} onClick={() => setOnline(!online)}>
         {online ? 'Online Meeting' : 'In-Person Meeting'}
       </button>
-      {online && <label>
+      {!online && <label>
+        <span>Location</span>
         <input type="text" name="Meeting Location" placeholder="Location"
           value={location} onChange={e => setLocation(e.target.value)}/>
       </label>}
-      <button id="meeting-submit" className="emp">Submit</button>
-      <button id="meeting-cancel" onClick={() => close(true)}>Cancel</button>
+      <label>
+        <span>Duration (minutes)</span>
+        <input type="number" name="Meeting Duration" placeholder="Duration (minutes)"
+          value={duration} onChange={e => setDuration(+e.target.value)}/>
+      </label>
+
+      {error && <div className="error">{error}</div>}
+      <button id="meeting-submit" className="emp" onClick={submit}>Submit</button>
+      <button id="meeting-cancel" onClick={() => close(false)}>Cancel</button>
     </div>
   </div>
 }
 
 function AddContactOverlay({ close }: { close: (submit: NewContact | null) => void }) {
-  const [ name, setName ] = useState<string>()
-  const [ email, setEmail ] = useState<string>()
+  const [ name, setName ] = useState<string>('')
+  const [ email, setEmail ] = useState<string>('')
 
   // TODO: Edit contact
   // TODO: Contact pfp
@@ -64,14 +99,9 @@ function AddContactOverlay({ close }: { close: (submit: NewContact | null) => vo
   </div>
 }
 
-interface ContactsProps {
-  select?: boolean
-}
-
-export function Contacts({ select }: ContactsProps) {
-  select = true
-
+export function Contacts() {
   const [ contacts, setContacts ] = useState<Contact[]>([])
+  const [ selectCalendar, setSelectCalendar ] = useState<Calendar>(null)
   const [ error, setError ] = useState<string>()
   const [ loading, setLoading ] = useState<boolean>(true)
 
@@ -82,9 +112,22 @@ export function Contacts({ select }: ContactsProps) {
   const [ invited, setInvited ] = useState<number[]>([])
   const [ expanded, setExpanded ] = useState<number[]>([])
 
+  // Check if send parameter is on
+  const params = new URLSearchParams(window.location.search)
+  const select = params.get('select')
+
+  // Load contacts (and optionally, the calendar that we're selecting a contact for)
   const refresh = () => {
-    CONTACT.list().then(setContacts)
-      .catch(err => setError(err.message))
+    Promise.all([ CONTACT.list(), select && CALENDAR.list(), select && MEETING.list() ])
+      .then(([ contacts, cals, meetings ]) => {
+        setContacts(contacts)
+        if (select)
+        {
+          setSelectCalendar(cals.find(cal => cal.id === +select))
+          setInvited(meetings.filter(m => m.calendar.id === +select).map(m => m.invitee.id))
+          console.log(invited)
+        }
+      }).catch(err => setError(err.message))
       .finally(() => setLoading(false))
   }
 
@@ -123,9 +166,12 @@ export function Contacts({ select }: ContactsProps) {
             <span>{contact.email}</span>
           </div>
           {select && <button className="emp send" onClick={e => {
+            if (invited.includes(contact.id) &&
+              !confirm(`You've already invited ${contact.name} for a meeting. ` +
+                'Do you want to invite them for another meeting?')) return
             setOvInvite(contact)
             e.stopPropagation()
-          }}>Send</button>}
+          }}>{invited.includes(contact.id) ? '✔' : 'Send'}</button>}
 
           <button className="warn delete icon" onClick={() => deleteContact(contact)}>
             <Icon icon="fluent:delete-20-filled" />
@@ -142,7 +188,7 @@ export function Contacts({ select }: ContactsProps) {
         if (d) addContact(d)
         else setOvAdd(false)
       }}/>}
-      {ovInvite && <InviteOverlay close={submit => {
+      {ovInvite && <InviteOverlay calendar={selectCalendar.id} close={submit => {
         setOvInvite(null)
         if (submit) {
           setSelectDone(true)

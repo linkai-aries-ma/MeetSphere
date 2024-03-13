@@ -32,6 +32,11 @@ export async function send(node: string, body?: object, method: string = 'POST')
   const resp = await response.text()
 
   if (!response.ok) {
+    if (response.status === 401 && node !== 'login' && node !== 'register') {
+      localStorage.removeItem('token')
+      window.location.href = '/'
+    }
+
     let result: any
     try {
       result = JSON.parse(resp)
@@ -41,7 +46,7 @@ export async function send(node: string, body?: object, method: string = 'POST')
     // Check if the error is token invalid
     if (result.code === 'token_not_valid') {
       localStorage.removeItem('token')
-      window.location.reload()
+      window.location.href = '/'
     }
 
     // If result has only one field, treat it as an error message
