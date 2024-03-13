@@ -16,6 +16,10 @@ const routes = createBrowserRouter([
   { path: '/calendar', Component: CalendarView },
   { path: '/schedule/:uuid', Component: Schedule },
   { path: '/contacts', Component: Contacts },
+  { path: '*', Component: () => {
+    window.location.assign('/')
+    return <div>404 Not Found</div>
+  } },
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
