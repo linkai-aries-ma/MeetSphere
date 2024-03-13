@@ -10,9 +10,9 @@ export const DATE_NOW = moment('2024-01-28T12:00:00')
  * @param event Meeting object
  */
 export function getMeetingStatus(event: Meeting): MeetingStatus {
-  if (!('time' in event))
+  if (!event.time)
     return 'invited'
-  if (moment(event.time).add(event.durationMinutes, 'minutes').isBefore(DATE_NOW))
+  if (moment(event.time).add(event.duration, 'minutes').isBefore(DATE_NOW))
     return 'complete'
   if (moment(event.time).isBefore(DATE_NOW))
     return 'in-progress'

@@ -1,29 +1,64 @@
 import * as React from 'react'
 import { Icon } from '@iconify/react'
-import { Calendar } from '../lib/types.ts'
+import { Calendar, CalendarWithMeetings, Meeting } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
-import { CALENDAR } from '../lib/sdk.ts'
+import { CALENDAR, MEETING } from '../lib/sdk.ts'
 import moment from 'moment'
 import { DATE_NOW, getMeetingStatus } from '../lib/lib.ts'
 import './Calendar.scss'
+import { clz, getAvatar } from '../lib/ui.ts'
+import { toggle } from '../lib/utils.ts'
 
-function RemindOverlay({ cal }: {cal: Calendar}) {
-  // TODO: Make buttons work
+function RemindOverlay({ cal, close }: {cal: CalendarWithMeetings, close: (submitted: boolean) => void}) {
+  const [ selected, setSelected ] = useState<string[]>([])
+  const [ submitting, setSubmitting ] = useState(false)
+  const [ error, setError ] = useState<string | null>(null)
+  const [ progress, setProgress ] = useState<string | null>(null)
 
-  return <div id="remind-overlay" className="overlay">
-    <div>
-      <h1>Remind Contacts</h1>
-      <div className="button-group">
-        {cal.meetings.map(m => <button className="toggle-button" key={m.invitee.id}>{m.invitee.name}</button>)}
+  async function submitHelper() {
+    // Send reminders for selected meetings
+    const len = selected.length
+    let count = 0
+    for (const m of cal.meetings) {
+      if (selected.includes(m.id)) {
+        setProgress(`Sending reminder for ${m.title} with ${m.invitee.name} (${++count}/${len})`)
+        await MEETING.remind(m.id)
+        selected.splice(selected.indexOf(m.id), 1)
+      }
+    }
+  }
+
+  function submit() {
+    if (submitting) return
+    setSubmitting(true)
+    submitHelper().then(() => close(true)).catch(err => setError(err.message)).finally(() => setSubmitting(false))
+  }
+
+  return <div id="remind-overlay" className="overlay" onClick={() => close(false)}>
+    <div onClick={e => e.stopPropagation()}>
+      <h1>Meeting Reminders</h1>
+      <div>Which meetings do you want to send reminders for?</div>
+      <div className="checkbox-group">
+        {cal.meetings.map(m =>
+          <label key={m.id}>
+            <input type="checkbox" name={m.id} onChange={() => setSelected(toggle(selected, m.id))}
+              value={selected.includes(m.id) ? 'on' : ''}/>
+            <span>{m.title} with {m.invitee.name} ({getMeetingStatus(m)})</span>
+          </label>
+        )}
       </div>
-      <button id="remind-submit" className="emp">Submit</button>
-      <button id="meeting-cancel">Cancel</button>
+      {error && <div className="error">{error}</div>}
+      {progress && <div className="progress">{progress}</div>}
+      {selected.length > 0 && <button id="remind-submit" className="emp" onClick={() => submit()}>
+        {submitting ? <Icon icon="line-md:loading-twotone-loop"/> : 'Send Reminders'}
+      </button>}
+      <button id="meeting-cancel" onClick={() => close(false)}>Cancel</button>
     </div>
   </div>
 }
 
 interface OneCalendarProps {
-  cal: Calendar,
+  cal: CalendarWithMeetings,
   canEdit?: boolean,
   btn: (name: string) => void
 }
@@ -63,23 +98,26 @@ function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
       <span>
         <Icon icon="fluent:checkmark-starburst-20-regular"></Icon>
         {/* 3 members accepted */}
-        {cal.meetings.filter(m => 'time' in m).length} members accepted
+        {cal.meetings.filter(m => m.time).length} members accepted
       </span>
     </div>
 
     {canEdit && <div className="button-group">
-      <button className="emp" onClick={() => btn('invite')}>Invite</button>
+      <button className="emp" onClick={() => {
+        // Redirect to /contacts?select=cal.id
+        window.location.assign(`/contacts?select=${cal.id}`)
+      }}>Invite</button>
       <button className="alt" onClick={() => btn('edit')}>Edit</button>
       <button className="warn" onClick={() => btn('remind')}>Remind</button>
     </div>}
 
     <div className="events">
       {events.map(ev => <div className={`st-${ev.st}`} key={ev.m.id}>
-        <img src={ev.m.invitee.pfp} alt=""/>
+        <img src={getAvatar(ev.m.invitee)} alt=""/>
         <div>
           <span className="name">{ev.m.title}</span>
           <span className="member">{ev.m.invitee.name}</span>
-          {'time' in ev.m ? <>
+          {ev.m.time ? <>
             <span className="date">
               {moment(ev.m.time).format('MMM Do YYYY')}
             </span>
@@ -97,22 +135,26 @@ function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
 }
 
 export function CalendarView() {
-  const [ calendars, setCalendars ] = useState<Calendar[]>([])
+  const [ calendars, setCalendars ] = useState<CalendarWithMeetings[]>([])
   const [ error, setError ] = useState<string | null>(null)
   const [ loading, setLoading ] = useState(true)
-  const [ remindCal, setRemindCal ] = useState<Calendar | null>(null)
+  const [ remindCal, setRemindCal ] = useState<CalendarWithMeetings | null>(null)
 
   // Initial fetch
   useEffect(() => {
-    CALENDAR.list().then(setCalendars)
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false))
+    Promise.all([ CALENDAR.list(), MEETING.list() ]).then(([ cals, meetings ]) => {
+      setCalendars(cals.map(cal => {
+        return { ...cal, meetings: meetings.filter(m => m.calendar.id === cal.id) }
+      }))
+    }).catch(err => setError(err.message)).finally(() => setLoading(false))
   }, [])
 
-  function handleClick(name: string, cal: Calendar) {
+  function handleClick(name: string, cal: CalendarWithMeetings) {
     if (name === 'remind') {
       setRemindCal(cal)
     }
+    // TODO: Implement edit
+    else alert(`The ${name} button is not implemented yet.`)
   }
 
   return <main>
@@ -141,6 +183,6 @@ export function CalendarView() {
           canEdit={false} btn={f => handleClick(f, cal)}/>)}
     </div>
 
-    {remindCal && <RemindOverlay cal={remindCal}/>}
+    {remindCal && <RemindOverlay cal={remindCal} close={() => setRemindCal(null)}/>}
   </main>
 }

@@ -10,6 +10,12 @@ main {
   }
 }
 
+.checkbox-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
 .created-calendar-list {
   display: flex;
   flex-direction: column;

@@ -117,7 +117,7 @@ button.full {
   width: 100%;
 }
 
-input {
+input[type="text"], input[type="password"], input[type="email"], input[type="number"] {
   padding: 10px 16px;
   min-width: 100px;
   width: 100%;
@@ -128,12 +128,19 @@ input {
 
   // For the hover effect
   transition: all 0.2s ease-in-out;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px $c-emp;
+  }
 }
 
-// input active
-input:focus {
-  outline: none;
-  box-shadow: 0 0 0 1px $c-emp;
+input[type="checkbox"] {
+  margin-right: 0.5rem;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 textarea {
@@ -268,4 +275,8 @@ main:not(.no-margin) {
 
 #ms-nav-portal button {
   text-transform: capitalize;
+}
+
+.flex-1 {
+  flex: 1;
 }

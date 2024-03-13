@@ -75,12 +75,15 @@ export interface TimeSlot {
  */
 export interface Calendar extends NewCalendar {
   id: number
-  meetings: Meeting[]
 
   // Metadata
   created: string // ISO time
   modified: string // ISO time
   time_slots: TimeSlot[]
+}
+
+export interface CalendarWithMeetings extends Calendar {
+  meetings: Meeting[]
 }
 
 export interface NewCalendar {
