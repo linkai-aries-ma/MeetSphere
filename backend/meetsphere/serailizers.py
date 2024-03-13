@@ -126,6 +126,7 @@ class ConfirmMeetingSerializer(serializers.ModelSerializer):
 class MeetingSerializer(serializers.ModelSerializer):
     invitee = ContactSerializer(read_only=True)
     calendar = CalendarSerializer(read_only=True)
+    creator = CustomUserSerializer(read_only=True)
 
     class Meta:
         model = Meeting

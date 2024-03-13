@@ -7,6 +7,7 @@ import './Schedule.scss'
 import moment from 'moment'
 import { CalendarView } from '../components/CalendarView.tsx'
 import { Loading } from '../components/Loading.tsx'
+import { useParams } from 'react-router-dom'
 
 const regularity = {
   'once': 'This is a one-time meeting, please select a time slot that works best for you.',
@@ -14,7 +15,8 @@ const regularity = {
   'weekly': 'This is a recurrent weekly meeting, please select a time slot that works best for you.',
 }
 
-export function Schedule({ uuid }: {uuid: string}) {
+export function Schedule() {
+  const { uuid } = useParams()
   const [ invitation, setInvitation ] = useState<Meeting | null>(null)
   const [ error, setError ] = useState<string | null>(null)
   const [ loading, setLoading ] = useState(true)
@@ -49,7 +51,7 @@ export function Schedule({ uuid }: {uuid: string}) {
   return <>
     {invitation && <main id="schedule">
       <div id="ms-schedule-info">
-        <h1>Hi {invitation.creator.name}</h1>
+        <h1>Hi {invitation.invitee.name}</h1>
         <p>You have been invited to a meeting by <span className="text-emp">{invitation.creator.name}</span>.</p>
         <blockquote>{invitation.description}</blockquote>
         <p>{regularity[invitation.regularity]}</p>
