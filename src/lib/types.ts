@@ -90,6 +90,8 @@ export interface NewCalendar {
   start_date: string // YYYY-MM-DD
   end_date: string // YYYY-MM-DD
   timezone: string
+  start_hour: number
+  end_hour: number
 }
 
 /**

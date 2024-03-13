@@ -27,6 +27,8 @@ class Calendar(models.Model):
 
     start_date = models.DateField()
     end_date = models.DateField()
+    start_hour = models.IntegerField(default=0)
+    end_hour = models.IntegerField(default=23)
 
     time_slots = models.JSONField()
     timezone = models.CharField(max_length=100)

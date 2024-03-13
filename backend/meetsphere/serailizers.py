@@ -58,14 +58,27 @@ class ContactSerializer(serializers.ModelSerializer):
 class AddCalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendar
-        fields = ['start_date', 'end_date', 'timezone']
+        fields = ['start_date', 'end_date', 'timezone', 'start_hour', 'end_hour']
+        # All fields are required
+        extra_kwargs = {
+            'start_date': {'required': True},
+            'end_date': {'required': True},
+            'timezone': {'required': True},
+            'start_hour': {'required': True},
+            'end_hour': {'required': True},
+        }
 
     def validate(self, attrs):
         start_date = attrs.get('start_date')
         end_date = attrs.get('end_date')
+        start_hour = attrs.get('start_hour')
+        end_hour = attrs.get('end_hour')
 
-        if start_date and end_date and end_date <= start_date:
+        if end_date <= start_date:
             raise serializers.ValidationError("End date must be after start date.")
+
+        if end_hour <= start_hour:
+            raise serializers.ValidationError("End hour must be after start hour.")
 
         return attrs
 

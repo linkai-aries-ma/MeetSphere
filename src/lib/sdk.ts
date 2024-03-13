@@ -122,9 +122,8 @@ export const CONTACT = {
 }
 
 export const CALENDAR = {
-  list: (): Promise<Calendar[]> => get('calendar')
-    .then(cals => cals.map((it: Calendar) => { return { ...it, meetings: it.meetings ?? [] } })),
-  add: (calendar: NewCalendar): Promise<void> => post('calendar', calendar),
+  list: (): Promise<Calendar[]> => get('calendar'),
+  add: (calendar: NewCalendar): Promise<{ id: number }> => post('calendar', calendar),
   delete: (id: number): Promise<void> => delete_('calendar', { id }),
   update: (calendar: Partial<Calendar>): Promise<void> => patch('calendar', calendar),
 }
