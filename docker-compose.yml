@@ -3,5 +3,4 @@ services:
   web:
     build: .
     ports:
-      - "8000:8000"
-    entrypoint: ["bash", "run.sh", "test"]
+      - "127.0.0.1:58492:8000"
