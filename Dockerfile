@@ -4,7 +4,7 @@ FROM node:20-alpine as builder
 
 # Set the working directory
 WORKDIR /app
-COPY frontend/package.json frontend/yarn.lock ./
+COPY package.json yarn.lock ./
 RUN yarn install
 
 # Copy project sources
