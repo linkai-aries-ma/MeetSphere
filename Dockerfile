@@ -36,4 +36,4 @@ COPY --from=builder /app/dist /app/dist
 COPY ./ ./
 
 # Run the application
-CMD ["bash", "run.sh"]
+CMD ["sh", "run.sh"]
