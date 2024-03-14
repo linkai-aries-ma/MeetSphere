@@ -143,8 +143,6 @@ function isValid(slot: TimeSlot, continuity: Continuity[]) {
   const [ start, end ] = [ moment(slot.start), moment(slot.end) ]
   // aka. There exists some continuity such that the timeslot's start and end
   // are entirely contained within the continuity
-  console.log(continuity)
-  console.log(continuity.filter(c => start >= c.start && end <= c.end))
   return continuity.some(c => start >= c.start && end <= c.end)
 }
 
@@ -258,15 +256,21 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
     })
   }
 
-  // **************************
-  // Drag a time slot
-  // **************************
+  /* *************************
+  Drag a time slot
+  NOTE: Due to the computational complexity of reactive updates, we implemented this feature
+  outside the reactivity system and directly on DOM. This is a performance optimization.
+  However, we need to ensure that no reactive updates are triggered between DragStart and Drop.
+  ************************* */
 
   let dragging: TimeSlot | null = null
   let dragOrig: HTMLDivElement | null = null
   let dragGhost: HTMLDivElement | null = null
   let dragType: 'handle' | 'slot' = 'slot'
   let dragStartY: number = 0
+  // Optimization: Memoize some parameters that needs to be recalculated on every drag event
+  let _memoDuration: number | null = null
+  let _memoConti: Continuity[] | null = null
   function tsDragStart(e: React.DragEvent<HTMLDivElement>, slot: TimeSlot, type: 'handle' | 'slot') {
     e.stopPropagation()
     dragging = slot
@@ -283,6 +287,33 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
     dragOrig.style.opacity = '0.25'
     dragGhost.classList.add('dragging')
     dragStartY = e.clientY
+
+    // Memoization
+    _memoDuration = moment(slot.end).diff(slot.start, 'minutes')
+    _memoConti = buildContinuity(timeSlots.filter(s => s !== slot))
+  }
+
+  function calcNewTSDrag(e: React.DragEvent<HTMLDivElement>) {
+    // Note: This function should only be called by events on the drop bucket, not the drag element
+    // Calculate the new time slot
+    const day = +e.currentTarget.dataset.day
+    const hour = +e.currentTarget.dataset.hour
+    const m = calcMin(e, e.currentTarget)
+
+    // Update the slot
+    const sd = moment(cal.start_date).add(day, 'days').hour(hour).minute(m)
+    return {
+      start: sd.toISOString(),
+      end: sd.add(_memoDuration, 'minutes').toISOString(),
+      preference: dragging.preference
+    }
+  }
+
+  function calcNewTSResize() {
+    // Calculate the new time slot duration
+    if (!dragGhost.style.height) return
+    const m = +dragGhost.style.height.replace('%', '') / 100 * 60
+    return { ...dragging, end: moment(dragging.start).add(m, 'minutes').toISOString() }
   }
 
   // Drag the handle bar to shrink/expand the time slot
@@ -298,6 +329,11 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
     // Snap into place for 15-minute intervals (round to nearest 25%)
     h = Math.round(h / 25) * 25
     dragGhost.style.height = `${h}%`
+
+    // Check if new timeslot is valid
+    const newSlot = calcNewTSResize()
+    if (hasConflict(newSlot, _memoConti)) dragGhost.classList.add('invalid')
+    else dragGhost.classList.remove('invalid')
   }
 
   function tdDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -314,6 +350,11 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
     // Get relative y
     const m = calcMin(e, e.currentTarget)
     dragGhost.style.top = `${m / 60 * 100}%`
+
+    // Check if new timeslot is valid
+    const newSlot = calcNewTSDrag(e)
+    if (hasConflict(newSlot, _memoConti)) dragGhost.classList.add('invalid')
+    else dragGhost.classList.remove('invalid')
   }
 
   function tsDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -321,35 +362,12 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
     e.preventDefault()
     if (!dragging || !dragGhost) return
 
-    const slot = { ...dragging }
+    // Remove the ghost slot
+    dragGhost.remove()
+    dragOrig.style.opacity = '1'
 
-    if (dragType === 'slot') {
-      // Calculate the new time slot
-      const day = +e.currentTarget.dataset.day
-      const hour = +e.currentTarget.dataset.hour
-      const m = calcMin(e, e.currentTarget)
-
-      // Update the slot
-      const duration = moment(slot.end).diff(slot.start, 'minutes')
-      const sd = moment(cal.start_date).add(day, 'days').hour(hour).minute(m)
-      slot.start = sd.toISOString()
-      slot.end = sd.add(duration, 'minutes').toISOString()
-
-      // Remove the ghost slot
-      dragGhost.remove()
-      dragOrig.style.opacity = '1'
-    }
-
-    else if (dragType === 'handle') {
-      // Calculate the new time slot duration
-      if (!dragGhost.style.height) return
-      const m = +dragGhost.style.height.replace('%', '') / 100 * 60
-      slot.end = moment(slot.start).add(m, 'minutes').toISOString()
-
-      // Remove the ghost slot
-      dragGhost.remove()
-      dragOrig.style.opacity = '1'
-    }
+    const slot = dragType === 'handle' ? calcNewTSResize() : calcNewTSDrag(e)
+    if (hasConflict(slot, _memoConti)) return alert('This new position conflicts with another time slot')
 
     // Add the slot back to the time slots (WARNING: This triggers reactivity, so els will be set to null)
     updateSlots([ ...timeSlots.filter(slot => slot !== dragging), slot ])

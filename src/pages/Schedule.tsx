@@ -87,7 +87,7 @@ export function Schedule() {
       <div>
         <h2>Suggested time slots</h2>
         <p>Here are two suggested time slots that might work for you. You can also select a time slot from the
-                calendar below.</p>
+            calendar below.</p>
         <div id="ms-schedule-suggested">
           {suggestedSlots.map((slot, i) => <div className="suggested-card" key={i}>
             <div>
