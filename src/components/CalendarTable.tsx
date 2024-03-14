@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import './CalendarTable.scss'
 import { clz } from '../lib/ui.ts'
 import { CALENDAR } from '../lib/sdk.ts'
+import { Loading } from './Loading.tsx'
 
 export function NewTimeSlotPopup({ close }: { close: (avail: number | null) => void }) {
   return <div className="overlay">
@@ -32,6 +33,7 @@ interface CalendarViewProps {
 }
 
 export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
+  const isEdit = mode === 'edit'
   const [ timeSlots, setTimeSlots ] = useState<TimeSlot[]>([])
   const [ nDays, setNDays ] = useState<number>(7)
   const [ tsIndex, setTsIndex ] = useState<{[key: string]: TimeSlot[]}>({})
@@ -89,16 +91,25 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
     }
   }, [nDays])
 
+  function updateSlots(slots: TimeSlot[]) {
+    setTimeSlots(slots)
+    setLoading(true)
+    CALENDAR.update({ ...cal, time_slots: slots })
+      .catch(err => setError(err.message)).finally(() => setLoading(false))
+  }
+
+  function calcMin(e: React.MouseEvent<HTMLDivElement>, el: HTMLDivElement) {
+    // Get mouse y within the td element's boxes
+    const y = e.clientY - el.getBoundingClientRect().top
+    const h = el.clientHeight
+    const ratio = y / h
+    // Calculate the time (floor to the last 15-minute interval)
+    return Math.floor(ratio * 4) * 15
+  }
+
   // Click on a block
   function clickTd(e: React.MouseEvent<HTMLDivElement>, day: number, hour: number) {
-    // Get mouse y within the td element's boxes
-    const y = e.clientY - e.currentTarget.getBoundingClientRect().top
-    const h = e.currentTarget.clientHeight
-    const ratio = y / h
-
-    // Calculate the time (floor to the last 15-minute interval)
-    const m = Math.floor(ratio * 4) * 15
-    console.log(`Clicked on day=${day} hour=${hour} minute=${m}, ratio=${ratio}, y=${y}px h=${h}px`)
+    const m = calcMin(e, e.currentTarget)
 
     // Create a new time slot
     if (mode === 'edit') {
@@ -118,18 +129,79 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
     e.stopPropagation()
   }
 
+  // **************************
+  // Drag a time slot
+  // **************************
 
-  return <div className={clz({ mobile: isMobile }, 'calendar-table-wrapper')}>
+  let dragging: TimeSlot | null = null
+  let dragOrig: HTMLDivElement | null = null
+  let dragGhost: HTMLDivElement | null = null
+  function tsDragStart(e: React.DragEvent<HTMLDivElement>, slot: TimeSlot) {
+    dragging = slot
+    console.log('Drag start', slot, e)
+
+    // Hide drag image
+    e.dataTransfer.setDragImage(new Image(), 0, 0)
+    
+    // Make a copy of the drag source
+    dragOrig = e.currentTarget
+    dragGhost = dragOrig.cloneNode(true) as HTMLDivElement
+    dragOrig.parentElement.appendChild(dragGhost)
+    dragOrig.style.opacity = '0.25'
+    dragGhost.classList.add('dragging')
+  }
+
+  function tdDragOver(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    if (!dragGhost) return
+
+    // Note: e.currentTarget is the td element
+    // Move the slot into this div
+    if (e.currentTarget !== dragGhost.parentElement) {
+      dragGhost.parentElement.removeChild(dragGhost)
+      e.currentTarget.appendChild(dragGhost)
+    }
+    // console.log('Drag over', e.currentTarget.dataset.day, e.currentTarget.dataset.hour)
+
+    // Get relative y
+    const m = calcMin(e, e.currentTarget)
+    dragGhost.style.top = `${m / 60 * 100}%`
+  }
+
+  function tsDrop(e: React.DragEvent<HTMLDivElement>) {
+    console.log('Drop', e)
+    e.preventDefault()
+
+    // Calculate the new time slot
+    const day = +e.currentTarget.dataset.day
+    const hour = +e.currentTarget.dataset.hour
+    const m = calcMin(e, e.currentTarget)
+
+    // Update the slot
+    const slot = { ...dragging }
+    const duration = moment(slot.end).diff(slot.start, 'minutes')
+    const sd = moment(cal.start_date).add(day, 'days').hour(hour).minute(m)
+    slot.start = sd.toISOString()
+    slot.end = sd.add(duration, 'minutes').toISOString()
+
+    // Remove the ghost slot
+    dragGhost.remove()
+
+    // Add the slot back to the time slots (WARNING: This triggers reactivity, so els will be set to null)
+    updateSlots([ ...timeSlots.filter(slot => slot !== dragging), slot ])
+  }
+
+  console.log('Rerendered')
+
+  return <div className={clz({ mobile: isMobile, edit: isEdit }, 'calendar-table-wrapper')}>
+    <Loading loading={loading} error={error} />
+
     {ovNewSlot && <NewTimeSlotPopup close={pref => {
       if (pref) {
         console.log('New time slot preference', pref)
         // Add it to the available time slots
         const newSlots = [ ...timeSlots, { ...ovNewSlot, preference: pref }]
-        setTimeSlots(newSlots)
-        // Upload to the server
-        setLoading(true)
-        CALENDAR.update({ ...cal, time_slots: newSlots })
-          .catch(err => setError(err.message)).finally(() => setLoading(false))
+        updateSlots(newSlots)
       }
       setOvNewSlot(null)
     }}/>}
@@ -154,17 +226,24 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
       {seq(24).filter(h => h > cal.start_hour && h < cal.end_hour).map(hour => <tr key={hour}>
         <td className="time">{hour}:00</td>
         {seq(nDays).map(d => d + startDay).map(day =>
-          <td key={day} className="day" data-day={day} data-hour={hour} onClick={e => clickTd(e, day, hour)}>
+
+          <td key={day} className="day" data-day={day} data-hour={hour} onClick={e => clickTd(e, day, hour)}
+            onDragOver={ isEdit ? tdDragOver : undefined } onDrop={ isEdit ? e => tsDrop(e) : undefined }>
+
             {/* Find the time slots in this bucket */}
             {tsIndex[`${moment(cal.start_date).add(day, 'days').format('YYYY-MM-DD')} ${hour}`]?.map((slot, i) => {
               // Calculate height based on the duration of the slot relative to the hour
               const h = moment(slot.end).diff(slot.start, 'minutes') / 60 * 100
               const mt = moment(slot.start).diff(moment(slot.start).startOf('hour'), 'minutes') / 60 * 100
               return <div key={i} className={`avail av${slot.preference}`} style={{ height: `${h}%`, top: `${mt}%` }}
-                onClick={e => clickSlot(e, slot)}>
-                {PREFERENCE_STR[slot.preference]}
-              </div>
+                onClick={e => clickSlot(e, slot)}
+                draggable={isEdit}
+                onDragStart={isEdit ? e => tsDragStart(e, slot) : undefined}
+              >{PREFERENCE_STR[slot.preference]}</div>
             })}
+
+            {/* If it's the first hour and first day, put all time slots here */}
+
           </td>
         )}
       </tr>)}

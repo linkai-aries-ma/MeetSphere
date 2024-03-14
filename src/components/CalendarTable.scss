@@ -32,6 +32,19 @@
       background-color: #3ac281;
     }
   }
+
+  &.edit {
+    .avail {
+      // Drag
+      cursor: pointer;
+    }
+
+    .avail.dragging {
+      // Dragging
+      cursor: grabbing;
+      z-index: -1;
+    }
+  }
 }
 
 #calendar-table {
