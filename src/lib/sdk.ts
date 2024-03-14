@@ -2,7 +2,7 @@ import { Calendar, Contact, Meeting, NewCalendar, NewContact, NewMeeting, UserSe
 import { redirect } from './ui.ts'
 
 const HOST = 'http://localhost:8000'
-
+// const HOST = '/api'
 
 /**
  * Post data to the server
