@@ -18,3 +18,10 @@ export function getAvatar(contact: Contact) {
   if (contact.pfp) return contact.pfp
   return `https://api.dicebear.com/7.x/initials/svg?seed=${contact.name}&backgroundType=gradientLinear`
 }
+
+export const OPTIONS = { noRedirect: false }
+
+export function redirect(url: string) {
+  if (OPTIONS.noRedirect) console.log(`Redirect blocked: ${url}`)
+  else window.location.assign(url)
+}

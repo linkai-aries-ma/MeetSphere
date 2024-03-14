@@ -11,6 +11,7 @@ import { Schedule } from './pages/Schedule.tsx'
 import { Contacts } from './pages/Contacts.tsx'
 import { CalendarCreate } from './pages/CalendarCreate.tsx'
 import { CalendarEdit } from './pages/CalendarEdit.tsx'
+import { Debug } from './pages/Debug.tsx'
 
 const routes = createBrowserRouter([
   { path: '/', Component: Welcome },
@@ -20,6 +21,7 @@ const routes = createBrowserRouter([
   { path: '/calendar-edit/:calendarId', Component: CalendarEdit },
   { path: '/schedule/:uuid', Component: Schedule },
   { path: '/contacts', Component: Contacts },
+  { path: '/debug', Component: Debug },
   { path: '*', Component: () => {
     window.location.assign('/')
     return <div>404 Not Found</div>

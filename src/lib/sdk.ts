@@ -1,4 +1,5 @@
 import { Calendar, Contact, Meeting, NewCalendar, NewContact, NewMeeting, UserSelf } from './types.ts'
+import { redirect } from './ui.ts'
 
 const HOST = 'http://localhost:8000'
 
@@ -34,7 +35,7 @@ export async function send(node: string, body?: object, method: string = 'POST')
   if (!response.ok) {
     if (response.status === 401 && node !== 'login' && node !== 'register') {
       localStorage.removeItem('token')
-      window.location.href = '/'
+      redirect('/')
     }
 
     let result: any
@@ -46,7 +47,7 @@ export async function send(node: string, body?: object, method: string = 'POST')
     // Check if the error is token invalid
     if (result.code === 'token_not_valid') {
       localStorage.removeItem('token')
-      window.location.href = '/'
+      redirect('/')
     }
 
     // If result has only one field, treat it as an error message
@@ -96,13 +97,13 @@ export async function login(email: string, password: string): Promise<void> {
   localStorage.setItem('token', resp.token)
 
   // Redirect to the home page
-  window.location.assign('/home')
+  redirect('/home')
 }
 
 export async function logout(): Promise<void> {
   await post('logout', {})
   localStorage.removeItem('token')
-  window.location.assign('/')
+  redirect('/')
 }
 
 export const USER = {
