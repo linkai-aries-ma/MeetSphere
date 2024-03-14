@@ -4,7 +4,6 @@ import { Calendar } from '../lib/types.ts'
 import { CALENDAR } from '../lib/sdk.ts'
 import { Loading } from '../components/Loading.tsx'
 import { CalendarTable } from '../components/CalendarTable.tsx'
-import moment from 'moment'
 import { CalendarDetails } from '../components/CalendarDetails.tsx'
 
 export function CalendarEdit() {
@@ -34,7 +33,7 @@ export function CalendarEdit() {
 
       <CalendarTable cal={calendar} regularity="once" mode="edit"/>
 
-      {calendar.time_slots.length && <a href={`/contacts?select=${calendar.id}`}>
+      {calendar.time_slots.length !== 0 && <a href={`/contacts?select=${calendar.id}`}>
         <button className="emp full">Invite People</button>
       </a>}
     </>}

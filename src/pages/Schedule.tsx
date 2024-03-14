@@ -10,9 +10,20 @@ import { Loading } from '../components/Loading.tsx'
 import { useParams } from 'react-router-dom'
 
 const regularity = {
-  'once': 'This is a one-time meeting, please select a time slot that works best for you.',
+  'once': 'This is a one-time meeting, ',
   // 'daily': 'This is a recurrent daily meeting, please select a time slot that works best for you.',
-  'weekly': 'This is a recurrent weekly meeting, please select a time slot that works best for you.',
+  'weekly': 'This is a recurrent weekly meeting, ',
+}
+
+function SuccessPopup({ slot }: { slot: TimeSlot }) {
+  return <div className="overlay">
+    <div>
+      <h1>Meeting Scheduled!</h1>
+      <span>Your meeting has been scheduled at</span>
+      <span>{moment(slot.start).format('ddd, MMM D [at] h:mm A')} to {moment(slot.end).format('h:mm A')}.</span>
+      <span>You can close this tab now.</span>
+    </div>
+  </div>
 }
 
 export function Schedule() {
@@ -23,6 +34,7 @@ export function Schedule() {
 
   // Computed
   const [ suggestedSlots, setSuggestedSlots ] = useState<TimeSlot[]>([])
+  const [ success, setSuccess ] = useState<TimeSlot | null>(null)
 
   // Fetch invitation
   useEffect(() => {
@@ -48,13 +60,25 @@ export function Schedule() {
     }).catch(err => setError(err.message)).finally(() => setLoading(false))
   }, [uuid])
 
+  function accept(slot: TimeSlot) {
+    if (loading) return
+    setLoading(true)
+    MEETING.accept(uuid, slot.start).then(() => {
+      setSuccess(slot)
+    }).catch(err => setError(err.message)).finally(() => setLoading(false))
+  }
+
   return <>
     {invitation && <main id="schedule">
       <div id="ms-schedule-info">
         <h1>Hi {invitation.invitee.name}</h1>
         <p>You have been invited to a meeting by <span className="text-emp">{invitation.creator.name}</span>.</p>
         <blockquote>{invitation.description}</blockquote>
-        <p>{regularity[invitation.regularity]}</p>
+        <p>{regularity[invitation.regularity]} {invitation.time
+          ? <>you've already selected the time
+            <span className="text-emp">&nbsp;{moment(invitation.time).format('ddd, MMM D [at] h:mm A')}&nbsp;</span>
+            If you want to change it, you can do so below.</>
+          : 'please select a time slot that works best for you.'}</p>
         <p>{invitation.calendar.timezone === LOCAL_TZ
           ? 'Your time zone matches the organizer\'s time zone.'
           : `The organizer's time zone is ${invitation.calendar.timezone}, the calendar below has been automatically converted to your time zone.`}</p>
@@ -76,7 +100,7 @@ export function Schedule() {
                 at {moment(slot.start).format('h:mm A')}
               </span>
             </div>
-            <button className="emp">Select</button>
+            <button className="emp" onClick={() => accept(slot)}>Accept</button>
           </div>)}
         </div>
       </div>
@@ -86,6 +110,8 @@ export function Schedule() {
         <CalendarTable cal={invitation.calendar} regularity={invitation.regularity} mode='select' />
       </div>
     </main>}
+
+    {success && <SuccessPopup slot={success} />}
 
     <Loading loading={loading} error={error}></Loading>
   </>

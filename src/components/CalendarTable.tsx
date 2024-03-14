@@ -4,9 +4,27 @@ import { Calendar, PREFERENCE_STR, TimeSlot } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
 import './CalendarTable.scss'
 import { clz } from '../lib/ui.ts'
-import { CALENDAR, CONTACT } from '../lib/sdk.ts'
+import { CALENDAR } from '../lib/sdk.ts'
 import { Loading } from './Loading.tsx'
-import { DateInput, DatePicker } from 'rsuite'
+import { DatePicker } from 'rsuite'
+
+
+// export function ConfirmSelectionPopup({ slot, slots, close }: { slot: TimeSlot, slots: TimeSlot[], close: (slot: TimeSlot | null) => void }) {
+//   return <div className="overlay">
+//     <div>
+//       <h1>Confirm Selection</h1>
+//       <div>You have selected the following time slot:</div>
+//
+//       <div>
+//         <div>Start Time</div>
+//         <div>{moment(slot.start).format('YYYY-MM-DD HH:mm')}</div>
+//       </div>
+//
+//       <button onClick={() => close(slot)}>Confirm</button>
+//       <button onClick={() => close(null)}>Cancel</button>
+//     </div>
+//   </div>
+// }
 
 export function EditTimeSlotPopup({ slot, close }: { slot: TimeSlot, close: (slot: TimeSlot | null) => void }) {
   const [ pref, setPref ] = useState<number>(slot.preference)
@@ -71,6 +89,12 @@ function seq(n: number) {
   return Array(n).fill(0).map((_, i) => i)
 }
 
+function hasConflict(slot: TimeSlot, slots: TimeSlot[]) {
+  return slots.some(s => {
+    return (moment(s.start) < moment(slot.end) && moment(s.end) > moment(slot.start))
+  })
+}
+
 interface CalendarViewProps {
   cal: Calendar
   regularity: 'once' | 'weekly'
@@ -123,7 +147,7 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
     setTsIndex(index)
   }, [ cal, timeSlots ])
 
-  //
+  // Check if the table is too narrow for the time slots
   useEffect(() => {
     // Wait until the table is rendered
     if (!ref.current) return
@@ -330,15 +354,16 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
                 onDragStart={isEdit ? e => tsDragStart(e, slot, 'slot') : undefined}
               >{PREFERENCE_STR[slot.preference]}
                 {/* A handle for dragging to expand/shrink */}
-                <div className="drag-handle" draggable={isEdit}
-                  onDragStart={isEdit ? e => tsDragStart(e, slot, 'handle') : undefined}
-                  onDrag={isEdit ? e => tsDragHandleBar(e) : undefined}
-                />
+                {isEdit && <div className="drag-handle" draggable={true}
+                  onDragStart={e => tsDragStart(e, slot, 'handle')}
+                  onDrag={e => tsDragHandleBar(e)}
+                />}
               </div>
             })}
           </td>
         )}
       </tr>)}
-    </tbody></table>
+    </tbody>
+    </table>
   </div>
 }

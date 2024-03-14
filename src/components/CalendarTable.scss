@@ -1,8 +1,6 @@
 @import "../vars";
 
 #root .calendar-table-wrapper {
-  //overflow-x: scroll;
-
   .button-group {
     display: flex;
     justify-content: space-between;
@@ -53,6 +51,7 @@
 
   // Borders: We use outline here because we don't want it to affect the absolute child's 100% height
   td {
+    position: relative;
     //outline: 1px solid rgba(#ccc, 0.4);
     &:before {
       position: absolute;
@@ -112,6 +111,7 @@
     position: absolute;
     z-index: 10;
     user-select: none;
+    cursor: pointer;
 
     // We can finally do rounded borders now
     border-radius: 5px;
