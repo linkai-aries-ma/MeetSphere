@@ -8,6 +8,7 @@ import { DATE_NOW, getMeetingStatus } from '../lib/lib.ts'
 import './CalendarView.scss'
 import { getAvatar } from '../lib/ui.ts'
 import { toggle } from '../lib/utils.ts'
+import { Loading } from '../components/Loading.tsx'
 
 function RemindOverlay({ cal, close }: {cal: CalendarWithMeetings, close: (submitted: boolean) => void}) {
   const [ selected, setSelected ] = useState<string[]>([])
@@ -151,30 +152,34 @@ export function CalendarView() {
   }, [])
 
   return <main>
-    <div className="section-header">
-      <div>
-        <h2>Current Calendars</h2>
-        <a href="/calendar-create">
-          <button className="emp">+</button>
-        </a>
+    {calendars && <>
+      <div className="section-header">
+        <div>
+          <h2>Current Calendars</h2>
+          <a href="/calendar-create">
+            <button className="emp">+</button>
+          </a>
+        </div>
       </div>
-    </div>
 
-    <div className="created-calendar-list">
-      {calendars.filter(cal => moment(cal.end_date).isAfter(DATE_NOW))
-        .map(cal => <OneCalendar key={cal.id} cal={cal}
-          canEdit={true} remind={() => setRemindCal(cal)}/>)}
-    </div>
+      <div className="created-calendar-list">
+        {calendars.filter(cal => moment(cal.end_date).isAfter(DATE_NOW))
+          .map(cal => <OneCalendar key={cal.id} cal={cal}
+            canEdit={true} remind={() => setRemindCal(cal)}/>)}
+      </div>
 
-    <div className="section-header">
-      <h2>Past Calendars</h2>
-    </div>
+      <div className="section-header">
+        <h2>Past Calendars</h2>
+      </div>
 
-    <div className="created-calendar-list">
-      {calendars.filter(cal => moment(cal.end_date).isBefore(DATE_NOW))
-        .map(cal => <OneCalendar key={cal.id} cal={cal}
-          canEdit={false} remind={() => setRemindCal(cal)}/>)}
-    </div>
+      <div className="created-calendar-list">
+        {calendars.filter(cal => moment(cal.end_date).isBefore(DATE_NOW))
+          .map(cal => <OneCalendar key={cal.id} cal={cal}
+            canEdit={false} remind={() => setRemindCal(cal)}/>)}
+      </div>
+    </>}
+
+    <Loading loading={!calendars} error={error}/>
 
     {remindCal && <RemindOverlay cal={remindCal} close={() => setRemindCal(null)}/>}
   </main>
