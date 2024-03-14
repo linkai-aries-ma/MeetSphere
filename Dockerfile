@@ -1,13 +1,36 @@
-FROM ubuntu:20.04
-
-# Path: Dockerfile
+# Dockerfile for building and running the application
+# Frontend (react) builder
+FROM node:20-alpine as builder
 
 # Set the working directory
 WORKDIR /app
-# Copy startup.sh
-COPY startup.sh poetry.lock pyproject.toml ./
-# Startup
-RUN chmod +x startup.sh && ./startup.sh
+COPY frontend/package.json frontend/yarn.lock ./
+RUN yarn install
+
+# Copy project sources
+COPY ./ ./
+
+# Replace "http://localhost:8000" with "/api"
+RUN sed -i 's/http:\/\/localhost:8000/\/api/g' src/lib/sdk.ts
+
+# Build the application
+RUN yarn build
+
+###############################################
+# Backend (python) runner
+FROM python:3.12-alpine
+WORKDIR /app
+
+# Install poetry
+RUN pip install poetry
+
+# Set the working directory
+COPY poetry.lock pyproject.toml ./
+# Install dependencies
+RUN poetry install
+
+# Copy dist folder from frontend
+COPY --from=builder /app/dist /app/dist
 
 # Copy project sources
 COPY ./ ./
