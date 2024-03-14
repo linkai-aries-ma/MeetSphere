@@ -51,9 +51,16 @@
   border-collapse: collapse;
   border-spacing: 2px;
 
-  // Borders
+  // Borders: We use outline here because we don't want it to affect the absolute child's 100% height
   td {
-    border: 1px solid #ccc;
+    //outline: 1px solid rgba(#ccc, 0.4);
+    &:before {
+      position: absolute;
+      inset: 0;
+      content: "";
+      border: 1px solid rgba(#ccc, 0.4);
+      z-index: -2;
+    }
   }
 
   // Disable the outer border
@@ -119,5 +126,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
+
+    .drag-handle {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 5px;
+      cursor: ns-resize;
+      z-index: 16;
+
+      background: red;
+    }
   }
 }

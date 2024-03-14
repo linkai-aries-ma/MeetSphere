@@ -136,24 +136,44 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
   let dragging: TimeSlot | null = null
   let dragOrig: HTMLDivElement | null = null
   let dragGhost: HTMLDivElement | null = null
-  function tsDragStart(e: React.DragEvent<HTMLDivElement>, slot: TimeSlot) {
+  let dragType: 'handle' | 'slot' = 'slot'
+  let dragStartY: number = 0
+  function tsDragStart(e: React.DragEvent<HTMLDivElement>, slot: TimeSlot, type: 'handle' | 'slot') {
+    e.stopPropagation()
     dragging = slot
-    console.log('Drag start', slot, e)
+    console.log('Drag start', slot, type)
+    dragType = type
 
     // Hide drag image
     e.dataTransfer.setDragImage(new Image(), 0, 0)
     
     // Make a copy of the drag source
-    dragOrig = e.currentTarget
+    dragOrig = (dragType === 'handle' ? e.currentTarget.parentElement : e.currentTarget) as HTMLDivElement
     dragGhost = dragOrig.cloneNode(true) as HTMLDivElement
     dragOrig.parentElement.appendChild(dragGhost)
     dragOrig.style.opacity = '0.25'
     dragGhost.classList.add('dragging')
+    dragStartY = e.clientY
+  }
+
+  // Drag the handle bar to shrink/expand the time slot
+  function tsDragHandleBar(e: React.DragEvent<HTMLDivElement>) {
+    if (!dragging || !dragGhost || dragType !== 'handle') return
+    e.preventDefault()
+
+    // Calculate new height as percentage of one hour
+    const hourHeight = dragOrig.parentElement.clientHeight
+    const origHeight = dragOrig.clientHeight
+    let h = (origHeight + e.clientY - dragStartY) / hourHeight * 100
+
+    // Snap into place for 15-minute intervals (round to nearest 25%)
+    h = Math.round(h / 25) * 25
+    dragGhost.style.height = `${h}%`
   }
 
   function tdDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault()
-    if (!dragGhost) return
+    if (!dragGhost || dragType == 'handle') return // Don't handle handle-drag
 
     // Note: e.currentTarget is the td element
     // Move the slot into this div
@@ -161,7 +181,6 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
       dragGhost.parentElement.removeChild(dragGhost)
       e.currentTarget.appendChild(dragGhost)
     }
-    // console.log('Drag over', e.currentTarget.dataset.day, e.currentTarget.dataset.hour)
 
     // Get relative y
     const m = calcMin(e, e.currentTarget)
@@ -171,21 +190,37 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
   function tsDrop(e: React.DragEvent<HTMLDivElement>) {
     console.log('Drop', e)
     e.preventDefault()
+    if (!dragging || !dragGhost) return
 
-    // Calculate the new time slot
-    const day = +e.currentTarget.dataset.day
-    const hour = +e.currentTarget.dataset.hour
-    const m = calcMin(e, e.currentTarget)
-
-    // Update the slot
     const slot = { ...dragging }
-    const duration = moment(slot.end).diff(slot.start, 'minutes')
-    const sd = moment(cal.start_date).add(day, 'days').hour(hour).minute(m)
-    slot.start = sd.toISOString()
-    slot.end = sd.add(duration, 'minutes').toISOString()
 
-    // Remove the ghost slot
-    dragGhost.remove()
+    if (dragType === 'slot') {
+      // Calculate the new time slot
+      const day = +e.currentTarget.dataset.day
+      const hour = +e.currentTarget.dataset.hour
+      const m = calcMin(e, e.currentTarget)
+
+      // Update the slot
+      const duration = moment(slot.end).diff(slot.start, 'minutes')
+      const sd = moment(cal.start_date).add(day, 'days').hour(hour).minute(m)
+      slot.start = sd.toISOString()
+      slot.end = sd.add(duration, 'minutes').toISOString()
+
+      // Remove the ghost slot
+      dragGhost.remove()
+      dragOrig.style.opacity = '1'
+    }
+
+    else if (dragType === 'handle') {
+      // Calculate the new time slot duration
+      if (!dragGhost.style.height) return
+      const m = +dragGhost.style.height.replace('%', '') / 100 * 60
+      slot.end = moment(slot.start).add(m, 'minutes').toISOString()
+
+      // Remove the ghost slot
+      dragGhost.remove()
+      dragOrig.style.opacity = '1'
+    }
 
     // Add the slot back to the time slots (WARNING: This triggers reactivity, so els will be set to null)
     updateSlots([ ...timeSlots.filter(slot => slot !== dragging), slot ])
@@ -238,12 +273,15 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
               return <div key={i} className={`avail av${slot.preference}`} style={{ height: `${h}%`, top: `${mt}%` }}
                 onClick={e => clickSlot(e, slot)}
                 draggable={isEdit}
-                onDragStart={isEdit ? e => tsDragStart(e, slot) : undefined}
-              >{PREFERENCE_STR[slot.preference]}</div>
+                onDragStart={isEdit ? e => tsDragStart(e, slot, 'slot') : undefined}
+              >{PREFERENCE_STR[slot.preference]}
+                {/* A handle for dragging to expand/shrink */}
+                <div className="drag-handle" draggable={isEdit}
+                  onDragStart={isEdit ? e => tsDragStart(e, slot, 'handle') : undefined}
+                  onDrag={isEdit ? e => tsDragHandleBar(e) : undefined}
+                />
+              </div>
             })}
-
-            {/* If it's the first hour and first day, put all time slots here */}
-
           </td>
         )}
       </tr>)}
