@@ -24,13 +24,21 @@ export function CalendarEdit() {
     {calendar && <>
       <h2>Edit your calendar</h2>
 
-      <CalendarDetails cal={calendar} />
+      <div>
+        You can click on the calendar grid table below to create or remove time slots based on your availability.
+        When you are done, please click on the "Create Meetings" button to invite others to choose a time for a
+        meeting.
+      </div>
 
-      <div>You can click on the calendar grid table below to create or remove time slots based on your availability.</div>
+      <CalendarDetails cal={calendar}/>
 
-      <CalendarTable cal={calendar} regularity="once" mode="edit" />
+      <CalendarTable cal={calendar} regularity="once" mode="edit"/>
+
+      {calendar.time_slots.length && <a href={`/contacts?select=${calendar.id}`}>
+        <button className="emp full">Invite People</button>
+      </a>}
     </>}
 
-    <Loading loading={!calendar} error={error} />
+    <Loading loading={!calendar} error={error}/>
   </main>
 }

@@ -4,8 +4,53 @@ import { Calendar, PREFERENCE_STR, TimeSlot } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
 import './CalendarTable.scss'
 import { clz } from '../lib/ui.ts'
-import { CALENDAR } from '../lib/sdk.ts'
+import { CALENDAR, CONTACT } from '../lib/sdk.ts'
 import { Loading } from './Loading.tsx'
+import { DateInput, DatePicker } from 'rsuite'
+
+export function EditTimeSlotPopup({ slot, close }: { slot: TimeSlot, close: (slot: TimeSlot | null) => void }) {
+  const [ pref, setPref ] = useState<number>(slot.preference)
+  const [ start, setStart ] = useState<Date>(moment(slot.start).toDate())
+  const [ hour, setHour ] = useState<number>(moment(slot.end).diff(slot.start, 'hours'))
+  const [ min, setMin ] = useState<number>(moment(slot.end).diff(slot.start, 'minutes') % 60)
+
+  return <div className="overlay">
+    <div>
+      <h1>Edit Time Slot</h1>
+
+      <div>Start Time</div>
+      <DatePicker format="yyyy-MM-dd HH:mm" value={start} onChange={setStart}/>
+
+      <div>Duration (Hour)</div>
+      <input type="number" value={hour} onChange={e => {
+        if (+e.target.value < 0 || +e.target.value > 23) return
+        setHour(+e.target.value)
+      }}/>
+
+      <div>Duration (Minutes)</div>
+      <input type="number" value={min} onChange={e => {
+        if (+e.target.value < 0 || +e.target.value > 59) return
+        setMin(+e.target.value)
+      }}/>
+
+      <div>Switch Preference</div>
+      <button onClick={() => setPref(Math.max(1, (pref + 1) % 4))} className={`avail av${pref} full`}>
+        {PREFERENCE_STR[pref]} Preference
+      </button>
+      <button onClick={() => close({ ...slot,
+        preference: pref,
+        start: moment(start).toISOString(),
+        end: moment(start).add(hour, 'hours').add(min, 'minutes').toISOString()
+      })}>Save</button>
+
+      <button className="warn" onClick={() => {
+        if (!window.confirm('Are you sure you want to delete this time slot?')) return
+        close(null)
+      }}>Delete
+      </button>
+    </div>
+  </div>
+}
 
 export function NewTimeSlotPopup({ close }: { close: (avail: number | null) => void }) {
   return <div className="overlay">
@@ -46,6 +91,7 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
 
   // New time slot
   const [ ovNewSlot, setOvNewSlot ] = useState<TimeSlot | null>(null)
+  const [ ovEditSlot, setOvEditSlot ] = useState<TimeSlot | null>(null)
   const [ loading, setLoading ] = useState(false)
   const [ error, setError ] = useState<string | null>(null)
 
@@ -127,6 +173,8 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
   function clickSlot(e: React.MouseEvent<HTMLDivElement>, slot: TimeSlot) {
     console.log('Clicked on', slot, e)
     e.stopPropagation()
+
+    if (mode === 'edit') return setOvEditSlot(slot)
   }
 
   // **************************
@@ -239,6 +287,12 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
         updateSlots(newSlots)
       }
       setOvNewSlot(null)
+    }}/>}
+
+    {ovEditSlot && <EditTimeSlotPopup slot={ovEditSlot} close={slot => {
+      if (slot) updateSlots([ ...timeSlots.filter(s => s !== ovEditSlot), slot ])
+      else updateSlots(timeSlots.filter(s => s !== ovEditSlot))
+      setOvEditSlot(null)
     }}/>}
 
     <div className="button-group">

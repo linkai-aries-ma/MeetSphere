@@ -330,3 +330,7 @@ main:not(.no-margin) {
 .flex-1 {
   flex: 1;
 }
+
+body .rs-picker-popup {
+  z-index: 1000 !important;
+}
