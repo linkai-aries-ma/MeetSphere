@@ -1,6 +1,16 @@
 @import "../vars";
 
-#ms-schedule-calendar {
+.calendar-table-wrapper {
+  //overflow-x: scroll;
+
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+}
+
+#calendar-table {
   border-collapse: collapse;
   border-spacing: 2px;
 
@@ -21,6 +31,16 @@
   // Each cell will take up equal width
   width: 100%;
   table-layout: fixed;
+
+  //&.mobile {
+  //  width: unset;
+  //  th {
+  //    font-size: 0.9em;
+  //  }
+  //  td {
+  //    min-width: 70px;
+  //  }
+  //}
 
   // Reduce margin on mobile
   @media (max-width: 520px) {

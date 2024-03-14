@@ -5,7 +5,7 @@ import { MEETING } from '../lib/sdk.ts'
 import { LOCAL_TZ } from '../lib/lib.ts'
 import './Schedule.scss'
 import moment from 'moment'
-import { CalendarView } from '../components/CalendarView.tsx'
+import { CalendarTable } from '../components/CalendarTable.tsx'
 import { Loading } from '../components/Loading.tsx'
 import { useParams } from 'react-router-dom'
 
@@ -83,7 +83,7 @@ export function Schedule() {
 
       <div id="ms-schedule-container">
         <h2>Available time slots</h2>
-        <CalendarView cal={invitation.calendar} meeting={invitation} />
+        <CalendarTable cal={invitation.calendar} regularity={invitation.regularity} />
       </div>
     </main>}
 

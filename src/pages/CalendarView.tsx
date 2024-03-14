@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { Icon } from '@iconify/react'
-import { Calendar, CalendarWithMeetings, Meeting } from '../lib/types.ts'
+import { CalendarWithMeetings } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
 import { CALENDAR, MEETING } from '../lib/sdk.ts'
 import moment from 'moment'
 import { DATE_NOW, getMeetingStatus } from '../lib/lib.ts'
-import './Calendar.scss'
-import { clz, getAvatar } from '../lib/ui.ts'
+import './CalendarView.scss'
+import { getAvatar } from '../lib/ui.ts'
 import { toggle } from '../lib/utils.ts'
 
 function RemindOverlay({ cal, close }: {cal: CalendarWithMeetings, close: (submitted: boolean) => void}) {
@@ -74,9 +74,7 @@ function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
   return <div className="created-calendar">
     {/* Format: Jan 27th 2024 - Feb 2nd 2024 */}
     <div className="coverage">
-      {moment(cal.start_date).format('MMM Do YYYY')}
-      -
-      {moment(cal.end_date).format('MMM Do YYYY')}
+      {moment(cal.start_date).format('MMM Do YYYY')} ~ {moment(cal.end_date).format('MMM Do YYYY')}
     </div>
 
     <div className="details">

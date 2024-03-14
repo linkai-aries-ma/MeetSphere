@@ -10,12 +10,14 @@ import { CalendarView } from './pages/CalendarView.tsx'
 import { Schedule } from './pages/Schedule.tsx'
 import { Contacts } from './pages/Contacts.tsx'
 import { CalendarCreate } from './pages/CalendarCreate.tsx'
+import { CalendarEdit } from './pages/CalendarEdit.tsx'
 
 const routes = createBrowserRouter([
   { path: '/', Component: Welcome },
   { path: '/home', Component: Home },
   { path: '/calendar', Component: CalendarView },
   { path: '/calendar-create', Component: CalendarCreate },
+  { path: '/calendar-edit/:calendarId', Component: CalendarEdit },
   { path: '/schedule/:uuid', Component: Schedule },
   { path: '/contacts', Component: Contacts },
   { path: '*', Component: () => {
