@@ -29,5 +29,9 @@ then
   exit
 fi
 
-# Start the server
-poetry run python manage.py runserver
+# Check if we're running for production
+if [ "$1" = "production" ]; then
+  poetry run gunicorn wsgi:application -b 0.0.0.0:8000
+else
+  poetry run python manage.py runserver 0.0.0.0:8000
+fi
