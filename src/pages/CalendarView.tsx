@@ -60,10 +60,10 @@ function RemindOverlay({ cal, close }: {cal: CalendarWithMeetings, close: (submi
 interface OneCalendarProps {
   cal: CalendarWithMeetings,
   canEdit?: boolean,
-  btn: (name: string) => void
+  remind: () => void,
 }
 
-function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
+function OneCalendar({ cal, canEdit, remind }: OneCalendarProps) {
   const events = cal.meetings.map(m => {
     return { m, st: getMeetingStatus(m) }
   })
@@ -105,8 +105,11 @@ function OneCalendar({ cal, canEdit, btn }: OneCalendarProps) {
         // Redirect to /contacts?select=cal.id
         window.location.assign(`/contacts?select=${cal.id}`)
       }}>Invite</button>
-      <button className="alt" onClick={() => btn('edit')}>Edit</button>
-      <button className="warn" onClick={() => btn('remind')}>Remind</button>
+      <button className="alt" onClick={() => {
+        // Redirect to /calendar-edit/cal.id
+        window.location.assign(`/calendar-edit/${cal.id}`)
+      }}>Edit</button>
+      <button className="warn" onClick={() => remind()}>Remind</button>
     </div>}
 
     <div className="events">
@@ -147,14 +150,6 @@ export function CalendarView() {
     }).catch(err => setError(err.message)).finally(() => setLoading(false))
   }, [])
 
-  function handleClick(name: string, cal: CalendarWithMeetings) {
-    if (name === 'remind') {
-      setRemindCal(cal)
-    }
-    // TODO: Implement edit
-    else alert(`The ${name} button is not implemented yet.`)
-  }
-
   return <main>
     <div className="section-header">
       <div>
@@ -168,7 +163,7 @@ export function CalendarView() {
     <div className="created-calendar-list">
       {calendars.filter(cal => moment(cal.end_date).isAfter(DATE_NOW))
         .map(cal => <OneCalendar key={cal.id} cal={cal}
-          canEdit={true} btn={f => handleClick(f, cal)}/>)}
+          canEdit={true} remind={() => setRemindCal(cal)}/>)}
     </div>
 
     <div className="section-header">
@@ -178,7 +173,7 @@ export function CalendarView() {
     <div className="created-calendar-list">
       {calendars.filter(cal => moment(cal.end_date).isBefore(DATE_NOW))
         .map(cal => <OneCalendar key={cal.id} cal={cal}
-          canEdit={false} btn={f => handleClick(f, cal)}/>)}
+          canEdit={false} remind={() => setRemindCal(cal)}/>)}
     </div>
 
     {remindCal && <RemindOverlay cal={remindCal} close={() => setRemindCal(null)}/>}
