@@ -9,7 +9,9 @@ import { Loading } from './Loading.tsx'
 import { DatePicker } from 'rsuite'
 
 
-// export function ConfirmSelectionPopup({ slot, slots, close }: { slot: TimeSlot, slots: TimeSlot[], close: (slot: TimeSlot | null) => void }) {
+// export function ConfirmSelectionPopup({ slot, conti, close }: { slot: TimeSlot, conti: Continuity[], close: (slot: TimeSlot | null) => void }) {
+//   const [ start, setStart ] = useState<Date>(moment(slot.start).toDate())
+//
 //   return <div className="overlay">
 //     <div>
 //       <h1>Confirm Selection</h1>
@@ -17,7 +19,7 @@ import { DatePicker } from 'rsuite'
 //
 //       <div>
 //         <div>Start Time</div>
-//         <div>{moment(slot.start).format('YYYY-MM-DD HH:mm')}</div>
+//         <DatePicker format="yyyy-MM-dd HH:mm" value={start} onChange={setStart}/>
 //       </div>
 //
 //       <button onClick={() => close(slot)}>Confirm</button>
@@ -26,18 +28,34 @@ import { DatePicker } from 'rsuite'
 //   </div>
 // }
 
-export function EditTimeSlotPopup({ slot, close }: { slot: TimeSlot, close: (slot: TimeSlot | null) => void }) {
+type ETSPParams = { slot: TimeSlot, cal: Calendar, conti: Continuity[], close: (slot: TimeSlot | null) => void }
+
+export function EditTimeSlotPopup({ slot, cal, conti, close }: ETSPParams) {
   const [ pref, setPref ] = useState<number>(slot.preference)
   const [ start, setStart ] = useState<Date>(moment(slot.start).toDate())
   const [ hour, setHour ] = useState<number>(moment(slot.end).diff(slot.start, 'hours'))
   const [ min, setMin ] = useState<number>(moment(slot.end).diff(slot.start, 'minutes') % 60)
 
+  const [ calStart, calEnd ] = [ moment(cal.start_date).toDate(), moment(cal.end_date).toDate() ]
+
+  // This variable is calculated when reactivity happens
+  const newSlot = { ...slot, preference: pref,
+    start: moment(start).toISOString(),
+    end: moment(start).add(hour, 'hours').add(min, 'minutes').toISOString()
+  }
+  const conflicts = hasConflict(newSlot, conti)
+
   return <div className="overlay">
     <div>
       <h1>Edit Time Slot</h1>
 
+      {conflicts && <div className="error">This time slot conflicts with another time slot</div>}
+
       <div>Start Time</div>
-      <DatePicker format="yyyy-MM-dd HH:mm" value={start} onChange={setStart}/>
+      <DatePicker format="yyyy-MM-dd HH:mm" value={start} onChange={setStart}
+        shouldDisableDate={d => d < calStart || d > calEnd}
+        shouldDisableHour={h => h < cal.start_hour || h > cal.end_hour}
+      />
 
       <div>Duration (Hour)</div>
       <input type="number" value={hour} onChange={e => {
@@ -55,17 +73,14 @@ export function EditTimeSlotPopup({ slot, close }: { slot: TimeSlot, close: (slo
       <button onClick={() => setPref(Math.max(1, (pref + 1) % 4))} className={`avail av${pref} full`}>
         {PREFERENCE_STR[pref]} Preference
       </button>
-      <button onClick={() => close({ ...slot,
-        preference: pref,
-        start: moment(start).toISOString(),
-        end: moment(start).add(hour, 'hours').add(min, 'minutes').toISOString()
-      })}>Save</button>
+      <button onClick={() => close(newSlot)} disabled={conflicts}>Save</button>
 
       <button className="warn" onClick={() => {
         if (!window.confirm('Are you sure you want to delete this time slot?')) return
         close(null)
-      }}>Delete
-      </button>
+      }}>Delete</button>
+
+      <button onClick={() => close(slot)}>Cancel</button>
     </div>
   </div>
 }
@@ -89,10 +104,49 @@ function seq(n: number) {
   return Array(n).fill(0).map((_, i) => i)
 }
 
-function hasConflict(slot: TimeSlot, slots: TimeSlot[]) {
-  return slots.some(s => {
-    return (moment(s.start) < moment(slot.end) && moment(s.end) > moment(slot.start))
+interface Continuity {
+  start: moment.Moment
+  end: moment.Moment
+}
+
+/**
+ * Combine overlapping time slots into a single time slot to make a "continuous" time slot array
+ */
+function buildContinuity(slots: TimeSlot[]) {
+  const cont = []
+  let last: Continuity | null = null
+  slots.forEach(slot => {
+    // Check if the slot is continuous with the last slot
+    if (last && moment(slot.start) == last.end) last.end = moment(slot.end)
+    else {
+      if (last) cont.push(last)
+      last = { start: moment(slot.start), end: moment(slot.end) }
+    }
   })
+  return cont
+}
+
+/**
+ * Check if a selected time interval is available, used for selecting time slots
+ * (This is different from hasConflict, which checks for overlapping time slots)
+ */
+function isValid(slot: TimeSlot, continuity: Continuity[]) {
+  const [ start, end ] = [ moment(slot.start), moment(slot.end) ]
+  // aka. There exists some continuity such that the timeslot's start and end
+  // are entirely contained within the continuity
+  return continuity.some(c => start >= c.start && end <= c.end)
+}
+
+/**
+ * Returns true if the time slot overlaps with any of the existing slots.
+ * Used for editing time slots
+ */
+function hasConflict(slot: TimeSlot, continuity: Continuity[]) {
+  const [ start, end ] = [ moment(slot.start), moment(slot.end) ]
+  // aka. There exists some continuity C such that:
+  // 1. The timeslot's start is before C's end and after C's start
+  // 2. The timeslot's end is after C's start and before C's end
+  return continuity.some(c => (start < c.end && start > c.start) || (end > c.start && end < c.end))
 }
 
 interface CalendarViewProps {
@@ -104,6 +158,7 @@ interface CalendarViewProps {
 export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
   const isEdit = mode === 'edit'
   const [ timeSlots, setTimeSlots ] = useState<TimeSlot[]>([])
+  const [ continuity, setContinuity ] = useState<Continuity[]>([])
   const [ nDays, setNDays ] = useState<number>(7)
   const [ tsIndex, setTsIndex ] = useState<{[key: string]: TimeSlot[]}>({})
   const ref = React.useRef<HTMLTableElement>(null)
@@ -144,6 +199,7 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
       index[startHour].push(slot)
     })
 
+    setContinuity(buildContinuity(timeSlots))
     setTsIndex(index)
   }, [ cal, timeSlots ])
 
@@ -317,7 +373,7 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
       if (slot) updateSlots([ ...timeSlots.filter(s => s !== ovEditSlot), slot ])
       else updateSlots(timeSlots.filter(s => s !== ovEditSlot))
       setOvEditSlot(null)
-    }}/>}
+    }} cal={cal} conti={continuity}/>}
 
     <div className="button-group">
       {startDay > 0 && <button className="icon" onClick={() => setStartDay(startDay - 1)}>&lt;</button>}
@@ -336,7 +392,7 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
       </tr>
 
       {/* One-hour grid */}
-      {seq(24).filter(h => h > cal.start_hour && h < cal.end_hour).map(hour => <tr key={hour}>
+      {seq(24).filter(h => h >= cal.start_hour && h <= cal.end_hour).map(hour => <tr key={hour}>
         <td className="time">{hour}:00</td>
         {seq(nDays).map(d => d + startDay).map(day =>
 
@@ -348,6 +404,7 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
               // Calculate height based on the duration of the slot relative to the hour
               const h = moment(slot.end).diff(slot.start, 'minutes') / 60 * 100
               const mt = moment(slot.start).diff(moment(slot.start).startOf('hour'), 'minutes') / 60 * 100
+
               return <div key={i} className={`avail av${slot.preference}`} style={{ height: `${h}%`, top: `${mt}%` }}
                 onClick={e => clickSlot(e, slot)}
                 draggable={isEdit}
