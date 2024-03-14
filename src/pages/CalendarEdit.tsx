@@ -31,7 +31,7 @@ export function CalendarEdit() {
 
       <CalendarDetails cal={calendar}/>
 
-      <CalendarTable cal={calendar} regularity="once" mode="edit"/>
+      <CalendarTable cal={calendar} regularity="once"/>
 
       {calendar.time_slots.length !== 0 && <a href={`/contacts?select=${calendar.id}`}>
         <button className="emp full">Invite People</button>

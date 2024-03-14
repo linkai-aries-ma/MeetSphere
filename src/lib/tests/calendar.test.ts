@@ -1,6 +1,14 @@
 import { createSession, deleteSession } from './test_helper.ts'
 import { CALENDAR } from '../sdk.ts'
 
+export const TEST_CAL = {
+  start_date: '2022-12-12',
+  end_date: '2022-12-15',
+  start_hour: 9,
+  end_hour: 18,
+  timezone: 'America/New_York',
+}
+
 test('Calendar features', async () => {
   await createSession()
 
@@ -8,15 +16,13 @@ test('Calendar features', async () => {
   await expect(CALENDAR.list()).resolves.toEqual([])
 
   // Create a calendar
-  await expect(CALENDAR.add({
-    start_date: '2022-12-12',
-    end_date: '2022-12-15',
-    timezone: 'America/New_York',
-  })).resolves.not.toThrow()
+  await expect(CALENDAR.add(TEST_CAL)).resolves.not.toThrow()
 
   await expect(CALENDAR.add({
     start_date: '2022-12-16',
     end_date: '2022-12-23',
+    start_hour: 0,
+    end_hour: 23,
     timezone: 'America/New_York',
   })).resolves.not.toThrow()
 
@@ -79,11 +85,22 @@ test('Calendar error handling', async () => {
   await createSession()
 
   // Invalid input: start date after end date
-  await expect(CALENDAR.add({
+  await expect(CALENDAR.add({ ...TEST_CAL,
     start_date: '2022-12-16',
     end_date: '2022-12-15',
-    timezone: 'America/New_York',
   })).rejects.toThrow()
+
+  // Invalid input: start hour after end hour
+  await expect(CALENDAR.add({ ...TEST_CAL,
+    start_hour: 18,
+    end_hour: 9,
+  })).rejects.toThrow()
+
+  // Invalid input: hours < 0 or > 23
+  await expect(CALENDAR.add({ ...TEST_CAL, start_hour: -1 })).rejects.toThrow()
+  await expect(CALENDAR.add({ ...TEST_CAL, start_hour: 24 })).rejects.toThrow()
+  await expect(CALENDAR.add({ ...TEST_CAL, end_hour: -1 })).rejects.toThrow()
+  await expect(CALENDAR.add({ ...TEST_CAL, end_hour: 24 })).rejects.toThrow()
 
   await deleteSession()
 })

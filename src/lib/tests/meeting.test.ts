@@ -14,6 +14,8 @@ const TEST_MEETING: NewMeeting = {
 const TEST_CALENDAR = {
   start_date: '2022-12-12',
   end_date: '2022-12-15',
+  start_hour: 9,
+  end_hour: 18,
   timezone: 'America/New_York',
 }
 

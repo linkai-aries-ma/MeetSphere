@@ -1,5 +1,5 @@
 import { CALENDAR, CONTACT, USER } from '../sdk.ts'
-import { EX_CALENDARS } from '../examples.ts'
+import { TEST_CAL } from './calendar.test.ts'
 import './test_helper.ts'
 
 test('Unauthorized access', async () => {
@@ -12,6 +12,6 @@ test('Unauthorized access', async () => {
   await expect(CONTACT.update({ id: 1, name: 'Test', email: 'test@gmail.com' })).rejects.toThrow()
 
   await expect(CALENDAR.list()).rejects.toThrow()
-  await expect(CALENDAR.add(EX_CALENDARS[0])).rejects.toThrow()
+  await expect(CALENDAR.add(TEST_CAL)).rejects.toThrow()
   await expect(CALENDAR.delete(1)).rejects.toThrow()
 })
