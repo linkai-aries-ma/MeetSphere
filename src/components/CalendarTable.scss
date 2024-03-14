@@ -1,12 +1,36 @@
 @import "../vars";
 
-.calendar-table-wrapper {
+#root .calendar-table-wrapper {
   //overflow-x: scroll;
 
   .button-group {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
+  }
+
+  *, button {
+    &.avail {
+      color: white;
+    }
+
+    // Availability priority
+    // From 0: not available to 3: most available
+    &.avail.av0 {
+      background-color: $c-off;
+    }
+
+    &.avail.av1 {
+      background-color: #ef897f;
+    }
+
+    &.avail.av2 {
+      background-color: #fcc231;
+    }
+
+    &.avail.av3 {
+      background-color: #3ac281;
+    }
   }
 }
 
@@ -66,6 +90,8 @@
     top: 0;
     left: 2.5%;
     position: absolute;
+    z-index: 10;
+    user-select: none;
 
     // We can finally do rounded borders now
     border-radius: 5px;
@@ -80,23 +106,5 @@
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  // Availability priority
-  // From 0: not available to 3: most available
-  .avail.av0 {
-    background-color: $c-off;
-  }
-
-  .avail.av1 {
-    background-color: #ef897f;
-  }
-
-  .avail.av2 {
-    background-color: #fcc231;
-  }
-
-  .avail.av3 {
-    background-color: #3ac281;
   }
 }
