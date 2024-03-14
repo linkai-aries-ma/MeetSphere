@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-source venv/bin/activate
+
+# If venv exists, activate it
+if [ -d "venv" ]; then
+  source venv/bin/activate
+fi
+
 rm -rf db.sqlite3
 poetry run python manage.py makemigrations
 poetry run python manage.py migrate
