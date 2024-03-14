@@ -8,7 +8,9 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 # Copy project sources
-COPY ./src ./public ./*.cjs ./*.json ./*.html ./*.ts ./
+COPY src/ ./src/
+COPY public/ ./public/
+COPY ./*.cjs ./*.json ./*.html ./*.ts ./
 
 # Replace "http://localhost:8000" with "/api"
 RUN sed -i 's/http:\/\/localhost:8000/\/api/g' src/lib/sdk.ts
