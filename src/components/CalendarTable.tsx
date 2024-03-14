@@ -124,10 +124,11 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
       if (pref) {
         console.log('New time slot preference', pref)
         // Add it to the available time slots
-        setTimeSlots([ ...timeSlots, { ...ovNewSlot!, preference: pref }])
+        const newSlots = [ ...timeSlots, { ...ovNewSlot, preference: pref }]
+        setTimeSlots(newSlots)
         // Upload to the server
         setLoading(true)
-        CALENDAR.update({ ...cal, time_slots: timeSlots })
+        CALENDAR.update({ ...cal, time_slots: newSlots })
           .catch(err => setError(err.message)).finally(() => setLoading(false))
       }
       setOvNewSlot(null)
