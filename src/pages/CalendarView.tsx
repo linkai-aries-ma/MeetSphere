@@ -9,6 +9,7 @@ import './CalendarView.scss'
 import { getAvatar } from '../lib/ui.ts'
 import { toggle } from '../lib/utils.ts'
 import { Loading } from '../components/Loading.tsx'
+import { CalendarDetails } from '../components/CalendarDetails.tsx'
 
 function RemindOverlay({ cal, close }: {cal: CalendarWithMeetings, close: (submitted: boolean) => void}) {
   const [ selected, setSelected ] = useState<string[]>([])
@@ -78,28 +79,7 @@ function OneCalendar({ cal, canEdit, remind }: OneCalendarProps) {
       {moment(cal.start_date).format('MMM Do YYYY')} ~ {moment(cal.end_date).format('MMM Do YYYY')}
     </div>
 
-    <div className="details">
-      <span>
-        <Icon icon="fluent:add-square-multiple-20-filled"></Icon>
-        {/* Created: Jan 25th 2024, 15:38 */}
-        Created: {moment(cal.created).format('MMM Do YYYY, HH:mm')}
-      </span>
-      <span>
-        <Icon icon="fluent:pen-20-filled"></Icon>
-        {/* Last Modified: Jan 25th 2024, 18:50 */}
-        Last Modified: {moment(cal.modified).format('MMM Do YYYY, HH:mm')}
-      </span>
-      <span>
-        <Icon icon="iconoir:mail-out"></Icon>
-        {/* 4 members invited */}
-        {cal.meetings.length} members invited
-      </span>
-      <span>
-        <Icon icon="fluent:checkmark-starburst-20-regular"></Icon>
-        {/* 3 members accepted */}
-        {cal.meetings.filter(m => m.time).length} members accepted
-      </span>
-    </div>
+    <CalendarDetails cal={cal}/>
 
     {canEdit && <div className="button-group">
       <button className="emp" onClick={() => {
@@ -139,7 +119,6 @@ function OneCalendar({ cal, canEdit, remind }: OneCalendarProps) {
 export function CalendarView() {
   const [ calendars, setCalendars ] = useState<CalendarWithMeetings[]>([])
   const [ error, setError ] = useState<string | null>(null)
-  const [ loading, setLoading ] = useState(true)
   const [ remindCal, setRemindCal ] = useState<CalendarWithMeetings | null>(null)
 
   // Initial fetch
@@ -148,7 +127,7 @@ export function CalendarView() {
       setCalendars(cals.map(cal => {
         return { ...cal, meetings: meetings.filter(m => m.calendar.id === cal.id) }
       }))
-    }).catch(err => setError(err.message)).finally(() => setLoading(false))
+    }).catch(err => setError(err.message))
   }, [])
 
   return <main>

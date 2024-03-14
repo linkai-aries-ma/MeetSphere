@@ -1,0 +1,13 @@
+@import "../vars";
+
+.calendar-details {
+  display: flex;
+  flex-direction: column;
+
+  color: $c-text-off;
+
+  > span {
+    display: flex;
+    gap: 0.5rem;
+  }
+}

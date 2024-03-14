@@ -83,7 +83,7 @@ export function Schedule() {
 
       <div id="ms-schedule-container">
         <h2>Available time slots</h2>
-        <CalendarTable cal={invitation.calendar} regularity={invitation.regularity} />
+        <CalendarTable cal={invitation.calendar} regularity={invitation.regularity} mode='select' />
       </div>
     </main>}
 

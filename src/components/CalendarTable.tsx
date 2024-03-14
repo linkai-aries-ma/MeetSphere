@@ -8,13 +8,14 @@ import { clz } from '../lib/ui.ts'
 interface CalendarViewProps {
   cal: Calendar
   regularity: 'once' | 'weekly'
+  mode: 'edit' | 'select'
 }
 
 function seq(n: number) {
   return Array(n).fill(0).map((_, i) => i)
 }
 
-export function CalendarTable({ cal, regularity }: CalendarViewProps) {
+export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
   const [ nDays, setNDays ] = useState<number>(7)
   const [ tsIndex, setTsIndex ] = useState<{[key: string]: TimeSlot[]}>({})
   const ref = React.useRef<HTMLTableElement>(null)
@@ -23,6 +24,8 @@ export function CalendarTable({ cal, regularity }: CalendarViewProps) {
   // For responsive design
   const [ maxDays, setMaxDays ] = useState<number>(7)
   const [ startDay, setStartDay ] = useState<number>(0)
+
+  console.log(mode)
 
   // Compute values based on properties
   useEffect(() => {
