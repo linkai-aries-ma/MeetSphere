@@ -9,24 +9,32 @@ import { Loading } from './Loading.tsx'
 import { DatePicker } from 'rsuite'
 
 
-// export function ConfirmSelectionPopup({ slot, conti, close }: { slot: TimeSlot, conti: Continuity[], close: (slot: TimeSlot | null) => void }) {
-//   const [ start, setStart ] = useState<Date>(moment(slot.start).toDate())
-//
-//   return <div className="overlay">
-//     <div>
-//       <h1>Confirm Selection</h1>
-//       <div>You have selected the following time slot:</div>
-//
-//       <div>
-//         <div>Start Time</div>
-//         <DatePicker format="yyyy-MM-dd HH:mm" value={start} onChange={setStart}/>
-//       </div>
-//
-//       <button onClick={() => close(slot)}>Confirm</button>
-//       <button onClick={() => close(null)}>Cancel</button>
-//     </div>
-//   </div>
-// }
+type CSPParams = { slot: TimeSlot, conti: Continuity[], duration: number, close: (slot: TimeSlot | null) => void }
+
+export function ConfirmSelectionPopup({ slot, conti, duration, close }: CSPParams) {
+  const [ start, setStart ] = useState<Date>(moment(slot.start).toDate())
+
+  const newSlot = { ...slot, start: moment(start).toISOString(), end: moment(start).add(duration, 'minutes').toISOString() }
+  const isValidSlot = isValid(newSlot, conti)
+
+  return <div className="overlay">
+    <div>
+      <h1>Confirm Selection</h1>
+      <div>Do you want to select the following time?</div>
+
+      {!isValidSlot && <div className="error">This time slot is not available</div>}
+
+      <div>Start Time</div>
+      <DatePicker format="yyyy-MM-dd HH:mm" value={start} onChange={setStart}/>
+
+      <div>End Time (Calculated)</div>
+      <DatePicker disabled format="yyyy-MM-dd HH:mm" value={moment(newSlot.end).toDate()} />
+
+      <button onClick={() => close(newSlot)}>Confirm</button>
+      <button onClick={() => close(null)}>Cancel</button>
+    </div>
+  </div>
+}
 
 type ETSPParams = { slot: TimeSlot, cal: Calendar, conti: Continuity[], close: (slot: TimeSlot | null) => void }
 
@@ -111,13 +119,14 @@ interface Continuity {
 
 /**
  * Combine overlapping time slots into a single time slot to make a "continuous" time slot array
+ * Assumes that the time slots are sorted by start time
  */
 function buildContinuity(slots: TimeSlot[]) {
   const cont = []
   let last: Continuity | null = null
   slots.forEach(slot => {
     // Check if the slot is continuous with the last slot
-    if (last && moment(slot.start) == last.end) last.end = moment(slot.end)
+    if (last && moment(slot.start) <= last.end) last.end = moment.max(last.end, moment(slot.end))
     else {
       if (last) cont.push(last)
       last = { start: moment(slot.start), end: moment(slot.end) }
@@ -134,6 +143,8 @@ function isValid(slot: TimeSlot, continuity: Continuity[]) {
   const [ start, end ] = [ moment(slot.start), moment(slot.end) ]
   // aka. There exists some continuity such that the timeslot's start and end
   // are entirely contained within the continuity
+  console.log(continuity)
+  console.log(continuity.filter(c => start >= c.start && end <= c.end))
   return continuity.some(c => start >= c.start && end <= c.end)
 }
 
@@ -152,11 +163,14 @@ function hasConflict(slot: TimeSlot, continuity: Continuity[]) {
 interface CalendarViewProps {
   cal: Calendar
   regularity: 'once' | 'weekly'
-  mode: 'edit' | 'select'
+  duration?: number // If this is set, the calendar is in selection mode
+  selectCallback?: (slot: TimeSlot) => void // If this is set, the calendar is in selection mode
 }
 
-export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
-  const isEdit = mode === 'edit'
+export function CalendarTable({ cal, regularity, duration, selectCallback }: CalendarViewProps) {
+  const isEdit = !selectCallback
+  if ((duration && !selectCallback) || (!duration && selectCallback)) throw new Error('Invalid props')
+
   const [ timeSlots, setTimeSlots ] = useState<TimeSlot[]>([])
   const [ continuity, setContinuity ] = useState<Continuity[]>([])
   const [ nDays, setNDays ] = useState<number>(7)
@@ -170,13 +184,11 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
 
   // New time slot
   const [ ovNewSlot, setOvNewSlot ] = useState<TimeSlot | null>(null)
-  const [ ovEditSlot, setOvEditSlot ] = useState<TimeSlot | null>(null)
+  const [ ovEditSelect, setOvEditSelect ] = useState<TimeSlot | null>(null)
   const [ loading, setLoading ] = useState(false)
   const [ error, setError ] = useState<string | null>(null)
 
-  useEffect(() => {
-    setTimeSlots(cal.time_slots)
-  }, [cal])
+  useEffect(() => setTimeSlots(cal.time_slots.toSorted((a, b) => moment(a.start).diff(b.start))), [cal])
 
   // Compute values based on properties
   useEffect(() => {
@@ -235,26 +247,15 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
 
   // Click on a block
   function clickTd(e: React.MouseEvent<HTMLDivElement>, day: number, hour: number) {
-    const m = calcMin(e, e.currentTarget)
+    if (!isEdit) return
 
-    // Create a new time slot
-    if (mode === 'edit') {
-      console.log('Create a new time slot')
-      const sd = moment(cal.start_date).add(day, 'days').hour(hour).minute(m)
-      setOvNewSlot({
-        start: sd.toISOString(),
-        end: sd.add(1, 'hour').toISOString(),
-        preference: 1,
-      })
-    }
-  }
-
-  // Click on a time slot
-  function clickSlot(e: React.MouseEvent<HTMLDivElement>, slot: TimeSlot) {
-    console.log('Clicked on', slot, e)
-    e.stopPropagation()
-
-    if (mode === 'edit') return setOvEditSlot(slot)
+    // Calculate the new time slot
+    const sd = moment(cal.start_date).add(day, 'days').hour(hour).minute(calcMin(e, e.currentTarget))
+    setOvNewSlot({
+      start: sd.toISOString(),
+      end: sd.add(1, 'hour').toISOString(),
+      preference: 1,
+    })
   }
 
   // **************************
@@ -354,7 +355,7 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
     updateSlots([ ...timeSlots.filter(slot => slot !== dragging), slot ])
   }
 
-  console.log('Rerendered')
+  console.log('Re-rendered')
 
   return <div className={clz({ mobile: isMobile, edit: isEdit }, 'calendar-table-wrapper')}>
     <Loading loading={loading} error={error} />
@@ -369,11 +370,16 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
       setOvNewSlot(null)
     }}/>}
 
-    {ovEditSlot && <EditTimeSlotPopup slot={ovEditSlot} close={slot => {
-      if (slot) updateSlots([ ...timeSlots.filter(s => s !== ovEditSlot), slot ])
-      else updateSlots(timeSlots.filter(s => s !== ovEditSlot))
-      setOvEditSlot(null)
+    {(isEdit && ovEditSelect) && <EditTimeSlotPopup slot={ovEditSelect} close={slot => {
+      if (slot) updateSlots([ ...timeSlots.filter(s => s !== ovEditSelect), slot ])
+      else updateSlots(timeSlots.filter(s => s !== ovEditSelect))
+      setOvEditSelect(null)
     }} cal={cal} conti={continuity}/>}
+
+    {(!isEdit && ovEditSelect) && <ConfirmSelectionPopup slot={ovEditSelect} conti={continuity} close={slot => {
+      if (slot) selectCallback(slot)
+      setOvEditSelect(null)
+    }} duration={duration}/>}
 
     <div className="button-group">
       {startDay > 0 && <button className="icon" onClick={() => setStartDay(startDay - 1)}>&lt;</button>}
@@ -406,7 +412,10 @@ export function CalendarTable({ cal, regularity, mode }: CalendarViewProps) {
               const mt = moment(slot.start).diff(moment(slot.start).startOf('hour'), 'minutes') / 60 * 100
 
               return <div key={i} className={`avail av${slot.preference}`} style={{ height: `${h}%`, top: `${mt}%` }}
-                onClick={e => clickSlot(e, slot)}
+                onClick={e => {
+                  e.stopPropagation()
+                  setOvEditSelect(slot)
+                }}
                 draggable={isEdit}
                 onDragStart={isEdit ? e => tsDragStart(e, slot, 'slot') : undefined}
               >{PREFERENCE_STR[slot.preference]}
