@@ -1,7 +1,7 @@
 import { Calendar, Contact, Meeting, NewCalendar, NewContact, NewMeeting, UserSelf } from './types.ts'
 import { redirect } from './ui.ts'
 
-const HOST = 'http://localhost:8000'
+const HOST = 'http://localhost:8000/api'
 // const HOST = '/api'
 
 /**
@@ -76,6 +76,8 @@ const patch = (node: string, body: object): Promise<any> => send(node, body, 'PA
  * @param password
  */
 export async function register(name: string, email: string, password: string): Promise<void> {
+  localStorage.removeItem('token')
+  
   await post('register', { name, email, password })
 
   // Login the user

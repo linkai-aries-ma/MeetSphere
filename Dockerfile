@@ -13,7 +13,7 @@ COPY public/ ./public/
 COPY ./*.cjs ./*.json ./*.html ./*.ts ./
 
 # Replace "http://localhost:8000" with "/api"
-RUN sed -i 's/http:\/\/localhost:8000/\/api/g' src/lib/sdk.ts
+RUN sed -i 's/http:\/\/localhost:8000\/api/\/api/g' src/lib/sdk.ts
 
 # Build the application
 RUN yarn build

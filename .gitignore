@@ -32,3 +32,4 @@ db.sqlite3
 media
 .bash_profile
 backend/meetsphere/migrations/00*.py
+.DS_Store
