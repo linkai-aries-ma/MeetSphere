@@ -1,10 +1,10 @@
 import * as React from 'react'
 import moment from 'moment/moment'
-import { Calendar, PREFERENCE_STR, TimeSlot } from '../lib/types.ts'
+import { Calendar, Meeting, PREFERENCE_STR, TimeSlot } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
 import './CalendarTable.scss'
 import { clz } from '../lib/ui.ts'
-import { CALENDAR } from '../lib/sdk.ts'
+import { CALENDAR, MEETING } from '../lib/sdk.ts'
 import { Loading } from './Loading.tsx'
 import { DatePicker } from 'rsuite'
 
@@ -169,6 +169,23 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
   const isEdit = !selectCallback
   if ((duration && !selectCallback) || (!duration && selectCallback)) throw new Error('Invalid props')
 
+  const [meetings, setMeetings] = useState<Meeting[]>([])
+  const [loadingMeetings, setLoadingMeetings] = useState<boolean>(true)
+  const [errorMeetings, setErrorMeetings] = useState<string | null>(null)
+
+  // Fetch meetings associated with the calendar
+  useEffect(() => {
+    setLoadingMeetings(true)
+    MEETING.list()
+      .then(meetings => {
+        // Filter meetings based on calendar ID
+        const calendarMeetings = meetings.filter(meeting => meeting.calendar.id === cal.id)
+        setMeetings(calendarMeetings)
+      })
+      .catch(error => setErrorMeetings(error.message))
+      .finally(() => setLoadingMeetings(false))
+  }, [cal.id])
+
   const [ timeSlots, setTimeSlots ] = useState<TimeSlot[]>([])
   const [ continuity, setContinuity ] = useState<Continuity[]>([])
   const [ nDays, setNDays ] = useState<number>(7)
@@ -188,30 +205,64 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
 
   useEffect(() => setTimeSlots(cal.time_slots.toSorted((a, b) => moment(a.start).diff(b.start))), [cal])
 
+  useEffect(() => { // Removing time slots that interfere with one of the user's meetings
+    if (meetings.length === 0 || timeSlots.length === 0) return
+    const filteredTimeSlots = timeSlots.filter(timeSlot => {
+      // Check if there is any meeting with a time that overlaps with this time slot
+      return !meetings.some(meeting => {
+        if (!meeting.time || !meeting.duration) return false // Skip meetings without time or duration
+        
+        const meetingStart = new Date(meeting.time)
+        const meetingEnd = new Date(meeting.time)
+        meetingEnd.setMinutes(meetingEnd.getMinutes() + meeting.duration)
+  
+        const timeSlotStart = new Date(timeSlot.start)
+        const timeSlotEnd = new Date(timeSlot.end)
+  
+        // Check for overlap
+        return (
+          (timeSlotStart >= meetingStart && timeSlotStart < meetingEnd) || // Start of time slot is within meeting
+          (timeSlotEnd > meetingStart && timeSlotEnd <= meetingEnd) ||     // End of time slot is within meeting
+          (timeSlotStart <= meetingStart && timeSlotEnd >= meetingEnd)      // Meeting is within time slot
+        );
+      });
+    });
+    console.log(filteredTimeSlots)
+    // Update the state with filtered time slots
+    setTimeSlots(filteredTimeSlots)
+  }, [meetings, timeSlots])
+
+
   // Compute values based on properties
   useEffect(() => {
     setMaxDays(moment(cal.end_date).diff(moment(cal.start_date), 'days') + 1)
     if (nDays > maxDays) setNDays(maxDays)
-
+  
+    // Create time slots for each meeting. This is so we can display the meetings in the calendar seemlessly
+    const meetingTimeSlots = meetings.map(meeting => ({
+      start: meeting.time,
+      end: moment(meeting.time).add(meeting.duration, 'minutes').toISOString(),
+      preference: 0, // Preference 0 indicates a meeting
+      title: meeting.title // Optionally include other meeting details
+    }));
+  
+    // Combine original time slots with meeting time slots
+    const combinedTimeSlots = [...timeSlots, ...meetingTimeSlots]
+  
     // Compute time slot index
-    const index = {}
-
-    timeSlots.forEach(slot => {
-      // Extract the date and hour from the startTime
+    const index = {};
+  
+    combinedTimeSlots.forEach(slot => {
       const startHour = moment(slot.start).format('YYYY-MM-DD H')
-
-      // TODO: Fix time slots spanning multiple days
-
-      // Initialize the array if this is the first slot for this hour
+  
       if (!index[startHour]) index[startHour] = []
-
-      // Add the slot to the bucket
       index[startHour].push(slot)
     })
-
-    setContinuity(buildContinuity(timeSlots))
+  
+    setContinuity(buildContinuity(combinedTimeSlots))
     setTsIndex(index)
-  }, [ cal, timeSlots ])
+  }, [cal, timeSlots, meetings, nDays, maxDays])
+
 
   // Check if the table is too narrow for the time slots
   useEffect(() => {
@@ -388,7 +439,7 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
       setOvNewSlot(null)
     }}/>}
 
-    {(isEdit && ovEditSelect) && <EditTimeSlotPopup slot={ovEditSelect} close={slot => {
+    {(isEdit && ovEditSelect && ovEditSelect.preference !== 0) && <EditTimeSlotPopup slot={ovEditSelect} close={slot => {
       if (slot) updateSlots([ ...timeSlots.filter(s => s !== ovEditSelect), slot ])
       else updateSlots(timeSlots.filter(s => s !== ovEditSelect))
       setOvEditSelect(null)

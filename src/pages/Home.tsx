@@ -46,7 +46,7 @@ export function Home() {
     {(meetings && self) && <main>
       <section className="welcome-section">
         <h2>Welcome {self.name}!</h2>
-        <span>You have {meetingsToday.length === 0 ? 'no' : meetingsToday.length} meetings today.</span>
+        <span>You have {meetingsToday.length === 0 ? 'no' : meetingsToday.length} meeting{meetingsToday.length === 1 ? '' : 's'} today.</span>
       </section>
 
       <div className="content">
