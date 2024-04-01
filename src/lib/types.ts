@@ -7,12 +7,14 @@ export enum Preference {
   high = 3,
   medium = 2,
   low = 1,
+  meeting = 0,
 }
 
 export const PREFERENCE_STR = {
   3: 'High',
   2: 'Medium',
   1: 'Low',
+  0: 'Meeting',
 }
 
 /**
