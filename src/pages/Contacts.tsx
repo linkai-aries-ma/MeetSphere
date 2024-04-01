@@ -74,16 +74,21 @@ function InviteOverlay({ close, contact, calendar }: {close: (submit: boolean) =
   </div>
 }
 
-function AddContactOverlay({ close }: { close: (submit: NewContact | null) => void }) {
-  const [ name, setName ] = useState<string>('')
-  const [ email, setEmail ] = useState<string>('')
+function AddContactOverlay({ close, contact }: { close: (submit: Contact | null) => void, contact?: Contact }) {
+  const [ name, setName ] = useState<string>(contact ? contact.name : '')
+  const [ email, setEmail ] = useState<string>(contact ? contact.email : '')
 
-  // TODO: Edit contact
-  // TODO: Contact pfp
+  const onSubmit = () => {
+    if (name && email) {
+      close({ id: contact ? contact.id : 0, name, email });
+    } else {
+      close(null);
+    }
+  };
 
   return <div id="contact-overlay" className="overlay" onClick={() => close(null)}>
     <div onClick={e => e.stopPropagation()}>
-      <h1>Add New Contact</h1>
+      <h1>{contact ? 'Edit Contact' : 'Add New Contact'}</h1>
       <label>
         <input type="text" name="contact-name" placeholder="Name"
           value={name} onChange={e => setName(e.target.value)}/>
@@ -93,7 +98,7 @@ function AddContactOverlay({ close }: { close: (submit: NewContact | null) => vo
           value={email} onChange={e => setEmail(e.target.value)}/>
       </label>
       <button id="contact-submit" className="emp"
-        onClick={() => close({ name, email })}>Submit</button>
+        onClick={onSubmit}>Submit</button>
       <button id="contact-cancel" onClick={() => close(null)}>Cancel</button>
     </div>
   </div>
@@ -108,6 +113,7 @@ export function Contacts() {
   const [ selectDone, setSelectDone ] = useState<boolean>(false)
   const [ ovAdd, setOvAdd ] = useState<boolean>(false)
   const [ ovInvite, setOvInvite ] = useState<Contact | null>(null)
+  const [ ovContact, setOvContact ] = useState<Contact | null>(null);
 
   const [ invited, setInvited ] = useState<number[]>([])
   const [ expanded, setExpanded ] = useState<number[]>([])
@@ -148,6 +154,12 @@ export function Contacts() {
       .finally(() => setOvAdd(false))
   }
 
+  function updateContact(d: Contact) {
+    CONTACT.update(d).then(refresh)
+      .catch(err => setError(err.message))
+      .finally(() => setOvContact(null))
+  }
+
   return <>
     {contacts && <main>
       <div id="contact-list">
@@ -160,7 +172,7 @@ export function Contacts() {
           onClick={() => {setExpanded(arr => toggle(arr, contact.id))}}
           className={clz({ opened: expanded.includes(contact.id) }, 'contact')}>
 
-          <img src={getAvatar(contact)} alt="contact-pfp"/>
+          <img src={getAvatar(contact)} alt="contact-pfp" onClick={() => setOvContact(contact)}/>
           <div>
             <span>{contact.name}</span>
             <span>{contact.email}</span>
@@ -195,6 +207,10 @@ export function Contacts() {
           setInvited([ ...invited, ovInvite.id ])
         }
       }} contact={ovInvite}/>}
+      {ovContact && <AddContactOverlay close={contact => {
+        if (contact) updateContact(contact)
+        else setOvContact(null)
+      }} contact={ovContact}/>}
     </main>}
 
     <Loading loading={loading} error={error}/>
