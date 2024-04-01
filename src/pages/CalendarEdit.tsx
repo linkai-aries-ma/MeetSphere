@@ -10,6 +10,7 @@ export function CalendarEdit() {
   const { calendarId } = useParams<{ calendarId: string }>()
   const [ error, setError ] = React.useState<string | null>(null)
   const [ calendar, setCalendar ] = React.useState<Calendar | null>(null)
+  const [ file, setFile ] = React.useState<File | null>(null)
 
   React.useEffect(() => {
     CALENDAR.list().then(cals => {
@@ -18,6 +19,28 @@ export function CalendarEdit() {
       else setError('Calendar not found')
     }).catch(err => setError(err.message))
   }, [calendarId])
+
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(e.target.files ? e.target.files[0] : null)
+  }
+
+  const onUploadClick = () => {
+    if (file && calendar) {
+      CALENDAR.upload(parseInt(calendarId), file)
+        .then(() => {
+          alert('Calendar updated successfully')
+          // Fetch the updated calendar
+          CALENDAR.list().then(cals => {
+            const updatedCalendar = cals.find(c => c.id === parseInt(calendarId))
+            if (updatedCalendar) {
+              // Update the calendar state variable
+              setCalendar(updatedCalendar)
+            }
+          })
+        })
+        .catch(err => setError(err.message))
+    }
+  }
 
   return <main id="edit-cal-page">
     {calendar && <>
@@ -32,6 +55,9 @@ export function CalendarEdit() {
       <CalendarDetails cal={calendar}/>
 
       <CalendarTable cal={calendar} regularity="once"/>
+
+      <input type="file" onChange={onFileChange}/>
+      <button onClick={onUploadClick}>Upload .ics file</button>
 
       {calendar.time_slots.length !== 0 && <a href={`/contacts?select=${calendar.id}`}>
         <button className="emp full">Invite People</button>

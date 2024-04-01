@@ -11,23 +11,25 @@ const HOST = 'http://localhost:8000/api'
  * @param body Request body object
  * @param method HTTP method
  */
-export async function send(node: string, body?: object, method: string = 'POST'): Promise<any> {
-  const headers = { 'Content-Type': 'application/json' }
-  const init: RequestInit = { method, headers }
+export async function send(node: string, body?: object | FormData, method: string = 'POST'): Promise<any> {
+  const headers: { [key: string]: string } = {}
 
   // Add token if exists
   if (localStorage.getItem('token')) {
     headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`
   }
 
-  // Add body, treat file as multipart/form-data
-  if (body instanceof File) {
-    const formData = new FormData()
-    formData.append('file', body)
-    init.body = formData
-    headers['Content-Type'] = 'multipart/form-data'
+  // If body is not FormData, stringify it and set 'Content-Type' to 'application/json'
+  let bodyInit: BodyInit | undefined
+  // If body is not FormData, stringify it and set 'Content-Type' to 'application/json'
+  if (body && !(body instanceof FormData)) {
+    bodyInit = JSON.stringify(body)
+    headers['Content-Type'] = 'application/json'
+  } else {
+    bodyInit = body as FormData
   }
-  else if (body) init.body = JSON.stringify(body)
+
+  const init: RequestInit = { method, headers, body: bodyInit }
 
   const response = await fetch(`${HOST}/${node}/`, init)
   const resp = await response.text()
@@ -66,7 +68,7 @@ const post = (node: string, body: object): Promise<any> => send(node, body, 'POS
 const get = (node: string): Promise<any> => send(node, undefined, 'GET')
 const delete_ = (node: string, body: object): Promise<any> => send(node, body, 'DELETE')
 const patch = (node: string, body: object): Promise<any> => send(node, body, 'PATCH')
-
+const put = (node: string, body: FormData): Promise<any> => send(node, body, 'PUT')
 
 /**
  * Register a new user
@@ -129,6 +131,13 @@ export const CALENDAR = {
   add: (calendar: NewCalendar): Promise<{ id: number }> => post('calendar', calendar),
   delete: (id: number): Promise<void> => delete_('calendar', { id }),
   update: (calendar: Partial<Calendar>): Promise<void> => patch('calendar', calendar),
+  upload: (id: number, file: File): Promise<void> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('id', id.toString())
+
+    return put('calendar', formData)
+  }
 }
 
 export const MEETING = {

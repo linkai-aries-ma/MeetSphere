@@ -77,10 +77,22 @@ function InviteOverlay({ close, contact, calendar }: {close: (submit: boolean) =
 function AddContactOverlay({ close, contact }: { close: (submit: Contact | null) => void, contact?: Contact }) {
   const [ name, setName ] = useState<string>(contact ? contact.name : '')
   const [ email, setEmail ] = useState<string>(contact ? contact.email : '')
+  const [ pfp, setPfp ] = useState<string>(contact ? contact.pfp : '')
+
+  const onPfpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPfp(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const onSubmit = () => {
     if (name && email) {
-      close({ id: contact ? contact.id : 0, name, email });
+      close({ id: contact ? contact.id : 0, name, email, pfp });
     } else {
       close(null);
     }
@@ -96,6 +108,10 @@ function AddContactOverlay({ close, contact }: { close: (submit: Contact | null)
       <label>
         <input type="email" name="contact-email" placeholder="Email"
           value={email} onChange={e => setEmail(e.target.value)}/>
+      </label>
+      <label>
+        <input type="file" name="contact-pfp" onChange={onPfpChange}/>
+        {pfp && <img src={pfp} alt="contact-pfp" style={{maxWidth: '100px', maxHeight: '100px'}} />}
       </label>
       <button id="contact-submit" className="emp"
         onClick={onSubmit}>Submit</button>

@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from ics import Calendar as ics
+from django.core.files.storage import default_storage
 
 from .serailizers import *
 
@@ -105,7 +107,7 @@ def contacts_api(request: Request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'POST', 'PATCH', 'DELETE'])
+@api_view(['GET', 'POST', 'PATCH', 'DELETE', 'PUT'])
 @permission_classes([IsAuthenticated])
 def calendar_api(request):
     if request.method == 'GET':
@@ -141,6 +143,42 @@ def calendar_api(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    if request.method == 'PUT':
+        # Expect a file in the 'file' field of the request
+        file = request.FILES.get('file')
+        if file is None or pk is None:
+            return Response({'error': 'File and Calendar id are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Retrieve the specific calendar associated with the user
+        calendar = Calendar.objects.filter(id=pk, owner=request.user).first()
+        if not calendar:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # Save the file temporarily
+        file_name = default_storage.save('tmp.ics', file)
+        file_path = default_storage.path(file_name)
+
+        # Parse the .ics file
+        with open(file_path, 'r') as f:
+            c = ics(f.read())
+
+        # Convert the events to the required JSON format
+        time_slots = calendar.time_slots
+        for event in c.events:
+            # Filter events based on the calendar's start_date and end_date
+            if calendar.start_date <= event.begin.date() <= calendar.end_date:
+                time_slots.append({
+                    'start': event.begin.isoformat(),
+                    'end': event.end.isoformat(),
+                    'preference': 1
+                })
+
+        # Update the calendar's time_slots field
+        calendar.time_slots = time_slots
+        calendar.save()
+
+        return Response({'message': 'Calendar updated successfully'}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
