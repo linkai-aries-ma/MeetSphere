@@ -8,7 +8,6 @@ import { CALENDAR, MEETING } from '../lib/sdk.ts'
 import { Loading } from './Loading.tsx'
 import { DatePicker } from 'rsuite'
 
-
 type CSPParams = { slot: TimeSlot, conti: Continuity[], duration: number, close: (slot: TimeSlot | null) => void }
 
 export function ConfirmSelectionPopup({ slot, conti, duration, close }: CSPParams) {
@@ -53,6 +52,8 @@ export function EditTimeSlotPopup({ slot, cal, conti, close }: ETSPParams) {
   }
   const conflicts = hasConflict(newSlot, conti)
 
+  const maxEndTime = moment(slot.start).add(cal.end_hour - cal.start_hour, 'hours').toDate()
+
   return <div className="overlay">
     <div>
       <h1>Edit Time Slot</h1>
@@ -66,10 +67,19 @@ export function EditTimeSlotPopup({ slot, cal, conti, close }: ETSPParams) {
       />
 
       <div>Duration (Hour)</div>
-      <input type="number" value={hour} onChange={e => {
-        if (+e.target.value < 0 || +e.target.value > 23) return
-        setHour(+e.target.value)
-      }}/>
+      <input
+        type="number"
+        value={hour}
+        onChange={e => {
+          if (+e.target.value < 0 || +e.target.value > 23) return;
+          const newEndTime = moment(newSlot.start).add(+e.target.value, 'hours')
+          if (newEndTime.hour() > cal.end_hour || newEndTime.hour() === 1) {
+            return <div className="error">This time slot conflicts with another time slot</div>
+          } else {
+            setHour(+e.target.value);
+          }
+        }}
+      />
 
       <div>Duration (Minutes)</div>
       <input type="number" value={min} onChange={e => {
@@ -224,10 +234,9 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
           (timeSlotStart >= meetingStart && timeSlotStart < meetingEnd) || // Start of time slot is within meeting
           (timeSlotEnd > meetingStart && timeSlotEnd <= meetingEnd) ||     // End of time slot is within meeting
           (timeSlotStart <= meetingStart && timeSlotEnd >= meetingEnd)      // Meeting is within time slot
-        );
-      });
-    });
-    console.log(filteredTimeSlots)
+        )
+      })
+    })
     // Update the state with filtered time slots
     setTimeSlots(filteredTimeSlots)
   }, [meetings, timeSlots])
