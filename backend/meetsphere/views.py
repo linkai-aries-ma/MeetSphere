@@ -102,6 +102,8 @@ def contacts_api(request: Request):
     if request.method == 'PATCH':
         serializer = AddContactSerializer(contact, data=request.data, partial=True)
         if serializer.is_valid():
+            if Contact.objects.filter(email=serializer.validated_data['email'], owner=request.user).exists():
+                return Response({"error": "Contact already exists"}, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
