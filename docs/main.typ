@@ -3,21 +3,52 @@
 // Take a look at the file `template.typ` in the file panel
 // to customize this template and discover how it works.
 #show: project.with(
-  title: "CSC309 Project P2 Documentation",
+  title: "CSC309 Project P3 Documentation",
   authors: (
     "Azalea Gui",
     "LinKai",
     "Will Jarvis-Cross"
   ),
 )
+#show link: underline
 
 = Project Structure
+
+#text(blue)[(All additions and changes made in P3 are colored blue. The rest of this document should be the same as the P2 documentation.)]
 
 == Framework Detail
 
 This project has a backend written in python with the Django REST framework. The dependencies are managed with poetry. The frontend is written in TypeScript with React and Sass, built by Vite and served as static files separately from the backend. Testing of the backend is done with the frontend SDKs using the jest framework.
 
-== Installation
+#text(blue)[To prepare for production deployment, we implemented a cached static file server in the Django backend that will serve the compiled frontend files in `/dist`, and added the `/api` prefix to all API endpoints. After this change, the frontend and backend can be accessed from the same HTTP server.]
+
+== P3 Running Instructions
+
+#text(blue)[The website is deployed at https://meet.hydev.org/. You can either access the website there or run it locally with the following instructions.]
+
+#text(blue)[To run this project in a deployment environment, please #link("https://docs.docker.com/engine/install/")[install Docker and Docker Compose]. If you're using Ubuntu, you can install Docker and Docker Compose with the following commands:]
+
+```sh
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo apt install docker-compose-plugin
+```
+
+#text(blue)[Then, run the following command: ]
+
+```sh
+docker compose up
+```
+
+#text(blue)[Then, the production website should be accessible at `localhost:8000`.]
+
+=== Pre-populated database
+
+#text(blue)[To assist you in the testing process, we have created a debug button that allows you to create an example account with example data with a single click. After you have started the server, you can access this button at `localhost:8000/debug`.]
+
+== Development
 
 To install dependencies on Ubuntu 20.04, please run `startup.sh`.
 
@@ -32,6 +63,9 @@ yarn install
 == Running the project
 
 ```sh
+# Build the frontend first
+yarn build
+
 # Run the developmental backend
 ./run.sh
 
@@ -42,11 +76,13 @@ yarn dev
 yarn jest
 ```
 
+#text(blue)[Please note: If you want to modify any frontend code, please access the frontend at `localhost:5173` (Vite development server) instead of `localhost:8000` (Backend static server). This is because the backend is serving a cached version of compiled frontend files in `/dist`, which is not updated when the frontend code changes.]
+
 == File Structure
 
 The backend source code and python module root is in the `backend` directory. Directly inside it are the django configuration files. Our API implementations and models are located in `backend/meetsphere`.
 
-The frontend sources are located in the `src` directory. The main entry point is `src/main.tsx`. The UI components and pages are located in `src/components` and `src/pages` respectively. The API client is located in `src/lib`. The types used in the API client are located in `src/lib/types.ts`. (As of P2, the frontend clinet SDK is fully connected with the backend, but the UI components has not been updated. Things are not expected to work on the UI at this moment.)
+The frontend sources are located in the `src` directory. The main entry point is `src/main.tsx`. The UI components and pages are located in `src/components` and `src/pages` respectively. The API client is located in `src/lib`. The types used in the API client are located in `src/lib/types.ts`.
 
 The tests are written in TypeScript and located in `src/lib/tests`. These tests are very comprehensive, covering most usage scenarios and edge cases. The complete test suite can be run with the command `jest` or `yarn jest`. 
 
@@ -57,6 +93,8 @@ All API endpoints except for profile picture uploading accept parameters through
 The documentation below references many object types that are defined in `src/lib/types.ts`. 
 
 Please review `src/lib/tests/complete.test.ts` for a typical usage scenario of the API client.
+
+All API endpoints are prefixed with `/api` in the actual implementation. For example, if you wish to access the endpoint `/register`, please use `/api/register`.
 
 == User Features
 
