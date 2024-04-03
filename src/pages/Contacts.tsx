@@ -208,7 +208,7 @@ export function Contacts() {
 
         <div className="button-group">
           <button onClick={() => setOvAdd(true)}>+</button>
-          {(select && selectDone) && <button id="cont-done-button" className="emp">Done</button>}
+          {(select && selectDone) && <button id="cont-done-button" className="emp" onClick={() => window.location.href = '/home'}>Done</button>}
         </div>
       </div>
 
