@@ -102,7 +102,8 @@ def contacts_api(request: Request):
     if request.method == 'PATCH':
         serializer = AddContactSerializer(contact, data=request.data, partial=True)
         if serializer.is_valid():
-            if Contact.objects.filter(email=serializer.validated_data['email'], owner=request.user).exists():
+            conflicting_contact = Contact.objects.filter(email=serializer.validated_data['email'], owner=request.user).first()
+            if conflicting_contact and conflicting_contact.id != contact.id:
                 return Response({"error": "Contact already exists"}, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             return Response(serializer.data)
