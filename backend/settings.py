@@ -41,10 +41,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'meetsphere.CustomUser'
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=999),
-}
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -67,8 +63,8 @@ REST_FRAMEWORK = {
 
 # Simple JWT Configuration
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
