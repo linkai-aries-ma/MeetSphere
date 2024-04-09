@@ -84,7 +84,15 @@ export function EditTimeSlotPopup({ slot, cal, conti, close }: ETSPParams) {
       <div>Duration (Minutes)</div>
       <input type="number" value={min} onChange={e => {
         if (+e.target.value < 0 || +e.target.value > 59) return
-        setMin(+e.target.value)
+        const newEndTime = moment(newSlot.start).add(+e.target.value, 'minute')
+        // Check if the new end time exceeds the allowed end time or conflicts with another time slot
+        if (newEndTime > moment(cal.end_date) || (newEndTime.hour() === cal.end_hour && newEndTime.minute() > 0)) {
+          // Handle conflict or display error message
+          return <div className="error">This time slot conflicts with another time slot</div>;
+        } else {
+            // If no conflict, update the minutes state
+            setMin(+e.target.value);
+        }
       }}/>
 
       <div>Switch Preference</div>
@@ -433,7 +441,7 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
     updateSlots([ ...timeSlots.filter(slot => slot !== dragging), slot ])
   }
 
-  console.log('Re-rendered')
+  //console.log('Re-rendered')
 
   return <div className={clz({ mobile: isMobile, edit: isEdit }, 'calendar-table-wrapper')}>
     <Loading loading={loading} error={error} />

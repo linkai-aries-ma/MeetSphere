@@ -63,7 +63,7 @@ export function Debug() {
       { start: '2024-01-31T23:00:00', end: '2024-02-01T00:00:00', preference: 3 },
       { start: '2024-02-01T00:00:00', end: '2024-02-01T01:00:00', preference: 2 },
       // Time slots spanning multiple days
-      { start: '2024-02-01T23:00:00', end: '2024-02-02T01:00:00', preference: 1 },
+      { start: '2024-02-01T22:00:00', end: '2024-02-02T00:00:00', preference: 1 },
     ]
     // Shift example timeslots from 2024-01-27 to the current date
     const dayDelta = moment().diff(moment('2024-01-27'), 'days')
