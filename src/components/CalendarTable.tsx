@@ -73,7 +73,7 @@ export function EditTimeSlotPopup({ slot, cal, conti, close }: ETSPParams) {
         onChange={e => {
           if (+e.target.value < 0 || +e.target.value > 23) return;
           const newEndTime = moment(newSlot.start).add(+e.target.value, 'hours')
-          if (newEndTime.hour() > cal.end_hour || newEndTime.hour() === 1) {
+          if (newEndTime.hour() > cal.end_hour || newEndTime.hour() === 1 || (newEndTime.hour() === 0 && newEndTime.minutes() > 0)) {
             return <div className="error">This time slot conflicts with another time slot</div>
           } else {
             setHour(+e.target.value);
@@ -86,7 +86,7 @@ export function EditTimeSlotPopup({ slot, cal, conti, close }: ETSPParams) {
         if (+e.target.value < 0 || +e.target.value > 59) return
         const newEndTime = moment(newSlot.start).add(+e.target.value, 'minute')
         // Check if the new end time exceeds the allowed end time or conflicts with another time slot
-        if (newEndTime > moment(cal.end_date) || (newEndTime.hour() === cal.end_hour && newEndTime.minute() > 0)) {
+        if (newEndTime > moment(cal.end_date) || (newEndTime.hour() === cal.end_hour && newEndTime.minute() > 0) || (newEndTime.hour() === 0 && newEndTime.minutes() > 0)) {
           // Handle conflict or display error message
           return <div className="error">This time slot conflicts with another time slot</div>;
         } else {
@@ -448,7 +448,10 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
 
     {ovNewSlot && <NewTimeSlotPopup close={pref => {
       if (pref) {
-        console.log('New time slot preference', pref)
+        const slotHour = moment(ovNewSlot.start).hour().toString()
+        if ((slotHour === cal.end_hour.toString()) && moment(ovNewSlot.start).minute() > 0) {
+          ovNewSlot.end = (moment(ovNewSlot.end).subtract(moment(ovNewSlot.start).minute(), 'minutes')).toString()
+        }
         // Add it to the available time slots
         const newSlots = [ ...timeSlots, { ...ovNewSlot, preference: pref }]
         updateSlots(newSlots)
