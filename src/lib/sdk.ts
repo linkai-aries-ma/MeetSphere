@@ -142,7 +142,7 @@ export const CALENDAR = {
 
 export const MEETING = {
   list: (): Promise<Meeting[]> => get('meetings'),
-  add: (meeting: NewMeeting): Promise<void> => post('meetings', meeting),
+  add: (meeting: NewMeeting): Promise<Meeting> => post('meetings', meeting),
   delete: (id: string): Promise<void> => delete_('meetings', { id }),
   update: (meeting: Partial<Meeting>): Promise<void> => patch('meetings', meeting),
   invite: (id: string): Promise<void> => post(`meetings/${id}/invite`, {}),

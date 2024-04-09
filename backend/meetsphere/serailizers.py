@@ -124,7 +124,7 @@ class AddMeetingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Meeting
-        fields = ['title', 'description', 'location', 'regularity',
+        fields = ["id", 'title', 'description', 'location', 'regularity',
                   'is_virtual', 'invitee', 'time', 'duration', 'calendar']
 
 

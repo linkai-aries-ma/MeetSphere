@@ -36,9 +36,17 @@ function InviteOverlay({ close, contact, calendar }: {close: (submit: boolean) =
 
     // Send to server
     setSending(true)
-    MEETING.add(meeting).then(() => close(true))
-      .catch(err => setError(err.message))
-      .finally(() => setSending(false))
+    MEETING.add(meeting)
+    .then(response => {
+      // The meeting was created successfully
+      close(true)
+
+      // Send the invite
+      MEETING.invite(response.id)
+        .catch(err => setError(err.message))
+    })
+    .catch(err => setError(err.message))
+    .finally(() => setSending(false))
   }
 
   return <div id="meeting-overlay" className="overlay" onClick={() => close(false)}>
