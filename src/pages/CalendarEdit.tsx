@@ -42,6 +42,17 @@ export function CalendarEdit() {
     }
   }
 
+  const onTimeSlotsUpdated = () => {
+    // Fetch the updated calendar
+    CALENDAR.list().then(cals => {
+      const updatedCalendar = cals.find(c => c.id === parseInt(calendarId))
+      if (updatedCalendar) {
+        // Update the calendar state variable
+        setCalendar(updatedCalendar)
+      }
+    })
+  }
+
   return <main id="edit-cal-page">
     {calendar && <>
       <h2>Edit your calendar</h2>
@@ -54,7 +65,7 @@ export function CalendarEdit() {
 
       <CalendarDetails cal={calendar}/>
 
-      <CalendarTable cal={calendar} regularity="once"/>
+      <CalendarTable cal={calendar} regularity="once" onTimeSlotsUpdated={onTimeSlotsUpdated}/>
 
       <input type="file" onChange={onFileChange}/>
       <button onClick={onUploadClick}>Upload .ics file</button>

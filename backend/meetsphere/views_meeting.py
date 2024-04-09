@@ -62,7 +62,7 @@ def send_invite(request: Request, pk: str):
         f"Meeting Invite: {meeting.title}",
         f"Hello, {meeting.invitee.name}. You have been invited to a meeting by {meeting.creator.name}. "
         f"Please confirm the meeting by clicking the link below: \n\n"
-        f"http://localhost:3000/confirm-meeting/{meeting.id}",
+        f"http://localhost:8000/schedule/{meeting.id}", # changed this to 8000 since that's likely how the TA will use it
         settings.EMAIL_HOST_USER,
         [meeting.invitee.email],
         fail_silently=False,
@@ -102,7 +102,7 @@ def send_remind(request: Request, pk: str):
             f"Meeting Reminder: {meeting.title}",
             f"Hello, {meeting.invitee.name}. You have a meeting with {meeting.creator.name} pending. "
             f"Please confirm the meeting as soon as possible by clicking the link below: \n\n"
-            f"http://localhost:3000/confirm-meeting/{meeting.id}",
+            f"http://localhost:8000/schedule/{meeting.id}",
             settings.EMAIL_HOST_USER,
             [meeting.invitee.email],
             fail_silently=False,

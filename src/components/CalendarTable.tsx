@@ -181,9 +181,10 @@ interface CalendarViewProps {
   regularity: 'once' | 'weekly'
   duration?: number // If this is set, the calendar is in selection mode
   selectCallback?: (slot: TimeSlot) => void // If this is set, the calendar is in selection mode
+  onTimeSlotsUpdated?: () => void;
 }
 
-export function CalendarTable({ cal, regularity, duration, selectCallback }: CalendarViewProps) {
+export function CalendarTable({ cal, regularity, duration, selectCallback, onTimeSlotsUpdated }: CalendarViewProps) {
   const isEdit = !selectCallback
   if ((duration && !selectCallback) || (!duration && selectCallback)) throw new Error('Invalid props')
 
@@ -295,11 +296,24 @@ export function CalendarTable({ cal, regularity, duration, selectCallback }: Cal
     }
   }, [nDays])
 
+  //function updateSlots(slots: TimeSlot[]) {
+  //  setTimeSlots(slots)
+  //  setLoading(true)
+  //  CALENDAR.update({ ...cal, time_slots: slots })
+  //    .catch(err => setError(err.message)).finally(() => setLoading(false))
+  //}
   function updateSlots(slots: TimeSlot[]) {
     setTimeSlots(slots)
     setLoading(true)
     CALENDAR.update({ ...cal, time_slots: slots })
-      .catch(err => setError(err.message)).finally(() => setLoading(false))
+      .then(() => {
+        // Call the onTimeSlotsUpdated prop after the time slots are updated
+        if (onTimeSlotsUpdated) {
+          onTimeSlotsUpdated()
+        }
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false))
   }
 
   function calcMin(e: React.MouseEvent<HTMLDivElement>, el: HTMLDivElement) {
