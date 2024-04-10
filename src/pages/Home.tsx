@@ -77,8 +77,8 @@ export function Home() {
   const [ expanded, setExpanded ] = useState<string[]>([])
   const [ loading, setLoading ] = useState(true)
   const [ error, setError ] = useState<string | null>(null)
-  const [showOverlay, setShowOverlay] = useState<Meeting | null>(null);
-  const [dataVersion, setDataVersion] = useState(0);
+  const [ showOverlay, setShowOverlay ] = useState<Meeting | null>(null)
+  const [ dataVersion, setDataVersion ] = useState(0)
 
   // Initial fetch
   useEffect(() => {
@@ -147,9 +147,12 @@ export function Home() {
 
               {/* Show button group only on toggle */}
               <div className="button-group">
-                <button className="alt">
-                  <Icon icon="fluent:person-add-20-filled"/>
-                </button>
+                {meeting.is_virtual &&
+                    <a href={`https://meet.jit.si/meetsphere/${meeting.title.replaceAll(' ', '_').substring(0, 30)}_${meeting.id}`}
+                      onClick={e => e.stopPropagation()}>
+                      <button className="alt"><Icon icon="icomoon-free:enter"/></button>
+                    </a>
+                }
                 <button onClick={() => setShowOverlay(meeting)}>
                   <Icon icon="fluent:edit-20-filled"/>
                 </button>

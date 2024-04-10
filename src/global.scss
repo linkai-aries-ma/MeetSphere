@@ -75,6 +75,11 @@ a {
   padding: 10px 16px;
   min-width: 100px;
 
+  // Center the text
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
   border: none;
   border-radius: 10px;
   background: $c-off;

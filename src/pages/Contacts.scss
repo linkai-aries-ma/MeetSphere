@@ -83,6 +83,7 @@
       @media (max-width: $mobile-vw) {
         flex-direction: column;
         flex: 1;
+        flex-basis: calc(100% - 80px);
         gap: 0;
         justify-content: center;
         align-items: flex-start;
