@@ -194,6 +194,10 @@ function getConflict(slot: TimeSlot, continuity: Continuity[], cal: Calendar): s
   console.log(endHour, isNewDay)
   if (endHour > cal.end_hour + 1 || isNewDay)
     return 'This time slot should not end after the calendar\'s end hour'
+
+  // If this time slot overlaps with an existing time slot, return an error message (TODO: Split it)
+  if (continuity.some(c => start < c.end && end > c.start))
+    return 'This time slot conflicts with another time slot'
 }
 
 interface CalendarViewProps {
