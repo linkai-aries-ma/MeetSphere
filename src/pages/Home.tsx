@@ -58,6 +58,14 @@ function EditMeetingOverlay({ close, meeting }: {close: (submit: boolean) => voi
         <textarea name="Meeting Description" placeholder="Description"
           value={desc} onChange={e => setDesc(e.target.value)}/>
       </label>
+      <button id="switch-online-btn" className={online ? 'alt' : ''} onClick={() => setOnline(!online)}>
+        {online ? 'Online Meeting' : 'In-Person Meeting'}
+      </button>
+      {!online && <label>
+        <span>Location</span>
+        <input type="text" name="Meeting Location" placeholder="Location"
+          value={location} onChange={e => setLocation(e.target.value)}/>
+      </label>}
       <label>
         <span>Duration (minutes)</span>
         <input type="number" name="Meeting Duration" placeholder="Duration (minutes)"
