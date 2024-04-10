@@ -80,6 +80,12 @@ class AddCalendarSerializer(serializers.ModelSerializer):
         if end_hour <= start_hour:
             raise serializers.ValidationError("End hour must be after start hour.")
 
+        if start_hour < 0 or start_hour > 23:
+            raise serializers.ValidationError("Start hour must be between 0 and 23.")
+
+        if end_hour < 0 or end_hour > 23:
+            raise serializers.ValidationError("End hour must be between 0 and 23.")
+
         return attrs
 
     def create(self, validated_data):
