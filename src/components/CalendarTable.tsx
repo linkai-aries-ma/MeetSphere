@@ -16,6 +16,8 @@ export function ConfirmSelectionPopup({ slot, conti, duration, close }: CSPParam
   const newSlot = { ...slot, start: moment(start).toISOString(), end: moment(start).add(duration, 'minutes').toISOString() }
   const isValidSlot = isValid(newSlot, conti)
 
+  console.log(conti)
+
   return <div className="overlay">
     <div>
       <h1>Confirm Selection</h1>
@@ -29,7 +31,7 @@ export function ConfirmSelectionPopup({ slot, conti, duration, close }: CSPParam
       <div>End Time (Calculated)</div>
       <DatePicker disabled format="yyyy-MM-dd HH:mm" value={moment(newSlot.end).toDate()} />
 
-      <button onClick={() => close(newSlot)}>Confirm</button>
+      <button onClick={() => close(newSlot)} disabled={!isValidSlot}>Confirm</button>
       <button onClick={() => close(null)}>Cancel</button>
     </div>
   </div>
@@ -142,14 +144,18 @@ interface Continuity {
 function buildContinuity(slots: TimeSlot[]) {
   const cont = []
   let last: Continuity | null = null
+  slots = slots.toSorted((a, b) => moment(a.start).diff(b.start)).filter(slot => slot.preference !== 0)
   slots.forEach(slot => {
     // Check if the slot is continuous with the last slot
-    if (last && moment(slot.start) <= last.end) last.end = moment.max(last.end, moment(slot.end))
+    // Sometimes rounding error kicks in, so let's say less than 1-minute difference is continuous
+    if (last && moment(slot.start).diff(last.end) < 60000) last.end = moment.max(last.end, moment(slot.end))
     else {
       if (last) cont.push(last)
       last = { start: moment(slot.start), end: moment(slot.end) }
     }
   })
+  console.log('Continuity', cont, slots)
+  cont.forEach(c => console.log(c.start.format('YYYY-MM-DD HH:mm'), c.end.format('YYYY-MM-DD HH:mm')))
   return cont
 }
 
@@ -235,13 +241,13 @@ export function CalendarTable({ cal, regularity, duration, selectCallback, onTim
 
   const [ timeSlots, setTimeSlots ] = useState<TimeSlot[]>([])
   const [ continuity, setContinuity ] = useState<Continuity[]>([])
-  const [ nDays, setNDays ] = useState<number>(Math.min(7, moment(cal.end_date).diff(moment(cal.start_date), 'days') + 1))
+  const maxDays = moment(cal.end_date).diff(moment(cal.start_date), 'days') + 1
+  const [ nDays, setNDays ] = useState<number>(Math.min(7, maxDays))
   const [ tsIndex, setTsIndex ] = useState<{[key: string]: TimeSlot[]}>({})
   const ref = React.useRef<HTMLTableElement>(null)
   const [ isMobile, setIsMobile ] = useState<boolean>(false)
 
   // For responsive design
-  const [ maxDays, setMaxDays ] = useState<number>(7)
   const [ startDay, setStartDay ] = useState<number>(0)
 
   // New time slot
@@ -317,9 +323,6 @@ export function CalendarTable({ cal, regularity, duration, selectCallback, onTim
 
   // Compute values based on properties
   useEffect(() => {
-    setMaxDays(moment(cal.end_date).diff(moment(cal.start_date), 'days') + 1)
-    if (nDays > maxDays) setNDays(maxDays)
-  
     // Compute time slot index
     const index = {}
   
