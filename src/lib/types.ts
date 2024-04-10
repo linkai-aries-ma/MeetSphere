@@ -82,6 +82,7 @@ export interface Calendar extends NewCalendar {
   created: string // ISO time
   modified: string // ISO time
   time_slots: TimeSlot[]
+  other_meetings?: Meeting[]
 }
 
 export interface CalendarWithMeetings extends Calendar {

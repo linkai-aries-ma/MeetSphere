@@ -16,6 +16,10 @@ main {
     align-items: center;
 }
 
+.copy-invite {
+  float: right;
+}
+
 .created-calendar-list {
   display: flex;
   flex-direction: column;
@@ -91,6 +95,7 @@ main {
       > div {
         display: flex;
         flex-direction: column;
+        flex: 1;
       }
 
       // A hack to add border when there's already a padding in the parent

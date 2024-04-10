@@ -8,6 +8,7 @@ import moment from 'moment'
 import { CalendarTable } from '../components/CalendarTable.tsx'
 import { Loading } from '../components/Loading.tsx'
 import { useParams } from 'react-router-dom'
+import { clz } from '../lib/ui.ts'
 
 const regularity = {
   'once': 'This is a one-time meeting, ',
@@ -79,9 +80,9 @@ export function Schedule() {
             <span className="text-emp">&nbsp;{moment(invitation.time).format('ddd, MMM D [at] h:mm A')}&nbsp;</span>
             If you want to change it, you can do so below.</>
           : 'please select a time slot that works best for you.'}</p>
-        <p>{invitation.calendar.timezone === LOCAL_TZ
+        <p className={clz({ error: invitation.calendar.timezone !== LOCAL_TZ })}>{invitation.calendar.timezone === LOCAL_TZ
           ? 'Your time zone matches the organizer\'s time zone.'
-          : `The organizer's time zone is ${invitation.calendar.timezone}, the calendar below has been automatically converted to your time zone.`}</p>
+          : `The organizer's time zone is ${invitation.calendar.timezone}, which is different from your time zone ${LOCAL_TZ}. Please be aware of the time zone difference.`}</p>
       </div>
 
       <div>

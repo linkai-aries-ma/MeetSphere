@@ -94,11 +94,16 @@ function OneCalendar({ cal, canEdit, remind }: OneCalendarProps) {
     </div>}
 
     <div className="events">
-      {events.map(ev => <div className={`st-${ev.st}`} key={ev.m.id}>
+      {events.map(ev => <div className={`event st-${ev.st}`} key={ev.m.id}>
         <img src={getAvatar(ev.m.invitee)} alt=""/>
         <div>
           <span className="name">{ev.m.title}</span>
-          <span className="member">{ev.m.invitee.name}</span>
+          <span className="member">{ev.m.invitee.name} <span className="copy-invite">
+            <a onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}/schedule/${ev.m.id}`)
+              alert('Invite link copied to clipboard!')
+            }} className="clickable">Copy Invite</a>
+          </span></span>
           {ev.m.time ? <>
             <span className="date">
               {moment(ev.m.time).format('MMM Do YYYY')}

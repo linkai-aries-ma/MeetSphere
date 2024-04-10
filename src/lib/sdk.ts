@@ -115,6 +115,7 @@ export const USER = {
   register,
   login,
   logout,
+  isLoggedIn: (): boolean => !!localStorage.getItem('token'),
   get: (): Promise<UserSelf> => get('user'),
   update: (user: Partial<UserSelf>): Promise<UserSelf> => post('user', user),
   uploadPfp: (file: File): Promise<void> => post('user/pfp', file),
