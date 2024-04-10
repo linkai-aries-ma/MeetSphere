@@ -173,19 +173,18 @@ export function Home() {
                   <Icon icon="fluent:delete-20-filled"/>
                 </button>
               </div>
-
-
-              {showOverlay && <EditMeetingOverlay close={(submit: boolean) => {
-                setShowOverlay(null)
-                if (submit) {
-                  setDataVersion(dataVersion + 1)  // Increment dataVersion
-                }
-              }} meeting={showOverlay} />}
             </article>
           ))}
         </section>
       </div>
     </main>}
+
+    {showOverlay && <EditMeetingOverlay close={(submit: boolean) => {
+      setShowOverlay(null)
+      if (submit) {
+        setDataVersion(dataVersion + 1)  // Increment dataVersion
+      }
+    }} meeting={showOverlay} />}
 
     <Loading loading={loading} error={error} />
   </>
