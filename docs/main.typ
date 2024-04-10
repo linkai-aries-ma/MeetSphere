@@ -46,7 +46,9 @@ docker compose up
 
 === Pre-populated database
 
-#text(blue)[To assist you in the testing process, we have created a debug button that allows you to create an example account with example data with a single click. After you have started the server, you can access this button at `localhost:8000/debug`.]
+#text(blue)[To assist you in the testing process, we have created a debug button that allows you to create an example account with example data with a single click. After you have started the server, you can access this button at `localhost:8000/debug` (or `meet.hydev.org/debug` if you are accessing the deployed site).
+
+There is also an existing user in the pre-populated database with email `test@gmail.com` and password `ABC12345`, though I recommend using the debug button mentioned above.]
 
 == P3 Bonus Features
 
