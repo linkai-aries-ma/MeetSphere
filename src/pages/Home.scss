@@ -33,6 +33,10 @@
         gap: 1rem;
         flex-direction: column;
 
+        .overlay {
+          color: black;
+        }
+
         .meeting-content {
           width: 100%;
           display: flex;

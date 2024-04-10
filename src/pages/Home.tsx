@@ -8,12 +8,77 @@ import './Home.scss'
 import { MEETING, USER } from '../lib/sdk.ts'
 import { Loading } from '../components/Loading.tsx'
 
+
+function EditMeetingOverlay({ close, meeting }: {close: (submit: boolean) => void, meeting: Meeting}) {
+  const [ topic, setTopic ] = useState<string>(meeting.title)
+  const [ desc, setDesc ] = useState<string>(meeting.description)
+  const [ online, setOnline ] = useState<boolean>(meeting.is_virtual)
+  const [ location, setLocation ] = useState<string>(meeting.location)
+  const [ duration, setDuration ] = useState<number>(meeting.duration)
+  const [ error, setError ] = useState<string>()
+  const [ sending, setSending ] = useState<boolean>(false)
+
+  function submit() {
+    if (!topic || !desc) return setError('Please fill in topic and description.')
+
+    // Check duration between 1 minute and 1 day
+    if (duration < 1) return setError('Duration must be at least 1 minute.')
+    if (duration > 24 * 60) return setError('Duration must be at most 1 day.')
+
+    // Check location if not online
+    if (!online && !location) return setError('Please fill in location for an in-person meeting.')
+
+    // Update the meeting
+    const updatedMeeting: Partial<Meeting> = {
+      id: meeting.id,
+      title: topic, description: desc, is_virtual: online,
+      location, duration, regularity: meeting.regularity
+    }
+
+    // Send to server
+    setSending(true)
+    MEETING.update(updatedMeeting)
+      .then(() => {
+        close(true)
+        window.location.reload()
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setSending(false))
+  }
+
+  return <div id="meeting-overlay" className="overlay" onClick={() => close(false)}>
+    <div onClick={e => e.stopPropagation()}>
+      <h1>Edit Meeting Details</h1>
+      <span>With: {meeting.invitee.name}</span>
+      <label>
+        <input type="text" name="Meeting Topic" placeholder="Topic"
+          value={topic} onChange={e => setTopic(e.target.value)}/>
+      </label>
+      <label>
+        <textarea name="Meeting Description" placeholder="Description"
+          value={desc} onChange={e => setDesc(e.target.value)}/>
+      </label>
+      <label>
+        <span>Duration (minutes)</span>
+        <input type="number" name="Meeting Duration" placeholder="Duration (minutes)"
+          value={duration} onChange={e => setDuration(+e.target.value)}/>
+      </label>
+
+      {error && <div className="error">{error}</div>}
+      <button id="meeting-submit" className="emp" onClick={submit}>Update</button>
+      <button id="meeting-cancel" onClick={() => close(false)}>Cancel</button>
+    </div>
+  </div>
+}
+
 export function Home() {
   const [ self, setSelf ] = useState<UserSelf | null>(null)
   const [ meetings, setMeetings ] = useState<Meeting[]>([])
   const [ expanded, setExpanded ] = useState<string[]>([])
   const [ loading, setLoading ] = useState(true)
   const [ error, setError ] = useState<string | null>(null)
+  const [showOverlay, setShowOverlay] = useState<Meeting | null>(null);
+  const [dataVersion, setDataVersion] = useState(0);
 
   // Initial fetch
   useEffect(() => {
@@ -24,7 +89,7 @@ export function Home() {
       })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
-  }, [])
+  }, [dataVersion])
 
   const toggleMeeting = (id: string) => {
     setExpanded(prev => (prev.includes(id) ? prev.filter(meetingId => meetingId !== id) : [ ...prev, id ]))
@@ -85,11 +150,9 @@ export function Home() {
                 <button className="alt">
                   <Icon icon="fluent:person-add-20-filled"/>
                 </button>
-                <a href="/calendar-timepicker">
-                  <button>
-                    <Icon icon="fluent:edit-20-filled"/>
-                  </button>
-                </a>
+                <button onClick={() => setShowOverlay(meeting)}>
+                  <Icon icon="fluent:edit-20-filled"/>
+                </button>
                 <button
                   className="warn delete"
                   onClick={e => {
@@ -99,6 +162,14 @@ export function Home() {
                   <Icon icon="fluent:delete-20-filled"/>
                 </button>
               </div>
+
+
+              {showOverlay && <EditMeetingOverlay close={(submit: boolean) => {
+                setShowOverlay(null)
+                if (submit) {
+                  setDataVersion(dataVersion + 1)  // Increment dataVersion
+                }
+              }} meeting={showOverlay} />}
             </article>
           ))}
         </section>
