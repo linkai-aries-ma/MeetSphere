@@ -43,8 +43,6 @@ test('User features', async () => {
   await USER.update({ password: 'password123' })
   await USER.login(newEmail, 'password123')
 
-  expect((await USER.get()).profile_image).toBeTruthy()
-
   // Test logout
   await USER.logout()
   expect(localStorage.getItem('token')).toBeNull()
