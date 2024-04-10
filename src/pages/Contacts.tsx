@@ -98,7 +98,7 @@ function AddContactOverlay({ close, contact }: { close: (submit: Contact | null)
 
   const onSubmit = () => {
     if (name && email) {
-      close({ id: contact ? contact.id : 0, name, email, profile_image: pfp })
+      close({ id: contact ? contact.id : 0, name, email })
     } else {
       close(null)
     }
