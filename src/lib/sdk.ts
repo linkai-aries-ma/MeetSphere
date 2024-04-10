@@ -40,11 +40,12 @@ export async function send(node: string, body?: object | FormData, method: strin
       redirect('/')
     }
 
+    const defaultErr = `${response.status}: ${response.statusText}`
     let result: any
     try {
       result = JSON.parse(resp)
     }
-    catch (e) { throw new Error(resp) }
+    catch (e) { throw new Error(resp || defaultErr) }
 
     // Check if the error is token invalid
     if (result.code === 'token_not_valid') {
@@ -54,8 +55,8 @@ export async function send(node: string, body?: object | FormData, method: strin
 
     // If result has only one field, treat it as an error message
     if (Object.keys(result).length === 1)
-      throw new Error(result[Object.keys(result)[0]])
-    throw new Error(result.message || 'An error occurred')
+      throw new Error(result[Object.keys(result)[0]] || defaultErr)
+    throw new Error(result.message || defaultErr)
   }
 
   try {

@@ -114,6 +114,6 @@ export function Schedule() {
 
     {success && <SuccessPopup slot={success} />}
 
-    <Loading loading={loading} error={error}></Loading>
+    <Loading loading={loading} error={error} />
   </>
 }

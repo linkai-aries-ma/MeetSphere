@@ -50,7 +50,7 @@ export function EditTimeSlotPopup({ slot, cal, conti, close }: ETSPParams) {
     start: moment(start).toISOString(),
     end: moment(start).add(hour, 'hours').add(min, 'minutes').toISOString()
   }
-  const conflicts = hasConflict(newSlot, conti)
+  const conflicts = hasConflict(newSlot, conti, cal)
 
   const maxEndTime = moment(slot.start).add(cal.end_hour - cal.start_hour, 'hours').toDate()
 
@@ -168,12 +168,36 @@ function isValid(slot: TimeSlot, continuity: Continuity[]) {
  * Returns true if the time slot overlaps with any of the existing slots.
  * Used for editing time slots
  */
-function hasConflict(slot: TimeSlot, continuity: Continuity[]) {
+function hasConflict(slot: TimeSlot, continuity: Continuity[], cal: Calendar) {
+  return getConflict(slot, continuity, cal) !== undefined
+}
+
+function getConflict(slot: TimeSlot, continuity: Continuity[], cal: Calendar): string | undefined {
   const [ start, end ] = [ moment(slot.start), moment(slot.end) ]
+  let endHour = end.local().hour()
+  let isNewDay = start.local().day() !== end.local().day()
+  endHour += start.local().minute() / 60
+  if (endHour === 0) {
+    endHour = 24
+    isNewDay = false
+  }
+
   // aka. There exists some continuity C such that:
   // 1. The timeslot's start is before C's end and after C's start
   // 2. The timeslot's end is after C's start and before C's end
-  return continuity.some(c => (start < c.end && start > c.start) || (end > c.start && end < c.end))
+  if (continuity.some(c => (start < c.end && start > c.start) || (end > c.start && end < c.end)))
+    return 'This time slot conflicts with another time slot'
+
+  if (start.local().hour() < cal.start_hour)
+    return 'This time slot should not start before the calendar\'s start hour'
+
+  console.log(endHour, isNewDay)
+  if (endHour > cal.end_hour + 1 || isNewDay)
+    return 'This time slot should not end after the calendar\'s end hour'
+
+  // If this time slot overlaps with an existing time slot, return an error message (TODO: Split it)
+  if (continuity.some(c => start < c.end && end > c.start))
+    return 'This time slot conflicts with another time slot'
 }
 
 interface CalendarViewProps {
@@ -222,28 +246,7 @@ export function CalendarTable({ cal, regularity, duration, selectCallback, onTim
   useEffect(() => {
     if (meetings.length === 0) return
 
-    let slots = cal.time_slots.toSorted((a, b) => moment(a.start).diff(b.start)).filter(_ =>
-      // Check if there is any meeting with a time that overlaps with this time slot
-      // (removed) This is very incorrect. We should split the conflicting time slot instead.
-      // !meetings.some(meeting => {
-      //   if (!meeting.time || !meeting.duration) return false // Skip meetings without time or duration
-      //
-      //   const meetingStart = new Date(meeting.time)
-      //   const meetingEnd = new Date(meeting.time)
-      //   meetingEnd.setMinutes(meetingEnd.getMinutes() + meeting.duration)
-      //
-      //   const timeSlotStart = new Date(timeSlot.start)
-      //   const timeSlotEnd = new Date(timeSlot.end)
-      //
-      //   // Check for overlap
-      //   return (
-      //     (timeSlotStart >= meetingStart && timeSlotStart < meetingEnd) || // Start of time slot is within meeting
-      //     (timeSlotEnd > meetingStart && timeSlotEnd <= meetingEnd) ||     // End of time slot is within meeting
-      //     (timeSlotStart <= meetingStart && timeSlotEnd >= meetingEnd)     // Meeting is within time slot
-      //   )
-      // })
-      true
-    )
+    let slots = cal.time_slots.toSorted((a, b) => moment(a.start).diff(b.start))
 
     // Split the conflicting time slots
     // 1. Loop through all meetings, Loop through all time slots
@@ -436,7 +439,7 @@ export function CalendarTable({ cal, regularity, duration, selectCallback, onTim
 
     // Check if new timeslot is valid
     const newSlot = calcNewTSResize()
-    if (hasConflict(newSlot, _memoConti)) dragGhost.classList.add('invalid')
+    if (hasConflict(newSlot, _memoConti, cal)) dragGhost.classList.add('invalid')
     else dragGhost.classList.remove('invalid')
   }
 
@@ -457,7 +460,7 @@ export function CalendarTable({ cal, regularity, duration, selectCallback, onTim
 
     // Check if new timeslot is valid
     const newSlot = calcNewTSDrag(e)
-    if (hasConflict(newSlot, _memoConti)) dragGhost.classList.add('invalid')
+    if (hasConflict(newSlot, _memoConti, cal)) dragGhost.classList.add('invalid')
     else dragGhost.classList.remove('invalid')
   }
 
@@ -471,7 +474,8 @@ export function CalendarTable({ cal, regularity, duration, selectCallback, onTim
     dragOrig.style.opacity = '1'
 
     const slot = dragType === 'handle' ? calcNewTSResize() : calcNewTSDrag(e)
-    if (hasConflict(slot, _memoConti)) return alert('This new position conflicts with another time slot')
+    const conflict = getConflict(slot, _memoConti, cal)
+    if (conflict !== undefined) return alert(conflict)
 
     // Add the slot back to the time slots (WARNING: This triggers reactivity, so els will be set to null)
     updateSlots([ ...timeSlots.filter(slot => slot !== dragging), slot ])
