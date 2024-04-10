@@ -37,16 +37,16 @@ function InviteOverlay({ close, contact, calendar }: {close: (submit: boolean) =
     // Send to server
     setSending(true)
     MEETING.add(meeting)
-    .then(response => {
+      .then(response => {
       // The meeting was created successfully
-      close(true)
+        close(true)
 
-      // Send the invite
-      MEETING.invite(response.id)
-        .catch(err => setError(err.message))
-    })
-    .catch(err => setError(err.message))
-    .finally(() => setSending(false))
+        // Send the invite
+        MEETING.invite(response.id)
+          .catch(err => setError(err.message))
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setSending(false))
   }
 
   return <div id="meeting-overlay" className="overlay" onClick={() => close(false)}>
@@ -79,25 +79,30 @@ function AddContactOverlay({ close, contact }: { close: (submit: Contact | null)
   const [ name, setName ] = useState<string>(contact ? contact.name : '')
   const [ email, setEmail ] = useState<string>(contact ? contact.email : '')
   const [ pfp, setPfp ] = useState<string>(contact ? contact.pfp : '')
+  const [ loading, setLoading ] = useState<boolean>(false)
+  const [ error, setError ] = useState<string>()
 
   const onPfpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0]
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPfp(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      // Upload file
+      setLoading(true)
+      CONTACT.uploadPfp(contact ? contact.id : 0, file)
+        .then(() => {
+          setPfp(URL.createObjectURL(file))
+        })
+        .catch(err => setError(err.message))
+        .finally(() => setLoading(false))
     }
-  };
+  }
 
   const onSubmit = () => {
     if (name && email) {
-      close({ id: contact ? contact.id : 0, name, email, pfp });
+      close({ id: contact ? contact.id : 0, name, email, pfp })
     } else {
-      close(null);
+      close(null)
     }
-  };
+  }
 
   return <div id="contact-overlay" className="overlay" onClick={() => close(null)}>
     <div onClick={e => e.stopPropagation()}>
@@ -110,12 +115,13 @@ function AddContactOverlay({ close, contact }: { close: (submit: Contact | null)
         <input type="email" name="contact-email" placeholder="Email"
           value={email} onChange={e => setEmail(e.target.value)}/>
       </label>
-      <label>
+      {contact && <label>
         <input type="file" name="contact-pfp" onChange={onPfpChange}/>
-        {pfp && <img src={pfp} alt="contact-pfp" style={{maxWidth: '100px', maxHeight: '100px'}} />}
-      </label>
+        {pfp && <img src={pfp} alt="contact-pfp" style={{ maxWidth: '100px', maxHeight: '100px' }}/>}
+      </label>}
       <button id="contact-submit" className="emp"
-        onClick={onSubmit}>Submit</button>
+        onClick={onSubmit}>Submit
+      </button>
       <button id="contact-cancel" onClick={() => close(null)}>Cancel</button>
     </div>
   </div>
@@ -130,7 +136,7 @@ export function Contacts() {
   const [ selectDone, setSelectDone ] = useState<boolean>(false)
   const [ ovAdd, setOvAdd ] = useState<boolean>(false)
   const [ ovInvite, setOvInvite ] = useState<Contact | null>(null)
-  const [ ovContact, setOvContact ] = useState<Contact | null>(null);
+  const [ ovContact, setOvContact ] = useState<Contact | null>(null)
 
   const [ invited, setInvited ] = useState<number[]>([])
   const [ expanded, setExpanded ] = useState<number[]>([])

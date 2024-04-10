@@ -22,7 +22,7 @@ export const PREFERENCE_STR = {
  */
 export interface Contact extends NewContact {
   id: number
-  pfp?: string
+  profile_image?: string
 }
 
 export interface NewContact {

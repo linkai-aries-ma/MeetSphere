@@ -63,6 +63,7 @@ urlpatterns = ([
     re_path('api/user/?$', user_info, name='View/Edit user info (GET/POST)'),
     re_path('api/user/pfp/?$', user_profile_image, name='Change profile picture (POST)'),
     re_path('api/contacts/?$', contacts_api, name='Add/List/Delete/Modify contacts (GET/POST/DELETE/PATCH)'),
+    re_path('api/contacts/pfp/?$', contact_pfp, name='Change contact profile picture (POST)'),
     re_path('api/calendar/?$', calendar_api, name='Add/List/Delete/Modify calendars (GET/POST/DELETE/PATCH)'),
     re_path('api/meetings/?$', meetings_api, name='Add/List/Delete/Modify Meetings (GET/POST/DELETE/PATCH)'),
     re_path(r'api/meetings/(?P<pk>[\w-]+)/invite/?$', send_invite, name='Send meeting invite (POST)'),

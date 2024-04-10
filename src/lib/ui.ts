@@ -15,7 +15,7 @@ export function clz(obj: any, others?: string) {
 }
 
 export function getAvatar(contact: Contact) {
-  if (contact.pfp) return contact.pfp
+  if (contact.profile_image) return contact.profile_image
   return `https://api.dicebear.com/7.x/initials/svg?seed=${contact.name}&backgroundType=gradientLinear`
 }
 

@@ -68,6 +68,27 @@ def user_profile_image(request: Request):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def contact_pfp(request: Request):
+    if 'file' not in request.data:
+        return Response({"error": "file is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Contact should be in the request parameters, not the data
+    contact_id = request.data.get('contact')
+    if not contact_id:
+        return Response({"error": "contact is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    contact = Contact.objects.filter(id=contact_id, owner=request.user).first()
+    if not contact:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    contact.profile_image = request.data['file']
+    contact.save()
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(['GET', 'POST', 'DELETE', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def contacts_api(request: Request):

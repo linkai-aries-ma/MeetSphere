@@ -126,6 +126,13 @@ export const CONTACT = {
   add: (contact: NewContact): Promise<void> => post('contacts', contact),
   delete: (id: number): Promise<void> => delete_('contacts', { id }),
   update: (contact: Partial<Contact>): Promise<void> => patch('contacts', contact),
+  uploadPfp: (id: number, file: File): Promise<void> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('contact', id.toString())
+
+    return post('contacts/pfp', formData)
+  }
 }
 
 export const CALENDAR = {
