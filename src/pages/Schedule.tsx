@@ -82,7 +82,8 @@ export function Schedule() {
           : 'please select a time slot that works best for you.'}</p>
         <p className={clz({ error: invitation.calendar.timezone !== LOCAL_TZ })}>{invitation.calendar.timezone === LOCAL_TZ
           ? 'Your time zone matches the organizer\'s time zone.'
-          : `The organizer's time zone is ${invitation.calendar.timezone}, which is different from your time zone ${LOCAL_TZ}. Please be aware of the time zone difference.`}</p>
+          : (`The organizer's time zone is ${invitation.calendar.timezone}, which is different from your time zone ${LOCAL_TZ}. ` +
+          'The calendar below is adjusted to display your local time, but please be aware of the time zone difference.')}</p>
       </div>
 
       <div>

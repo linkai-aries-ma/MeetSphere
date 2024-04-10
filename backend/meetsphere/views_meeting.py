@@ -151,5 +151,5 @@ def get_meeting(request: Request, pk: str):
 
     # Add other meetings of the inviter
     other_meetings = Meeting.objects.filter(creator=meeting.creator)
-    data['other_meetings'] = RedactedMeetingSerializer(other_meetings, many=True).data
+    data['calendar']['other_meetings'] = RedactedMeetingSerializer(other_meetings, many=True).data
     return Response(data)

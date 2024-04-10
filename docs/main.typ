@@ -24,7 +24,7 @@ This project has a backend written in python with the Django REST framework. The
 
 == P3 Running Instructions
 
-#text(blue)[The website is deployed at https://meet.hydev.org/. You can either access the website there or run it locally with the following instructions.]
+#text(blue)[The website is deployed at https://meet.hydev.org/. This site is deployed on my home lab server with docker. You can either access the website here or run it locally with the following instructions.]
 
 #text(blue)[To run this project in a deployment environment, please #link("https://docs.docker.com/engine/install/")[install Docker and Docker Compose]. If you're using Ubuntu, you can install Docker and Docker Compose with the following commands:]
 
@@ -47,6 +47,24 @@ docker compose up
 === Pre-populated database
 
 #text(blue)[To assist you in the testing process, we have created a debug button that allows you to create an example account with example data with a single click. After you have started the server, you can access this button at `localhost:8000/debug`.]
+
+== P3 Bonus Features
+
+=== Actual Joinable Meetings!
+
+#text(blue)[Online meetings can be actually joined now! Invitees will receive a meeting link through email, and creators can open the meeting link in the home page. This functionality is powered by Jitsi, kudos to them for developing the open-sourced video chat platform. I don't know how many other groups will omit this feature, but we have it!]
+
+=== Importing .ics files
+
+#text(blue)[We have added the ability to import .ics files to the calendar. You can access this feature by clicking the "Upload .ics file" button on the edit calendar page.]
+
+=== Timezone Support
+
+#text(blue)[We have added timezone support to meeting invitations. The invitee will see the calendar and the available timeslots according to their timezone.]
+
+=== Email Notifications
+
+#text(blue)[We have added email notifications for meeting invitations and reminders. The invitee will receive an email with a link to the video chat room as well as the link to select a time for the meeting. The craetor can also send reminders to the invitee.]
 
 == Development
 

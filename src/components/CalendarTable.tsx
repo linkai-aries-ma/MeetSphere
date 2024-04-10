@@ -4,7 +4,7 @@ import { Calendar, Meeting, PREFERENCE_STR, TimeSlot } from '../lib/types.ts'
 import { useEffect, useState } from 'react'
 import './CalendarTable.scss'
 import { clz } from '../lib/ui.ts'
-import { CALENDAR, MEETING } from '../lib/sdk.ts'
+import { CALENDAR, MEETING, USER } from '../lib/sdk.ts'
 import { Loading } from './Loading.tsx'
 import { DatePicker } from 'rsuite'
 
@@ -209,6 +209,10 @@ interface CalendarViewProps {
 }
 
 export function CalendarTable({ cal, regularity, duration, selectCallback, onTimeSlotsUpdated }: CalendarViewProps) {
+  // We removed the start and end hour limit because numeric hours are not timezone aware
+  cal.start_hour = 0
+  cal.end_hour = 23
+
   const isEdit = !selectCallback
   if ((duration && !selectCallback) || (!duration && selectCallback)) throw new Error('Invalid props')
   const [ loading, setLoading ] = useState(false)
@@ -217,19 +221,21 @@ export function CalendarTable({ cal, regularity, duration, selectCallback, onTim
   const [ meetings, setMeetings ] = useState<Meeting[]>([])
 
   // Fetch meetings associated with the calendar
-  // TODO: Change this to an unauthorized call
   useEffect(() => {
+    // If the user is not logged in
+    const meets = cal.other_meetings ?? []
+    if (!USER.isLoggedIn()) return setMeetings(meets.filter(it => it.time))
+
+    // If the user is logged in, load their meetings
     setLoading(true)
     MEETING.list().then(meetings => {
-      // Filter meetings based on calendar ID
-      const calendarMeetings = meetings.filter(meeting => meeting.calendar.id === cal.id)
-      setMeetings(calendarMeetings)
+      setMeetings([ ...meets, ...meetings.filter(it => it.time) ])
     }).catch(error => setError(error.message)).finally(() => setLoading(false))
   }, [cal])
 
   const [ timeSlots, setTimeSlots ] = useState<TimeSlot[]>([])
   const [ continuity, setContinuity ] = useState<Continuity[]>([])
-  const [ nDays, setNDays ] = useState<number>(7)
+  const [ nDays, setNDays ] = useState<number>(Math.min(7, moment(cal.end_date).diff(moment(cal.start_date), 'days') + 1))
   const [ tsIndex, setTsIndex ] = useState<{[key: string]: TimeSlot[]}>({})
   const ref = React.useRef<HTMLTableElement>(null)
   const [ isMobile, setIsMobile ] = useState<boolean>(false)
@@ -244,9 +250,24 @@ export function CalendarTable({ cal, regularity, duration, selectCallback, onTim
 
   // Compute timeSlots based on calendar properties and meetings
   useEffect(() => {
-    if (meetings.length === 0) return
-
     let slots = cal.time_slots.toSorted((a, b) => moment(a.start).diff(b.start))
+
+    // Split time slots that span multiple days
+    slots = slots.flatMap(slot => {
+      const [ start, end ] = [ moment(slot.start), moment(slot.end) ]
+      const days = end.day() - start.day()
+      if (isNaN(days)) console.log('Invalid time slot', slot, start, end, days)
+      return days <= 0 ? [slot] : seq(days + 1).map(i => {
+        // Break each day into a separate time slot
+        if (i == 0) return { ...slot, end: moment(slot.start).local().endOf('day').toISOString() }
+        if (i == days) return { ...slot, start: moment(slot.start).local().add(i, 'days').startOf('day').toISOString() }
+        return {
+          ...slot,
+          start: moment(slot.start).local().add(i, 'days').startOf('day').toISOString(),
+          end: moment(slot.start).local().add(i, 'days').endOf('day').toISOString()
+        }
+      })
+    })
 
     // Split the conflicting time slots
     // 1. Loop through all meetings, Loop through all time slots
@@ -332,7 +353,7 @@ export function CalendarTable({ cal, regularity, duration, selectCallback, onTim
     setTimeSlots(slots)
     setLoading(true)
 
-    CALENDAR.update({ ...cal, time_slots: slots })
+    CALENDAR.update({ ...cal, time_slots: slots.filter(slot => slot.preference !== 0) })
       .then(() => {
         // Call the onTimeSlotsUpdated prop after the time slots are updated
         if (onTimeSlotsUpdated) onTimeSlotsUpdated()
@@ -542,15 +563,15 @@ export function CalendarTable({ cal, regularity, duration, selectCallback, onTim
 
               // This is one of the time slots
               return <div key={i} className={`avail av${slot.preference}`} style={{ height: `${h}%`, top: `${mt}%` }}
-                onClick={e => {
+                onClick={slot.preference !== 0 ? e => {
                   e.stopPropagation()
                   setOvEditSelect(slot)
-                }}
+                } : undefined}
                 draggable={isEdit && slot.preference !== 0} // Meetings should not be draggable
                 onDragStart={isEdit ? e => tsDragStart(e, slot, 'slot') : undefined}
               >{PREFERENCE_STR[slot.preference]}
                 {/* A handle for dragging to expand/shrink */}
-                {isEdit && <div className="drag-handle" draggable={true}
+                {isEdit && slot.preference !== 0 && <div className="drag-handle" draggable={true}
                   onDragStart={e => tsDragStart(e, slot, 'handle')}
                   onDrag={e => tsDragHandleBar(e)}
                 />}
