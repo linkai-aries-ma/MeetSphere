@@ -1,5 +1,7 @@
 from django.conf import settings
+from django.core.exceptions import BadRequest
 from django.core.mail import send_mail
+from django.http import HttpRequest
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -51,18 +53,55 @@ def meetings_api(request: Request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+def create_message(meeting: Meeting, request: HttpRequest, remind: bool = False) -> str:
+    # Construct the message
+    message: str = f"Hello {meeting.invitee.name},\n\n"
+
+    # Three cases:
+    # 1. The meeting is confirmed, reminding the invitee that the meeting is coming up on that time
+    # 2. The meeting is not confirmed, reminding the invitee that the meeting is pending
+    # 3. Invalid (e.g. the meeting is already passed)
+    if meeting.time:
+        # Check case 3
+        if meeting.time < timezone.now():
+            raise BadRequest("Meeting has already passed")
+        if remind:
+            message += f"Reminder: "
+
+        # Case 1
+        message += f"You have a meeting with {meeting.creator.name} coming up at {meeting.time}.\n\n"
+
+    else:
+        # Case 2
+        message += (f"You have a meeting with {meeting.creator.name} pending. "
+                    f"Please pick a time for the meeting by clicking the link here: "
+                    f"{request.build_absolute_uri(f'/schedule/{meeting.id}')} \n\n")
+
+    # Add the meeting link if it's virtual
+    if meeting.is_virtual:
+        message += (f"The meeting will be virtual. "
+                    f"When it's time, please click the following link to join the meeting: "
+                    f"https://meet.jit.si/meetsphere/{meeting.title.replace(" ", "_")}_{meeting.id} \n\n")
+    else:
+        message += (f"This is an in-person meeting. "
+                    f"When it's time, please go to \"{meeting.location}\" to join the meeting.\n\n")
+
+    # Add the footer
+    message += "Thank you for using Meetsphere!"
+
+    return message
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def send_invite(request: Request, pk: str):
+def send_invite(request: HttpRequest, pk: str):
     meeting = Meeting.objects.filter(pk=pk, creator=request.user).first()
     if not meeting:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     send_mail(
         f"Meeting Invite: {meeting.title}",
-        f"Hello, {meeting.invitee.name}. You have been invited to a meeting by {meeting.creator.name}. "
-        f"Please confirm the meeting by clicking the link below: \n\n"
-        f"http://localhost:8000/schedule/{meeting.id}", # changed this to 8000 since that's likely how the TA will use it
+        create_message(meeting, request),
         settings.EMAIL_HOST_USER,
         [meeting.invitee.email],
         fail_silently=False,
@@ -72,41 +111,18 @@ def send_invite(request: Request, pk: str):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def send_remind(request: Request, pk: str):
-    meeting = Meeting.objects.filter(pk=pk, creator=request.user).first()
+def send_remind(request: HttpRequest, pk: str):
+    meeting: Meeting = Meeting.objects.filter(pk=pk, creator=request.user).first()
     if not meeting:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
-    # Three cases:
-    # 1. The meeting is confirmed, reminding the invitee that the meeting is coming up on that time
-    # 2. The meeting is not confirmed, reminding the invitee that the meeting is pending
-    # 3. Invalid (e.g. the meeting is already passed)
-
-    if meeting.time:
-        # Check case 3
-        if meeting.time < timezone.now():
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        # Case 1
-        send_mail(
-            f"Meeting Reminder: {meeting.title}",
-            f"Hello, {meeting.invitee.name}. You have a meeting with {meeting.creator.name} coming up at {meeting.time}.",
-            settings.EMAIL_HOST_USER,
-            [meeting.invitee.email],
-            fail_silently=False,
-        )
-
-    else:
-        # Case 2
-        send_mail(
-            f"Meeting Reminder: {meeting.title}",
-            f"Hello, {meeting.invitee.name}. You have a meeting with {meeting.creator.name} pending. "
-            f"Please confirm the meeting as soon as possible by clicking the link below: \n\n"
-            f"http://localhost:8000/schedule/{meeting.id}",
-            settings.EMAIL_HOST_USER,
-            [meeting.invitee.email],
-            fail_silently=False,
-        )
+    
+    send_mail(
+        f"Meeting Reminder: {meeting.title}",
+        create_message(meeting, request),
+        settings.EMAIL_HOST_USER,
+        [meeting.invitee.email],
+        fail_silently=False,
+    )
 
     return Response(status=status.HTTP_200_OK)
 
