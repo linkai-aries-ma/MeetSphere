@@ -16,8 +16,6 @@ export function ConfirmSelectionPopup({ slot, conti, duration, close }: CSPParam
   const newSlot = { ...slot, start: moment(start).toISOString(), end: moment(start).add(duration, 'minutes').toISOString() }
   const isValidSlot = isValid(newSlot, conti)
 
-  console.log(conti)
-
   return <div className="overlay">
     <div>
       <h1>Confirm Selection</h1>
