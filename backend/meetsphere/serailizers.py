@@ -144,3 +144,15 @@ class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
         fields = '__all__'
+
+
+class RedactedMeetingSerializer(serializers.ModelSerializer):
+    """
+    A meeting object that's sent to other people invited to the same calendar, used to calculate the time slots
+    that are blocked by existing meetings.
+
+    The only useful information here is time, duration, and regularity.
+    """
+    class Meta:
+        model = Meeting
+        fields = ['time', 'duration', 'regularity']
