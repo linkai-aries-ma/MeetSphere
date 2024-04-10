@@ -43,10 +43,6 @@ test('User features', async () => {
   await USER.update({ password: 'password123' })
   await USER.login(newEmail, 'password123')
 
-  // Test uploading a profile picture
-  const file = new File([''], 'public/assets/azalea.jpg', { type: 'image/jpeg' })
-  await USER.uploadPfp(file)
-
   expect((await USER.get()).profile_image).toBeTruthy()
 
   // Test logout

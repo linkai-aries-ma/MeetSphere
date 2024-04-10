@@ -78,7 +78,7 @@ function InviteOverlay({ close, contact, calendar }: {close: (submit: boolean) =
 function AddContactOverlay({ close, contact }: { close: (submit: Contact | null) => void, contact?: Contact }) {
   const [ name, setName ] = useState<string>(contact ? contact.name : '')
   const [ email, setEmail ] = useState<string>(contact ? contact.email : '')
-  const [ pfp, setPfp ] = useState<string>(contact ? contact.pfp : '')
+  const [ pfp, setPfp ] = useState<string>(contact ? contact.profile_image : '')
   const [ loading, setLoading ] = useState<boolean>(false)
   const [ error, setError ] = useState<string>()
 
@@ -98,33 +98,37 @@ function AddContactOverlay({ close, contact }: { close: (submit: Contact | null)
 
   const onSubmit = () => {
     if (name && email) {
-      close({ id: contact ? contact.id : 0, name, email, pfp })
+      close({ id: contact ? contact.id : 0, name, email, profile_image: pfp })
     } else {
       close(null)
     }
   }
 
-  return <div id="contact-overlay" className="overlay" onClick={() => close(null)}>
-    <div onClick={e => e.stopPropagation()}>
-      <h1>{contact ? 'Edit Contact' : 'Add New Contact'}</h1>
-      <label>
-        <input type="text" name="contact-name" placeholder="Name"
-          value={name} onChange={e => setName(e.target.value)}/>
-      </label>
-      <label>
-        <input type="email" name="contact-email" placeholder="Email"
-          value={email} onChange={e => setEmail(e.target.value)}/>
-      </label>
-      {contact && <label>
-        <input type="file" name="contact-pfp" onChange={onPfpChange}/>
-        {pfp && <img src={pfp} alt="contact-pfp" style={{ maxWidth: '100px', maxHeight: '100px' }}/>}
-      </label>}
-      <button id="contact-submit" className="emp"
-        onClick={onSubmit}>Submit
-      </button>
-      <button id="contact-cancel" onClick={() => close(null)}>Cancel</button>
+  return <>
+    <div id="contact-overlay" className="overlay" onClick={() => close(null)}>
+      <div onClick={e => e.stopPropagation()}>
+        <h1>{contact ? 'Edit Contact' : 'Add New Contact'}</h1>
+        <label>
+          <input type="text" name="contact-name" placeholder="Name"
+            value={name} onChange={e => setName(e.target.value)}/>
+        </label>
+        <label>
+          <input type="email" name="contact-email" placeholder="Email"
+            value={email} onChange={e => setEmail(e.target.value)}/>
+        </label>
+        {contact && <label>
+          <input type="file" name="contact-pfp" onChange={onPfpChange}/>
+          {pfp && <img src={pfp} alt="contact-pfp" style={{ maxWidth: '100px', maxHeight: '100px' }}/>}
+        </label>}
+        <button id="contact-submit" className="emp"
+          onClick={onSubmit}>Submit
+        </button>
+        <button id="contact-cancel" onClick={() => close(null)}>Cancel</button>
+      </div>
     </div>
-  </div>
+
+    <Loading loading={loading} error={error}/>
+  </>
 }
 
 export function Contacts() {
