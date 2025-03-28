@@ -29,7 +29,7 @@ RUN pip install poetry
 # Set the working directory
 COPY poetry.lock pyproject.toml ./
 # Install dependencies
-RUN poetry install
+RUN poetry install --no-root
 
 # Copy dist folder from frontend
 COPY --from=builder /app/dist /app/dist
